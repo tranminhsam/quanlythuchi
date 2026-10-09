@@ -1,5 +1,5 @@
 // ==========================================
-// LIFE & MONEY - AUTO SYNC & FIXED UI
+// LIFE & MONEY - FIXED SYNC ID & LUNAR
 // ==========================================
 
 const firebaseConfig = {
@@ -18,13 +18,8 @@ import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/f
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Tạo hoặc dùng chung một Mã đồng bộ cố định cho tất cả các thiết bị của bạn
-// (Bạn có thể đổi chuỗi 'my_shared_money_data_2026' thành bất kỳ mã nào bạn muốn trên cả máy tính và điện thoại)
-let syncId = localStorage.getItem('lm_sync_id');
-if (!syncId) {
-    syncId = 'family_money_2026'; 
-    localStorage.setItem('lm_sync_id', syncId);
-}
+// CỐ ĐỊNH MÃ ĐỒNG BỘ: Cả máy tính và điện thoại đều dùng chung đúng mã này để kết nối với nhau
+const syncId = 'sam_quanlythuchi_2026';
 
 let state = {
     currentDate: new Date(),
@@ -520,7 +515,6 @@ function updateUI() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Tự động tìm và hiển thị Mã đồng bộ lên góc trên giao diện
     const userLabel = document.getElementById('userlabel');
     const loginBtn = document.getElementById('login');
     const logoutBtn = document.getElementById('logout');
