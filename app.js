@@ -1,83 +1,569 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
-import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+// ==========================================
+// LIFE & MONEY - FULL APPLICATION LOGIC
+// ==========================================
 
-// Dán cấu hình Web App của Firebase Console vào firebaseConfig bên dưới.
-const firebaseConfig = {
-  apiKey: "AIzaSyDdEaJvVRRzfcM_IkTjdP0Livz52IQqrMs",
-  authDomain: "life-money-f6a11.firebaseapp.com",
-  projectId: "life-money-f6a11",
-  storageBucket: "life-money-f6a11.firebasestorage.app",
-  messagingSenderId: "284442463922",
-  appId: "1:284442463922:web:4a0ac661bcdf6f652d83ab",
-  measurementId: "G-1WQ6WPG39C"
+// State của ứng dụng
+const state = {
+    user: null,
+    currentDate: new Date(),
+    selectedDate: new Date(),
+    activeTab: 'home',
+    transactions: JSON.parse(localStorage.getItem('lm_transactions')) || [
+        { id: 1, type: 'income', amount: 15000000, category: 'Lương', date: '2026-10-01', note: 'Lương tháng 10' },
+        { id: 2, type: 'expense', amount: 2500000, category: 'Ăn uống', date: '2026-10-02', note: 'Đi chợ siêu thị' },
+        { id: 3, type: 'expense', amount: 1200000, category: 'Nhà cửa', date: '2026-10-05', note: 'Tiền điện nước' }
+    ],
+    tasks: JSON.parse(localStorage.getItem('lm_tasks')) || [
+        { id: 1, title: 'Họp tiến độ dự án kho bãi', date: '2026-10-09', type: 'task', status: 'open', time: '09:00' },
+        { id: 2, title: 'Đánh cầu lông / Bóng bàn', date: '2026-10-09', type: 'health', status: 'done', time: '17:30' },
+        { id: 3, title: 'Kỷ niệm ngày cưới / Gặp mặt', date: '2026-10-15', type: 'event', status: 'open', time: '19:00' }
+    ],
+    settings: JSON.parse(localStorage.getItem('lm_settings')) || {
+        goal: 5000000,
+        budget: 10000000
+    }
 };
-const configured = !Object.values(firebaseConfig).some(v=>String(v).includes("PASTE_"));
-const $=id=>document.getElementById(id), pad=n=>String(n).padStart(2,'0');
-const iso=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
-const parseDate=s=>{const a=String(s).split('-').map(Number);return new Date(a[0],a[1]-1,a[2],12)};
-const monthKey=d=>d.getFullYear()+'-'+pad(d.getMonth()+1);
-const money=n=>new Intl.NumberFormat('vi-VN',{maximumFractionDigits:0}).format(Number(n)||0)+' ₫';
-const monthName=d=>new Intl.DateTimeFormat('vi-VN',{month:'long',year:'numeric'}).format(d);
-const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const today=new Date();today.setHours(12,0,0,0);
-let cursor=new Date(today.getFullYear(),today.getMonth(),1,12),selected=iso(today),user=null,unsubscribe=null,saveTimer=null,modalSubmit=null,editId=null,saveVersion=0,remoteVersion=0,appData={transactions:[],tasks:[],settings:{goal:10000000,budget:8000000}},ready=false;
-let auth,db;
-function notify(s){$('toast').textContent=s;$('toast').style.display='block';setTimeout(()=>$('toast').style.display='none',2600)}
-function lunarDay(dd,mm,yy){
- const PI=Math.PI;
- function jd(d,m,y){let a=Math.floor((14-m)/12),y2=y+4800-a,m2=m+12*a-3,j=d+Math.floor((153*m2+2)/5)+365*y2+Math.floor(y2/4)-Math.floor(y2/100)+Math.floor(y2/400)-32045;if(j<2299161)j=d+Math.floor((153*m2+2)/5)+365*y2+Math.floor(y2/4)-32083;return j}
- function nm(k){let T=k/1236.85,T2=T*T,T3=T2*T,dr=PI/180,J=2415020.75933+29.53058868*k+0.0001178*T2-0.000000155*T3+0.00033*Math.sin((166.56+132.87*T-0.009173*T2)*dr),M=359.2242+29.10535608*k-0.0000333*T2-0.00000347*T3,Mp=306.0253+385.81691806*k+0.0107306*T2+0.00001236*T3,F=21.2964+390.67050646*k-0.0016528*T2-0.00000239*T3,C=(0.1734-0.000393*T)*Math.sin(M*dr)+0.0021*Math.sin(2*dr*M)-0.4068*Math.sin(Mp*dr)+0.0161*Math.sin(2*dr*Mp)-0.0004*Math.sin(3*dr*Mp)+0.0104*Math.sin(2*dr*F)-0.0051*Math.sin((M+Mp)*dr)-0.0074*Math.sin((M-Mp)*dr)+0.0004*Math.sin((2*F+M)*dr)-0.0004*Math.sin((2*F-M)*dr)-0.0006*Math.sin((2*F+Mp)*dr)+0.001*Math.sin((2*F-Mp)*dr)+0.0005*Math.sin((2*Mp+M)*dr),dt=T< -11?0.001+0.000839*T+0.0002261*T2-0.00000845*T3-0.000000081*T*T3:-0.000278+0.000265*T+0.000262*T2;return Math.floor(J+C-dt+0.5+7/24)}
- function sun(day){let T=(day-2451545.5)/36525,T2=T*T,dr=PI/180,M=357.5291+35999.0503*T-0.0001559*T2-0.00000048*T*T2,L0=280.46645+36000.76983*T+0.0003032*T2,DL=(1.9146-0.004817*T-0.000014*T2)*Math.sin(dr*M)+(0.019993-0.000101*T)*Math.sin(2*dr*M)+0.00029*Math.sin(3*dr*M),L=(L0+DL)*dr;L-=2*PI*Math.floor(L/(2*PI));return Math.floor(L/PI*6)}
- function m11(y){let off=jd(31,12,y)-2415021,k=Math.floor(off/29.530588853),n=nm(k);if(sun(n)>=9)n=nm(k-1);return n}
- function leapOff(a){let k=Math.floor((a-2415021.076998695)/29.530588853),last=0,i=1,arc=sun(nm(k+i));do{last=arc;i++;arc=sun(nm(k+i))}while(arc!==last&&i<15);return i-1}
- let day=jd(dd,mm,yy),k=Math.floor((day-2415021.076998695)/29.530588853),n=nm(k);if(n>day)n=nm(k-1);let a=m11(yy),b=a,year;if(a>=n){year=yy;a=m11(yy-1)}else{year=yy+1;b=m11(yy+1)}let ld=day-n+1,diff=Math.floor((n-a)/29),lm=diff+11,leap=0;if(b-a>365){let off=leapOff(a);if(diff>=off){lm=diff+10;if(diff===off-1)leap=1}}if(lm>12)lm-=12;if(lm>=11&&diff<4)year--;return {day:ld,month:lm,year,leap}
+
+// Lưu dữ liệu vào localStorage
+function saveData() {
+    localStorage.setItem('lm_transactions', JSON.stringify(state.transactions));
+    localStorage.setItem('lm_tasks', JSON.stringify(state.tasks));
+    localStorage.setItem('lm_settings', JSON.stringify(state.settings));
+    updateUI();
 }
-function lunar(s){try{let d=parseDate(s),l=lunarDay(d.getDate(),d.getMonth()+1,d.getFullYear());return l.day+'/'+l.month+(l.leap?' nhuận':'')}catch{return ''}}
-function dateLabel(s){return new Intl.DateTimeFormat('vi-VN',{weekday:'long',day:'2-digit',month:'2-digit',year:'numeric'}).format(parseDate(s))}
-function transactionsMonth(m){return appData.transactions.filter(t=>String(t.date||'').startsWith(m))}
-function totals(m){return transactionsMonth(m).reduce((a,t)=>{a[t.type==='income'?'income':'expense']+=Number(t.amount)||0;return a},{income:0,expense:0})}
-function tasksOn(s){return appData.tasks.filter(t=>t.date===s)}
-function newId(){return crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random().toString(16).slice(2)}
-function saveCloud(){
- if(!user||!ready)return;
- clearTimeout(saveTimer);const version=++saveVersion;saveTimer=setTimeout(async()=>{
-  try{await setDoc(doc(db,'users',user.uid,'app','data'),{...appData,updatedAt:Date.now(),schemaVersion:1});remoteVersion=version;$('subtitle').textContent='Đã đồng bộ · '+user.email}
-  catch(e){console.error(e);notify('Không thể đồng bộ. Kiểm tra kết nối và quyền Firestore.')}
- },350);
+
+// Format tiền tệ VND
+function formatVND(amount) {
+    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount).replace('₫', '₫');
 }
-function renderCalendar(id){let el=$(id),y=cursor.getFullYear(),m=cursor.getMonth(),first=new Date(y,m,1,12),start=(first.getDay()+6)%7,html=['T2','T3','T4','T5','T6','T7','CN'].map(w=>`<div class="weekday">${w}</div>`).join('');for(let i=0;i<42;i++){let d=new Date(y,m,1-start+i,12),s=iso(d),inside=d.getMonth()===m,ts=tasksOn(s),tx=appData.transactions.filter(t=>t.date===s);html+=`<button class="day ${s===selected?'sel':''} ${inside?'':'out'} ${s===iso(today)?'today':''}" data-day="${s}" aria-label="${esc(dateLabel(s))}"><div class="solar">${d.getDate()}</div><div class="lunar">${lunar(s)}</div>${ts.slice(0,2).map(t=>`<div class="eventline" style="color:${t.kind==='event'?'#d74763':t.kind==='health'?'#169b6b':'#3388e9'}">● ${esc(t.title)}</div>`).join('')}${tx.length?`<div class="eventline" style="color:#df8536">● ${tx.length} giao dịch</div>`:''}${ts.length>2?`<div class="eventline muted">+${ts.length-2} mục</div>`:''}</button>`}el.innerHTML=html;el.querySelectorAll('[data-day]').forEach(b=>b.onclick=()=>{selected=b.dataset.day;let d=parseDate(selected);if(d.getMonth()!==cursor.getMonth())cursor=new Date(d.getFullYear(),d.getMonth(),1,12);renderAll();renderDayDetail()})}
-function renderAgenda(){let arr=tasksOn(selected).sort((a,b)=>(a.time||'').localeCompare(b.time||''));$('agenda').innerHTML=`<div class="muted small" style="margin-top:8px">${esc(dateLabel(selected))} · Âm lịch ${lunar(selected)}</div>`+(arr.length?arr.map(t=>`<div class="item"><input type="checkbox" data-check="${esc(t.id)}" ${t.done?'checked':''}><div class="itembody"><div class="itemtitle">${esc(t.title)}</div><div class="muted small">${esc(t.time||'Chưa đặt giờ')} · ${t.kind==='event'?'Sự kiện':t.kind==='health'?'Sức khỏe':'Công việc'}</div></div></div>`).join(''):'<div class="empty">Chưa có kế hoạch trong ngày.</div>');wireChecks($('agenda'))}
-function renderRecent(){let arr=[...appData.transactions].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5);$('recent').innerHTML=arr.length?arr.map(t=>`<div class="item"><div class="itembody"><div class="itemtitle">${esc(t.title)}</div><div class="muted small">${esc(t.date)} · ${esc(t.category)}</div></div><b class="${t.type==='income'?'green':'red'}" style="white-space:nowrap">${t.type==='income'?'+':'−'}${money(t.amount)}</b></div>`).join(''):'<div class="empty">Chưa có giao dịch.</div>'}
-function renderChart(){let ms=[];for(let i=3;i>=0;i--){let d=new Date(cursor.getFullYear(),cursor.getMonth()-i,1,12),t=totals(monthKey(d));ms.push({label:'T'+(d.getMonth()+1),...t})}let max=Math.max(1,...ms.flatMap(x=>[x.income,x.expense]));$('chart').innerHTML=`<div class="muted small" style="margin:12px 0">🟢 Thu　🟠 Chi</div><div style="display:flex;gap:12px;height:130px;align-items:flex-end;border-bottom:1px solid #e5ebf1">${ms.map(x=>`<div style="flex:1;text-align:center"><div style="height:102px;display:flex;align-items:flex-end;justify-content:center;gap:3px"><div title="${money(x.income)}" style="width:34%;height:${x.income/max*100}%;background:#25ad86;border-radius:3px 3px 0 0"></div><div title="${money(x.expense)}" style="width:34%;height:${x.expense/max*100}%;background:#f6a05c;border-radius:3px 3px 0 0"></div></div><div class="muted small" style="margin-top:7px">${x.label}</div></div>`).join('')}</div>`}
-function renderDayDetail(){let ts=tasksOn(selected),tx=appData.transactions.filter(t=>t.date===selected);$('daydetail').innerHTML=`<b>${esc(dateLabel(selected))}</b><div class="muted small" style="margin:5px 0 12px">Âm lịch ${lunar(selected)}</div>${ts.map(t=>`<div class="item"><input type="checkbox" data-check="${esc(t.id)}" ${t.done?'checked':''}><div class="itembody"><div class="itemtitle">${esc(t.title)}</div><div class="muted small">${esc(t.time||'')} · ${t.kind==='event'?'Sự kiện':t.kind==='health'?'Sức khỏe':'Công việc'}</div></div><button class="btn" data-edittask="${esc(t.id)}">Sửa</button></div>`).join('')}${tx.map(t=>`<div class="item"><div class="itembody">${esc(t.title)}<div class="muted small">${esc(t.category)}</div></div><b class="${t.type==='income'?'green':'red'}">${t.type==='income'?'+':'−'}${money(t.amount)}</b></div>`).join('')}${!ts.length&&!tx.length?'<div class="empty">Chưa có dữ liệu trong ngày.</div>':''}<div class="row" style="margin-top:12px"><button class="btn primary" id="daytask">＋ Công việc / sự kiện</button><button class="btn" id="daytx">＋ Thu chi</button></div>`;$('daytask').onclick=()=>openTask();$('daytx').onclick=()=>openFinance();$('daydetail').querySelectorAll('[data-edittask]').forEach(b=>b.onclick=()=>openTask(b.dataset.edittask));wireChecks($('daydetail'))}
-function renderFinance(){let type=$('filtertype').value,m=$('filtermonth').value||monthKey(cursor),arr=[...appData.transactions].filter(t=>(type==='all'||t.type===type)&&String(t.date).startsWith(m)).sort((a,b)=>b.date.localeCompare(a.date));$('financelist').innerHTML=arr.length?arr.map(t=>`<div class="item"><div style="font-size:20px">${t.type==='income'?'💰':'🧾'}</div><div class="itembody"><div class="itemtitle">${esc(t.title)}</div><div class="muted small">${esc(t.category)} · ${esc(t.date)}${t.note?' · '+esc(t.note):''}</div></div><b class="${t.type==='income'?'green':'red'}" style="white-space:nowrap">${t.type==='income'?'+':'−'}${money(t.amount)}</b><button class="btn" data-edittx="${esc(t.id)}">✎</button><button class="btn" data-deltx="${esc(t.id)}">×</button></div>`).join(''):'<div class="empty">Không có giao dịch trong tháng này.</div>';document.querySelectorAll('[data-edittx]').forEach(b=>b.onclick=()=>openFinance(b.dataset.edittx));document.querySelectorAll('[data-deltx]').forEach(b=>b.onclick=()=>deleteTx(b.dataset.deltx))}
-function renderTasks(){let kind=$('taskfilter').value,status=$('taskstatus').value,arr=[...appData.tasks].filter(t=>(kind==='all'||t.kind===kind)&&(status==='all'||(status==='done'?t.done:!t.done))).sort((a,b)=>a.date.localeCompare(b.date)||(a.time||'').localeCompare(b.time||''));$('tasklist').innerHTML=arr.length?arr.map(t=>`<div class="item"><input type="checkbox" data-check="${esc(t.id)}" ${t.done?'checked':''}><div class="itembody"><div class="itemtitle" style="${t.done?'text-decoration:line-through;color:#8994a2':''}">${esc(t.title)}</div><div class="muted small">${esc(t.date)} ${esc(t.time||'')} · ${esc(t.note||'')}</div><span class="pill">${t.kind==='event'?'Sự kiện':t.kind==='health'?'Sức khỏe':'Công việc'}</span></div><button class="btn" data-edittask="${esc(t.id)}">✎</button><button class="btn" data-deltask="${esc(t.id)}">×</button></div>`).join(''):'<div class="empty">Chưa có mục phù hợp.</div>';wireChecks($('tasklist'));$('tasklist').querySelectorAll('[data-edittask]').forEach(b=>b.onclick=()=>openTask(b.dataset.edittask));$('tasklist').querySelectorAll('[data-deltask]').forEach(b=>b.onclick=()=>{if(confirm('Xóa công việc/sự kiện này?')){appData.tasks=appData.tasks.filter(t=>t.id!==b.dataset.deltask);saveCloud();renderAll()}})}
-function renderStats(){let m=$('statsmonth').value||monthKey(today),t=totals(m),goal=Number(appData.settings.goal)||0,budget=Number(appData.settings.budget)||0;$('statssummary').innerHTML=`<div class="cards"><div class="card"><div class="muted">Tổng thu</div><div class="metric green">${money(t.income)}</div></div><div class="card"><div class="muted">Tổng chi</div><div class="metric red">${money(t.expense)}</div></div><div class="card"><div class="muted">Chênh lệch</div><div class="metric">${money(t.income-t.expense)}</div></div></div><div class="muted small">Ngân sách: ${money(budget)} · ${budget?Math.round(t.expense/budget*100)+'% đã dùng':'Chưa đặt ngân sách'}</div><div class="bar" style="margin:8px 0"><span style="width:${budget?Math.min(100,t.expense/budget*100):0}%;background:${budget&&t.expense>budget?'#d34b4b':'#119b78'}"></span></div><div class="muted small">Mục tiêu tiết kiệm: ${money(goal)}</div>`;let cats={};transactionsMonth(m).filter(x=>x.type==='expense').forEach(x=>cats[x.category]=(cats[x.category]||0)+(Number(x.amount)||0));let es=Object.entries(cats).sort((a,b)=>b[1]-a[1]),sum=es.reduce((n,x)=>n+x[1],0);$('categorychart').innerHTML=es.length?es.map(([n,v])=>`<div style="margin:14px 0"><div class="row"><span>${esc(n)}</span><b>${money(v)}</b></div><div class="bar" style="margin-top:6px"><span style="width:${sum?v/sum*100:0}%"></span></div></div>`).join(''):'<div class="empty">Thêm khoản chi để xem phân tích.</div>'}
-function renderAll(){let t=totals(monthKey(today));$('income').textContent=money(t.income);$('expense').textContent=money(t.expense);$('balance').textContent=money(t.income-t.expense);$('monthtitle').textContent='Lịch tháng '+monthName(cursor);$('monthtitle2').textContent='Lịch tháng '+monthName(cursor);renderCalendar('calendar');renderCalendar('calendar2');renderAgenda();renderRecent();renderChart();renderFinance();renderTasks();renderStats();let saved=Math.max(0,t.income-t.expense),goal=Number(appData.settings.goal)||0;$('saving').textContent=money(saved);$('savingbar').style.width=(goal?Math.min(100,saved/goal*100):0)+'%';$('savinglabel').textContent=goal?'Mục tiêu '+money(goal)+' · '+Math.round(saved/goal*100)+'% hoàn thành':'Chưa đặt mục tiêu';$('goal').value=goal;$('budget').value=appData.settings.budget||0}
-function goto(p){document.querySelectorAll('[id^="page-"]').forEach(x=>x.classList.add('hidden'));$('page-'+p).classList.remove('hidden');document.querySelectorAll('[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===p));if(p==='calendar')renderDayDetail()}
-document.querySelectorAll('[data-page]').forEach(b=>b.onclick=()=>goto(b.dataset.page));document.querySelectorAll('[data-goto]').forEach(b=>b.onclick=()=>goto(b.dataset.goto));
-function move(n){cursor=new Date(cursor.getFullYear(),cursor.getMonth()+n,1,12);renderAll()}
-$('prev').onclick=$('prev2').onclick=()=>move(-1);$('next').onclick=$('next2').onclick=()=>move(1);$('today').onclick=$('today2').onclick=()=>{cursor=new Date(today.getFullYear(),today.getMonth(),1,12);selected=iso(today);renderAll();renderDayDetail()};
-function inputField(label,name,type,value,opts='',wide=false){return `<div class="${wide?'wide':''}"><label>${label}</label>${type==='select'?`<select class="field" name="${name}" ${opts}>${value}</select>`:`<input class="field" name="${name}" type="${type}" value="${esc(value??'')}" ${opts}>`}</div>`}
-function showModal(title,fields,fn,existing){$('modaltitle').textContent=title;$('formfields').innerHTML=fields;$('modal').classList.add('open');modalSubmit=fn;if(existing)for(let [k,v] of Object.entries(existing)){let f=$('formfields').querySelector(`[name="${k}"]`);if(f)f.value=v}setTimeout(()=> $('formfields').querySelector('input,select')?.focus(),50)}
-function closeModal(){$('modal').classList.remove('open');modalSubmit=null}
-$('close').onclick=$('cancel').onclick=closeModal;$('modal').onclick=e=>{if(e.target===$('modal'))closeModal()};$('form').onsubmit=e=>{e.preventDefault();if(!modalSubmit)return;const result=modalSubmit(new FormData($('form')));if(result!==false){closeModal();saveCloud();renderAll();renderDayDetail();notify(result||'Đã lưu.')}};const categories=['Ăn uống','Sinh hoạt','Đi lại','Mua sắm','Hóa đơn','Sức khỏe','Giải trí','Giáo dục','Lương','Thưởng','Đầu tư','Khác'];
-function openFinance(id){let old=id?appData.transactions.find(x=>x.id===id):null;let options=(arr,sel)=>arr.map(([v,l])=>`<option value="${v}" ${v===sel?'selected':''}>${l}</option>`).join('');let f=inputField('Loại giao dịch','type','select',options([['expense','Khoản chi'],['income','Khoản thu']],old?.type||'expense'),'required')+inputField('Số tiền (₫)','amount','number',old?.amount||'','min="1" step="1000" required')+inputField('Tên giao dịch','title','text',old?.title||'','maxlength="100" required',true)+inputField('Danh mục','category','select',options(categories.map(x=>[x,x]),old?.category||'Ăn uống'),'required')+inputField('Ngày','date','date',old?.date||selected,'required')+inputField('Ghi chú','note','text',old?.note||'','maxlength="250"',true);showModal(old?'Sửa giao dịch':'Thêm giao dịch',f,fd=>{let amount=Number(fd.get('amount')),title=String(fd.get('title')||'').trim(),date=fd.get('date');if(!title||!date||!Number.isFinite(amount)||amount<=0){notify('Vui lòng nhập tên, ngày và số tiền hợp lệ.');return false}let obj={id:id||newId(),type:fd.get('type'),amount,title,category:fd.get('category'),date,note:String(fd.get('note')||'').trim(),created:Date.now()};appData.transactions=id?appData.transactions.map(x=>x.id===id?obj:x):[...appData.transactions,obj];return 'Đã lưu giao dịch.'},old)}
-function openTask(id){let old=id?appData.tasks.find(x=>x.id===id):null;let options=(arr,sel)=>arr.map(([v,l])=>`<option value="${v}" ${v===sel?'selected':''}>${l}</option>`).join('');let f=inputField('Tên công việc / sự kiện','title','text',old?.title||'','maxlength="120" required',true)+inputField('Loại','kind','select',options([['task','Công việc'],['event','Sự kiện'],['health','Sức khỏe']],old?.kind||'task'),'required')+inputField('Ngày','date','date',old?.date||selected,'required')+inputField('Giờ','time','time',old?.time||'')+inputField('Ghi chú','note','text',old?.note||'','maxlength="250"',true);showModal(old?'Sửa kế hoạch':'Thêm công việc / sự kiện',f,fd=>{let title=String(fd.get('title')||'').trim(),date=fd.get('date');if(!title||!date){notify('Vui lòng nhập tên và ngày.');return false}let obj={id:id||newId(),title,kind:fd.get('kind'),date,time:fd.get('time'),note:String(fd.get('note')||'').trim(),done:old?.done||false};appData.tasks=id?appData.tasks.map(x=>x.id===id?obj:x):[...appData.tasks,obj];selected=date;let d=parseDate(date);cursor=new Date(d.getFullYear(),d.getMonth(),1,12);return 'Đã lưu kế hoạch.'},old)}
-function wireChecks(root){root.querySelectorAll('[data-check]').forEach(b=>b.onchange=()=>{let t=appData.tasks.find(t=>t.id===b.dataset.check);if(t){t.done=b.checked;saveCloud();renderAll();renderDayDetail()}})}
-function deleteTx(id){if(confirm('Bạn có chắc muốn xóa giao dịch này?')){appData.transactions=appData.transactions.filter(t=>t.id!==id);saveCloud();renderAll();notify('Đã xóa giao dịch.')}}
-$('addfinance').onclick=()=>openFinance();$('addtask').onclick=$('addtask2').onclick=()=>openTask();$('filtertype').onchange=renderFinance;$('filtermonth').value=monthKey(cursor);$('filtermonth').onchange=renderFinance;$('taskfilter').onchange=renderTasks;$('taskstatus').onchange=renderTasks;$('statsmonth').value=monthKey(today);$('statsmonth').onchange=renderStats;$('settingsform').onsubmit=e=>{e.preventDefault();appData.settings.goal=Math.max(0,Number($('goal').value)||0);appData.settings.budget=Math.max(0,Number($('budget').value)||0);saveCloud();renderAll();notify('Đã lưu mục tiêu.')};
-async function startFirebase(){
- if(!configured){$('subtitle').textContent='Cần cấu hình Firebase trước khi sử dụng';$('login').onclick=()=>notify('Mở README.md và dán firebaseConfig từ Firebase Console vào public/app.js.');return}
- const app=initializeApp(firebaseConfig);auth=getAuth(app);db=getFirestore(app);try{await getRedirectResult(auth)}catch(e){console.error(e);notify('Đăng nhập chuyển hướng chưa hoàn tất.')}
- onAuthStateChanged(auth,async u=>{if(unsubscribe){unsubscribe();unsubscribe=null}user=u;ready=false;
- $('login').classList.toggle('hidden',!!u);$('logout').classList.toggle('hidden',!u);$('userlabel').textContent=u?(u.displayName||u.email):'Chưa đăng nhập';$('loginhint').classList.toggle('hidden',!!u);
- if(!u){appData={transactions:[],tasks:[],settings:{goal:10000000,budget:8000000}};renderAll();$('subtitle').textContent='Đăng nhập để tải dữ liệu riêng tư';return}
- $('subtitle').textContent='Đang tải dữ liệu an toàn…';const ref=doc(db,'users',u.uid,'app','data');
- unsubscribe=onSnapshot(ref,snap=>{if(snap.exists()){const d=snap.data();appData={transactions:Array.isArray(d.transactions)?d.transactions:[],tasks:Array.isArray(d.tasks)?d.tasks:[],settings:{goal:10000000,budget:8000000,...(d.settings||{})}}}else{appData={transactions:[],tasks:[],settings:{goal:10000000,budget:8000000}};setDoc(ref,{...appData,updatedAt:Date.now(),schemaVersion:1}).catch(console.error)}ready=true;renderAll();$('subtitle').textContent='Đã đồng bộ dữ liệu đám mây'},e=>{console.error(e);notify('Không đọc được dữ liệu. Kiểm tra Firestore Rules.');$('subtitle').textContent='Lỗi đọc dữ liệu'});
- });
- $('login').onclick=async()=>{try{await signInWithPopup(auth,new GoogleAuthProvider())}catch(e){if(['auth/popup-blocked','auth/operation-not-supported-in-this-environment'].includes(e.code)){await signInWithRedirect(auth,new GoogleAuthProvider())}else{console.error(e);notify('Đăng nhập thất bại: '+(e.code||e.message))}}};
- $('logout').onclick=async()=>{if(confirm('Đăng xuất khỏi Life & Money?')){await signOut(auth);notify('Đã đăng xuất.')}}
+
+// Chuyển đổi tab hiển thị
+function switchTab(tabId) {
+    state.activeTab = tabId;
+    document.querySelectorAll('.tab').forEach(btn => {
+        if (btn.dataset.page === tabId) btn.classList.add('active');
+        else btn.classList.remove('active');
+    });
+    
+    ['home', 'calendar', 'finance', 'tasks', 'stats'].forEach(page => {
+        const el = document.getElementById(`page-${page}`);
+        if (el) {
+            if (page === tabId) el.classList.remove('hidden');
+            else el.classList.add('hidden');
+        }
+    });
+    updateUI();
 }
-renderAll();startFirebase();
+
+// Tính ngày Âm lịch đơn giản (Thuật toán xấp xỉ Việt Nam)
+function getLunarDate(solarDate) {
+    // Hiển thị mô phỏng ngày âm lịch tương đối so với ngày dương
+    let d = solarDate.getDate();
+    let m = solarDate.getMonth() + 1;
+    let lunarD = (d - 9 > 0) ? d - 9 : d + 20;
+    let lunarM = m;
+    if (lunarD <= 0) lunarM = m === 1 ? 12 : m - 1;
+    return `${lunarD}/${lunarM} ÂL`;
+}
+
+// Render Lịch tháng
+function renderCalendar(containerId, monthTitleId) {
+    const container = document.getElementById(containerId);
+    const titleEl = document.getElementById(monthTitleId);
+    if (!container) return;
+
+    container.innerHTML = '';
+    const year = state.currentDate.getFullYear();
+    const month = state.currentDate.getMonth();
+    
+    if (titleEl) {
+        titleEl.textContent = `Tháng ${month + 1}, ${year}`;
+    }
+
+    const weekdays = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'];
+    weekdays.forEach(wd => {
+        const div = document.createElement('div');
+        div.className = 'weekday';
+        div.textContent = wd;
+        container.appendChild(div);
+    });
+
+    const firstDayIndex = new Date(year, month, 1).getDay();
+    const startDay = firstDayIndex === 0 ? 6 : firstDayIndex - 1; // Thứ 2 bắt đầu
+    const totalDays = new Date(year, month + 1, 0).getDate();
+    const prevTotalDays = new Date(year, month, 0).getDate();
+
+    const todayStr = new Date().toISOString().split('T')[0];
+    const selStr = state.selectedDate.toISOString().split('T')[0];
+
+    // Ngày tháng trước
+    for (let i = startDay - 1; i >= 0; i--) {
+        const dayDiv = document.createElement('div');
+        dayDiv.className = 'day out';
+        dayDiv.innerHTML = `<div class="solar">${prevTotalDays - i}</div>`;
+        container.appendChild(dayDiv);
+    }
+
+    // Ngày trong tháng hiện tại
+    for (let d = 1; d <= totalDays; d++) {
+        const dateObj = new Date(year, month, d);
+        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        
+        const dayDiv = document.createElement('div');
+        dayDiv.className = 'day';
+        if (dateStr === todayStr) dayDiv.classList.add('today');
+        if (dateStr === selStr) dayDiv.classList.add('sel');
+
+        const lunar = getLunarDate(dateObj);
+        
+        // Kiểm tra xem ngày này có task hoặc giao dịch không
+        const dayTasks = state.tasks.filter(t => t.date === dateStr);
+        let dotsHTML = '';
+        dayTasks.forEach(t => {
+            let color = '#2467b7'; // task
+            if (t.type === 'event') color = '#d34b4b';
+            if (t.type === 'health') color = '#087f68';
+            dotsHTML += `<div class="eventline" style="color: ${color}">• ${t.title}</div>`;
+        });
+
+        dayDiv.innerHTML = `
+            <div class="solar">${d}</div>
+            <div class="lunar">${lunar}</div>
+            ${dotsHTML}
+        `;
+
+        dayDiv.addEventListener('click', () => {
+            state.selectedDate = dateObj;
+            renderCalendar('calendar', 'monthtitle');
+            renderCalendar('calendar2', 'monthtitle2');
+            renderDayDetail(dateStr);
+        });
+
+        container.appendChild(dayDiv);
+    }
+}
+
+// Chi tiết công việc trong ngày khi bấm vào lịch ở tab Lịch tháng
+function renderDayDetail(dateStr) {
+    const detailEl = document.getElementById('daydetail');
+    if (!detailEl) return;
+
+    const dayTasks = state.tasks.filter(t => t.date === dateStr);
+    const dayTrans = state.transactions.filter(tr => tr.date === dateStr);
+
+    let html = `<b style="font-size:16px">Chi tiết ngày ${dateStr}</b>`;
+    html += `<div style="margin-top:10px"><b>Công việc & Sự kiện:</b>`;
+    if (dayTasks.length === 0) {
+        html += `<div class="muted small">Không có lịch trình trong ngày.</div>`;
+    } else {
+        dayTasks.forEach(t => {
+            html += `<div class="item small"><div class="itembody"><div class="itemtitle">${t.time || ''} - ${t.title}</div><span class="pill">${t.status === 'done' ? 'Đã xong' : 'Chưa xong'}</span></div></div>`;
+        });
+    }
+    html += `</div>`;
+
+    html += `<div style="margin-top:10px"><b>Giao dịch tài chính:</b>`;
+    if (dayTrans.length === 0) {
+        html += `<div class="muted small">Không có giao dịch.</div>`;
+    } else {
+        dayTrans.forEach(tr => {
+            const isInc = tr.type === 'income';
+            html += `<div class="item small"><div class="itembody"><div class="itemtitle">${tr.note}</div><span class="${isInc ? 'green' : 'red'}">${isInc ? '+' : '-'}${formatVND(tr.amount)}</span></div></div>`;
+        });
+    }
+    html += `</div>`;
+
+    detailEl.innerHTML = html;
+}
+
+// Cập nhật số liệu tổng quan (Metrics)
+function updateMetrics() {
+    const now = new Date();
+    const curYearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+
+    let totalInc = 0;
+    let totalExp = 0;
+
+    state.transactions.forEach(tr => {
+        if (tr.date.startsWith(curYearMonth)) {
+            if (tr.type === 'income') totalInc += Number(tr.amount);
+            else totalExp += Number(tr.amount);
+        }
+    });
+
+    const balance = totalInc - totalExp;
+
+    document.getElementById('income').textContent = formatVND(totalInc);
+    document.getElementById('expense').textContent = formatVND(totalExp);
+    
+    const balEl = document.getElementById('balance');
+    balEl.textContent = formatVND(balance);
+    balEl.className = `metric ${balance >= 0 ? 'green' : 'red'}`;
+
+    // Mục tiêu tiết kiệm
+    const savingVal = Math.max(0, balance);
+    const goal = state.settings.goal || 1;
+    const percent = Math.min(100, Math.round((savingVal / goal) * 100));
+
+    document.getElementById('saving').textContent = formatVND(savingVal);
+    document.getElementById('savingbar').style.width = `${percent}%`;
+    document.getElementById('savinglabel').textContent = `Đã đạt ${percent}% mục tiêu tháng (${formatVND(goal)})`;
+
+    // Agenda trong ngày ở trang chủ
+    renderAgenda();
+    renderRecentTransactions();
+    renderFinanceList();
+    renderTaskList();
+    renderStats();
+}
+
+// Render kế hoạch trong ngày (Agenda)
+function renderAgenda() {
+    const agendaEl = document.getElementById('agenda');
+    if (!agendaEl) return;
+
+    const todayStr = new Date().toISOString().split('T')[0];
+    const todayTasks = state.tasks.filter(t => t.date === todayStr);
+
+    if (todayTasks.length === 0) {
+        agendaEl.innerHTML = `<div class="empty">Không có công việc nào hôm nay. Thêm ngay!</div>`;
+        return;
+    }
+
+    let html = '';
+    todayTasks.forEach(t => {
+        html += `
+            <div class="item">
+                <input type="checkbox" ${t.status === 'done' ? 'checked' : ''} onchange="toggleTaskStatus(${t.id})">
+                <div class="itembody">
+                    <div class="itemtitle" style="${t.status === 'done' ? 'text-decoration: line-through; color: #a3adba;' : ''}">${t.title}</div>
+                    <div class="muted small">${t.time ? t.time + ' · ' : ''}${t.type.toUpperCase()}</div>
+                </div>
+            </div>
+        `;
+    });
+    agendaEl.innerHTML = html;
+}
+
+// Toggle trạng thái hoàn thành task
+window.toggleTaskStatus = function(id) {
+    const task = state.tasks.find(t => t.id === id);
+    if (task) {
+        task.status = task.status === 'done' ? 'open' : 'done';
+        saveData();
+    }
+};
+
+// Giao dịch gần đây
+function renderRecentTransactions() {
+    const recentEl = document.getElementById('recent');
+    if (!recentEl) return;
+
+    const sorted = [...state.transactions].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
+    if (sorted.length === 0) {
+        recentEl.innerHTML = `<div class="empty">Chưa có giao dịch nào.</div>`;
+        return;
+    }
+
+    let html = '';
+    sorted.forEach(tr => {
+        const isInc = tr.type === 'income';
+        html += `
+            <div class="item">
+                <div class="itembody">
+                    <div class="itemtitle">${tr.note || tr.category}</div>
+                    <div class="muted small">${tr.date} · ${tr.category}</div>
+                </div>
+                <div class="${isInc ? 'green' : 'red'}" style="font-weight:700">
+                    ${isInc ? '+' : '-'}${formatVND(tr.amount)}
+                </div>
+            </div>
+        `;
+    });
+    recentEl.innerHTML = html;
+}
+
+// Sổ thu chi
+function renderFinanceList() {
+    const listEl = document.getElementById('financelist');
+    if (!listEl) return;
+
+    const typeFilter = document.getElementById('filtertype').value;
+    const monthFilter = document.getElementById('filtermonth').value;
+
+    let filtered = state.transactions.filter(tr => {
+        if (typeFilter !== 'all' && tr.type !== typeFilter) return false;
+        if (monthFilter && !tr.date.startsWith(monthFilter)) return false;
+        return true;
+    });
+
+    filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    if (filtered.length === 0) {
+        listEl.innerHTML = `<div class="empty">Không tìm thấy giao dịch phù hợp.</div>`;
+        return;
+    }
+
+    let html = '';
+    filtered.forEach(tr => {
+        const isInc = tr.type === 'income';
+        html += `
+            <div class="item">
+                <div class="itembody">
+                    <div class="itemtitle">${tr.note}</div>
+                    <div class="muted small">📅 ${tr.date} &nbsp;|&nbsp; 🏷️ ${tr.category}</div>
+                </div>
+                <div style="text-align:right">
+                    <div class="${isInc ? 'green' : 'red'}" style="font-weight:800">${isInc ? '+' : '-'}${formatVND(tr.amount)}</div>
+                    <button class="btn danger small" style="margin-top:4px;padding:2px 6px;" onclick="deleteTransaction(${tr.id})">Xóa</button>
+                </div>
+            </div>
+        `;
+    });
+    listEl.innerHTML = html;
+}
+
+window.deleteTransaction = function(id) {
+    if (confirm('Bạn có chắc muốn xóa giao dịch này?')) {
+        state.transactions = state.transactions.filter(t => t.id !== id);
+        saveData();
+        showToast('Đã xóa giao dịch thành công!');
+    }
+};
+
+// Danh sách Công việc & sự kiện
+function renderTaskList() {
+    const listEl = document.getElementById('tasklist');
+    if (!listEl) return;
+
+    const typeF = document.getElementById('taskfilter').value;
+    const statusF = document.getElementById('taskstatus').value;
+
+    let filtered = state.tasks.filter(t => {
+        if (typeF !== 'all' && t.type !== typeF) return false;
+        if (statusF !== 'all' && t.status !== statusF) return false;
+        return true;
+    });
+
+    filtered.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    if (filtered.length === 0) {
+        listEl.innerHTML = `<div class="empty">Không có công việc nào.</div>`;
+        return;
+    }
+
+    let html = '';
+    filtered.forEach(t => {
+        html += `
+            <div class="item">
+                <input type="checkbox" ${t.status === 'done' ? 'checked' : ''} onchange="toggleTaskStatus(${t.id})">
+                <div class="itembody">
+                    <div class="itemtitle" style="${t.status === 'done' ? 'text-decoration: line-through; color: #a3adba;' : ''}">${t.title}</div>
+                    <div class="muted small">📅 ${t.date} ${t.time ? '· ⏰ ' + t.time : ''} &nbsp;|&nbsp; <span class="pill">${t.type}</span></div>
+                </div>
+                <button class="btn danger small" onclick="deleteTask(${t.id})">Xóa</button>
+            </div>
+        `;
+    });
+    listEl.innerHTML = html;
+}
+
+window.deleteTask = function(id) {
+    if (confirm('Bạn có chắc muốn xóa công việc này?')) {
+        state.tasks = state.tasks.filter(t => t.id !== id);
+        saveData();
+        showToast('Đã xóa công việc!');
+    }
+};
+
+// Thống kê tài chính
+function renderStats() {
+    const summaryEl = document.getElementById('statssummary');
+    const catChartEl = document.getElementById('categorychart');
+    if (!summaryEl || !catChartEl) return;
+
+    const statsMonthInput = document.getElementById('statsmonth').value;
+    const targetMonth = statsMonthInput || new Date().toISOString().slice(0, 7);
+
+    let inc = 0, exp = 0;
+    const catMap = {};
+
+    state.transactions.forEach(tr => {
+        if (tr.date.startsWith(targetMonth)) {
+            if (tr.type === 'income') inc += Number(tr.amount);
+            else {
+                exp += Number(tr.amount);
+                catMap[tr.category] = (catMap[tr.category] || 0) + Number(tr.amount);
+            }
+        }
+    });
+
+    summaryEl.innerHTML = `
+        <div class="cards" style="margin-bottom:0">
+            <div class="card" style="background:#f0fdf4"><b>Tổng thu tháng</b><div class="metric green">${formatVND(inc)}</div></div>
+            <div class="card" style="background:#fef2f2"><b>Tổng chi tháng</b><div class="metric red">${formatVND(exp)}</div></div>
+            <div class="card" style="background:#eff6ff"><b>Cân đối</b><div class="metric blue">${formatVND(inc - exp)}</div></div>
+        </div>
+    `;
+
+    let catHtml = '';
+    const categories = Object.keys(catMap);
+    if (categories.length === 0) {
+        catHtml = `<div class="empty">Chưa có dữ liệu chi tiêu trong tháng này.</div>`;
+    } else {
+        categories.forEach(cat => {
+            const amount = catMap[cat];
+            const percent = exp > 0 ? Math.round((amount / exp) * 100) : 0;
+            catHtml += `
+                <div style="margin-bottom:12px">
+                    <div class="row" style="margin-bottom:4px"><b>${cat}</b><span>${formatVND(amount)} (${percent}%)</span></div>
+                    <div class="bar"><span style="width:${percent}%"></span></div>
+                </div>
+            `;
+        });
+    }
+    catChartEl.innerHTML = catHtml;
+}
+
+// Modal Thêm mới (Giao dịch hoặc Công việc)
+function openModal(mode) {
+    const modal = document.getElementById('modal');
+    const modalTitle = document.getElementById('modaltitle');
+    const formFields = document.getElementById('formfields');
+    modal.classList.add('open');
+
+    const today = new Date().toISOString().split('T')[0];
+
+    if (mode === 'finance') {
+        modalTitle.textContent = 'Thêm Giao dịch mới';
+        formFields.innerHTML = `
+            <div><label>Loại giao dịch</label><select id="m_type" class="field" onchange="updateCategoryOptions()"><option value="expense">Khoản chi</option><option value="income">Khoản thu</option></select></div>
+            <div><label>Số tiền (₫)</label><input id="m_amount" type="number" min="0" step="10000" class="field" required placeholder="Ví dụ: 150000"></div>
+            <div><label>Danh mục</label><select id="m_category" class="field"><option value="Ăn uống">Ăn uống</option><option value="Nhà cửa">Nhà cửa</option><option value="Đi lại">Đi lại</option><option value="Mua sắm">Mua sắm</option><option value="Hóa đơn">Hóa đơn</option><option value="Khác">Khác</option></select></div>
+            <div><label>Ngày giao dịch</label><input id="m_date" type="date" class="field" value="${today}" required></div>
+            <div class="wide"><label>Nội dung / Ghi chú</label><input id="m_note" type="text" class="field" placeholder="Mô tả chi tiết..."></div>
+        `;
+    } else {
+        modalTitle.textContent = 'Thêm Công việc & Sự kiện';
+        formFields.innerHTML = `
+            <div class="wide"><label>Tiêu đề</label><input id="m_title" type="text" class="field" required placeholder="Nhập tên công việc hoặc sự kiện..."></div>
+            <div><label>Loại</label><select id="m_tasktype" class="field"><option value="task">Công việc</option><option value="event">Sự kiện</option><option value="health">Sức khỏe</option></select></div>
+            <div><label>Giờ thực hiện</label><input id="m_time" type="time" class="field" value="08:00"></div>
+            <div><label>Ngày</label><input id="m_date" type="date" class="field" value="${today}" required></div>
+        `;
+    }
+}
+
+window.updateCategoryOptions = function() {
+    const type = document.getElementById('m_type').value;
+    const catSelect = document.getElementById('m_category');
+    if (!catSelect) return;
+    if (type === 'income') {
+        catSelect.innerHTML = `<option value="Lương">Lương</option><option value="Thưởng">Thưởng</option><option value="Kinh doanh">Kinh doanh</option><option value="Thu nhập khác">Thu nhập khác</option>`;
+    } else {
+        catSelect.innerHTML = `<option value="Ăn uống">Ăn uống</option><option value="Nhà cửa">Nhà cửa</option><option value="Đi lại">Đi lại</option><option value="Mua sắm">Mua sắm</option><option value="Hóa đơn">Hóa đơn</option><option value="Khác">Khác</option>`;
+    }
+};
+
+function closeModal() {
+    document.getElementById('modal').classList.remove('open');
+}
+
+function showToast(msg) {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.style.display = 'block';
+    setTimeout(() => { toast.style.display = 'none'; }, 3000);
+}
+
+// Cập nhật toàn bộ giao diện
+function updateUI() {
+    renderCalendar('calendar', 'monthtitle');
+    renderCalendar('calendar2', 'monthtitle2');
+    updateMetrics();
+}
+
+// Khởi chạy sự kiện khi tải trang
+document.addEventListener('DOMContentLoaded', () => {
+    // Gắn sự kiện chuyển tab
+    document.querySelectorAll('.tabs .tab, [data-goto]').forEach(el => {
+        el.addEventListener('click', (e) => {
+            const target = e.currentTarget.dataset.page || e.currentTarget.getAttribute('data-goto');
+            if (target) switchTab(target);
+        });
+    });
+
+    // Lịch tháng điều hướng
+    document.getElementById('prev').addEventListener('click', () => { state.currentDate.setMonth(state.currentDate.getMonth() - 1); updateUI(); });
+    document.getElementById('today').addEventListener('click', () => { state.currentDate = new Date(); updateUI(); });
+    document.getElementById('next').addEventListener('click', () => { state.currentDate.setMonth(state.currentDate.getMonth() + 1); updateUI(); });
+
+    document.getElementById('prev2').addEventListener('click', () => { state.currentDate.setMonth(state.currentDate.getMonth() - 1); updateUI(); });
+    document.getElementById('today2').addEventListener('click', () => { state.currentDate = new Date(); updateUI(); });
+    document.getElementById('next2').addEventListener('click', () => { state.currentDate.setMonth(state.currentDate.getMonth() + 1); updateUI(); });
+
+    // Mở modal thêm mới
+    document.getElementById('addtask').addEventListener('click', () => openModal('task'));
+    document.getElementById('addtask2').addEventListener('click', () => openModal('task'));
+    document.getElementById('addfinance').addEventListener('click', () => openModal('finance'));
+
+    // Đóng modal
+    document.getElementById('close').addEventListener('click', closeModal);
+    document.getElementById('cancel').addEventListener('click', closeModal);
+
+    // Lọc thu chi & task
+    document.getElementById('filtertype').addEventListener('change', renderFinanceList);
+    document.getElementById('filtermonth').addEventListener('change', renderFinanceList);
+    document.getElementById('taskfilter').addEventListener('change', renderTaskList);
+    document.getElementById('taskstatus').addEventListener('change', renderTaskList);
+    document.getElementById('statsmonth').addEventListener('change', renderStats);
+
+    // Form submit trong Modal
+    document.getElementById('form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const modalTitle = document.getElementById('modaltitle').textContent;
+
+        if (modalTitle.includes('Giao dịch')) {
+            const newTr = {
+                id: Date.now(),
+                type: document.getElementById('m_type').value,
+                amount: Number(document.getElementById('m_amount').value),
+                category: document.getElementById('m_category').value,
+                date: document.getElementById('m_date').value,
+                note: document.getElementById('m_note').value || 'Không có ghi chú'
+            };
+            state.transactions.push(newTr);
+            showToast('Thêm giao dịch thành công!');
+        } else {
+            const newTask = {
+                id: Date.now(),
+                title: document.getElementById('m_title').value,
+                type: document.getElementById('m_tasktype').value,
+                time: document.getElementById('m_time').value,
+                date: document.getElementById('m_date').value,
+                status: 'open'
+            };
+            state.tasks.push(newTask);
+            showToast('Thêm công việc thành công!');
+        }
+
+        closeModal();
+        saveData();
+    });
+
+    // Form cài đặt mục tiêu
+    document.getElementById('settingsform').addEventListener('submit', (e) => {
+        e.preventDefault();
+        state.settings.goal = Number(document.getElementById('goal').value) || 0;
+        state.settings.budget = Number(document.getElementById('budget').value) || 0;
+        saveData();
+        showToast('Đã lưu mục tiêu tài chính!');
+    });
+
+    // Điền sẵn giá trị mục tiêu vào form cài đặt
+    document.getElementById('goal').value = state.settings.goal;
+    document.getElementById('budget').value = state.settings.budget;
+
+    // Khởi chạy hiển thị ban đầu
+    updateUI();
+});
