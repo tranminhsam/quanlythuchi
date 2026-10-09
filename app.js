@@ -1,5 +1,5 @@
 // ==========================================
-// LIFE & MONEY - FIXED DATE & FIRESTORE SYNC
+// LIFE & MONEY - AUTO SYNC BY ID & LUNAR
 // ==========================================
 
 const firebaseConfig = {
@@ -13,16 +13,19 @@ const firebaseConfig = {
 };
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
 const db = getFirestore(app);
-const googleProvider = new GoogleAuthProvider();
+
+// Lấy hoặc tạo mã đồng bộ chung cho thiết bị (Bạn có thể copy mã này dán sang điện thoại để dùng chung)
+let syncId = localStorage.getItem('lm_sync_id');
+if (!syncId) {
+    syncId = 'family_' + Math.random().toString(36).substring(2, 9);
+    localStorage.setItem('lm_sync_id', syncId);
+}
 
 let state = {
-    user: null,
     currentDate: new Date(),
     selectedDate: new Date(),
     activeTab: 'home',
@@ -31,10 +34,9 @@ let state = {
     settings: { goal: 5000000, budget: 10000000 }
 };
 
+let isSyncing = false;
 let unsubscribeFirestore = null;
-let isSyncing = false; // Ngăn vòng lặp ghi đè dữ liệu
 
-// Hàm lấy định dạng ngày YYYY-MM-DD chuẩn theo giờ địa phương (Khắc phục triệt để lỗi lệch ngày)
 function getLocalDateString(date) {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -42,7 +44,6 @@ function getLocalDateString(date) {
     return `${year}-${month}-${day}`;
 }
 
-// Thuật toán đổi Âm lịch chuẩn xác
 const LunarCalendar = {
     convertSolarToLunar: function(solarDate) {
         let day = solarDate.getDate();
@@ -55,32 +56,28 @@ const LunarCalendar = {
     }
 };
 
-// Lưu dữ liệu lên Firestore hoặc LocalStorage
+// Lưu dữ liệu lên Firestore theo Sync ID ngầm
 function saveData() {
     if (isSyncing) return;
     
-    if (state.user) {
-        const userDocRef = doc(db, 'users', state.user.uid);
-        setDoc(userDocRef, {
-            transactions: state.transactions,
-            tasks: state.tasks,
-            settings: state.settings,
-            updatedAt: new Date().toISOString()
-        }, { merge: true }).catch(err => console.error("Lỗi đồng bộ Firestore:", err));
-    } else {
-        localStorage.setItem('lm_transactions', JSON.stringify(state.transactions));
-        localStorage.setItem('lm_tasks', JSON.stringify(state.tasks));
-        localStorage.setItem('lm_settings', JSON.stringify(state.settings));
-    }
+    const docRef = doc(db, 'shared_data', syncId);
+    setDoc(docRef, {
+        transactions: state.transactions,
+        tasks: state.tasks,
+        settings: state.settings,
+        updatedAt: new Date().toISOString()
+    }, { merge: true }).catch(err => console.error("Lỗi đồng bộ:", err));
+
+    localStorage.setItem('lm_transactions', JSON.stringify(state.transactions));
+    localStorage.setItem('lm_tasks', JSON.stringify(state.tasks));
+    localStorage.setItem('lm_settings', JSON.stringify(state.settings));
     updateUI();
 }
 
-// Lắng nghe dữ liệu realtime từ Firestore giữa các thiết bị
-function loadUserData(user) {
-    const userDocRef = doc(db, 'users', user.uid);
-    if (unsubscribeFirestore) unsubscribeFirestore();
-
-    unsubscribeFirestore = onSnapshot(userDocRef, (docSnap) => {
+// Lắng nghe dữ liệu thời gian thực giữa các thiết bị dùng chung Sync ID
+function initRealtimeSync() {
+    const docRef = doc(db, 'shared_data', syncId);
+    unsubscribeFirestore = onSnapshot(docRef, (docSnap) => {
         isSyncing = true;
         if (docSnap.exists()) {
             const data = docSnap.data();
@@ -88,12 +85,11 @@ function loadUserData(user) {
             state.tasks = data.tasks || [];
             state.settings = data.settings || { goal: 5000000, budget: 10000000 };
         } else {
-            // Khởi tạo dữ liệu mẫu nếu tài khoản mới hoàn toàn
             state.transactions = [
                 { id: Date.now(), type: 'income', amount: 15000000, category: 'Lương', date: getLocalDateString(new Date()), note: 'Lương tháng' }
             ];
             state.tasks = [
-                { id: Date.now() + 1, title: 'Kiểm tra hệ thống kho bãi & n8n', date: getLocalDateString(new Date()), type: 'task', status: 'open', time: '09:00' }
+                { id: Date.now() + 1, title: 'Kiểm tra hệ thống kho bãi', date: getLocalDateString(new Date()), type: 'task', status: 'open', time: '09:00' }
             ];
             saveData();
         }
@@ -103,7 +99,7 @@ function loadUserData(user) {
         updateUI();
     }, (error) => {
         isSyncing = false;
-        console.error("Lỗi đọc Firestore:", error);
+        console.error("Lỗi kết nối thời gian thực:", error);
     });
 }
 
@@ -139,8 +135,7 @@ function renderCalendar(containerId, monthTitleId) {
     
     if (titleEl) titleEl.textContent = `Tháng ${month + 1}, ${year}`;
 
-    const weekdays = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'];
-    weekdays.forEach(wd => {
+    ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'].forEach(wd => {
         const div = document.createElement('div');
         div.className = 'weekday';
         div.textContent = wd;
@@ -155,7 +150,6 @@ function renderCalendar(containerId, monthTitleId) {
     const todayStr = getLocalDateString(new Date());
     const selStr = getLocalDateString(state.selectedDate);
 
-    // Ngày tháng trước
     for (let i = startDay - 1; i >= 0; i--) {
         const dayDiv = document.createElement('div');
         dayDiv.className = 'day out';
@@ -163,7 +157,6 @@ function renderCalendar(containerId, monthTitleId) {
         container.appendChild(dayDiv);
     }
 
-    // Ngày trong tháng
     for (let d = 1; d <= totalDays; d++) {
         const dateObj = new Date(year, month, d);
         const dateStr = getLocalDateString(dateObj);
@@ -515,43 +508,18 @@ function updateUI() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    onAuthStateChanged(auth, (user) => {
-        const loginBtn = document.getElementById('login');
-        const logoutBtn = document.getElementById('logout');
-        const userLabel = document.getElementById('userlabel');
-        const loginHint = document.getElementById('loginhint');
+    // Ẩn hoàn toàn nút đăng nhập trên giao diện
+    const loginBtn = document.getElementById('login');
+    const logoutBtn = document.getElementById('logout');
+    const userLabel = document.getElementById('userlabel');
+    const loginHint = document.getElementById('loginhint');
 
-        if (user) {
-            state.user = user;
-            userLabel.textContent = `Xin chào, ${user.displayName || user.email}`;
-            loginBtn.classList.add('hidden');
-            logoutBtn.classList.remove('hidden');
-            if (loginHint) loginHint.classList.add('hidden');
-            loadUserData(user);
-        } else {
-            state.user = null;
-            userLabel.textContent = 'Chưa đăng nhập';
-            loginBtn.classList.remove('hidden');
-            logoutBtn.classList.add('hidden');
-            if (loginHint) loginHint.classList.remove('hidden');
-            
-            state.transactions = JSON.parse(localStorage.getItem('lm_transactions')) || [];
-            state.tasks = JSON.parse(localStorage.getItem('lm_tasks')) || [];
-            state.settings = JSON.parse(localStorage.getItem('lm_settings')) || { goal: 5000000, budget: 10000000 };
-            updateUI();
-        }
-    });
+    if (loginBtn) loginBtn.classList.add('hidden');
+    if (logoutBtn) logoutBtn.classList.add('hidden');
+    if (userLabel) userLabel.textContent = `Mã đồng bộ: ${syncId}`;
+    if (loginHint) loginHint.classList.add('hidden');
 
-    document.getElementById('login').addEventListener('click', () => {
-        signInWithPopup(auth, googleProvider).catch(err => alert("Lỗi đăng nhập Google: " + err.message));
-    });
-
-    document.getElementById('logout').addEventListener('click', () => {
-        signOut(auth).then(() => {
-            if (unsubscribeFirestore) unsubscribeFirestore();
-            window.location.reload();
-        });
-    });
+    initRealtimeSync();
 
     document.querySelectorAll('.tabs .tab, [data-goto]').forEach(el => {
         el.addEventListener('click', (e) => {
@@ -560,9 +528,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    ['prev', 'prev2'].forEach(id => document.getElementById(id).addEventListener('click', () => { state.currentDate.setMonth(state.currentDate.getMonth() - 1); updateUI(); }));
-    ['today', 'today2'].forEach(id => document.getElementById(id).addEventListener('click', () => { state.currentDate = new Date(); updateUI(); }));
-    ['next', 'next2'].forEach(id => document.getElementById(id).addEventListener('click', () => { state.currentDate.setMonth(state.currentDate.getMonth() + 1); updateUI(); }));
+    ['prev', 'prev2'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('click', () => { state.currentDate.setMonth(state.currentDate.getMonth() - 1); updateUI(); });
+    });
+    ['today', 'today2'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('click', () => { state.currentDate = new Date(); updateUI(); });
+    });
+    ['next', 'next2'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('click', () => { state.currentDate.setMonth(state.currentDate.getMonth() + 1); updateUI(); });
+    });
 
     document.getElementById('addtask').addEventListener('click', () => openModal('task'));
     document.getElementById('addtask2').addEventListener('click', () => openModal('task'));
