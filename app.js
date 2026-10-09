@@ -1,5 +1,5 @@
 // ==========================================
-// LIFE & MONEY - AUTO SYNC BY ID & LUNAR
+// LIFE & MONEY - AUTO SYNC & FIXED UI
 // ==========================================
 
 const firebaseConfig = {
@@ -18,10 +18,11 @@ import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/f
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Lấy hoặc tạo mã đồng bộ chung cho thiết bị (Bạn có thể copy mã này dán sang điện thoại để dùng chung)
+// Tạo hoặc dùng chung một Mã đồng bộ cố định cho tất cả các thiết bị của bạn
+// (Bạn có thể đổi chuỗi 'my_shared_money_data_2026' thành bất kỳ mã nào bạn muốn trên cả máy tính và điện thoại)
 let syncId = localStorage.getItem('lm_sync_id');
 if (!syncId) {
-    syncId = 'family_' + Math.random().toString(36).substring(2, 9);
+    syncId = 'family_money_2026'; 
     localStorage.setItem('lm_sync_id', syncId);
 }
 
@@ -56,7 +57,6 @@ const LunarCalendar = {
     }
 };
 
-// Lưu dữ liệu lên Firestore theo Sync ID ngầm
 function saveData() {
     if (isSyncing) return;
     
@@ -74,7 +74,6 @@ function saveData() {
     updateUI();
 }
 
-// Lắng nghe dữ liệu thời gian thực giữa các thiết bị dùng chung Sync ID
 function initRealtimeSync() {
     const docRef = doc(db, 'shared_data', syncId);
     unsubscribeFirestore = onSnapshot(docRef, (docSnap) => {
@@ -93,8 +92,10 @@ function initRealtimeSync() {
             ];
             saveData();
         }
-        document.getElementById('goal').value = state.settings.goal;
-        document.getElementById('budget').value = state.settings.budget;
+        const goalEl = document.getElementById('goal');
+        const budgetEl = document.getElementById('budget');
+        if (goalEl) goalEl.value = state.settings.goal;
+        if (budgetEl) budgetEl.value = state.settings.budget;
         isSyncing = false;
         updateUI();
     }, (error) => {
@@ -243,20 +244,29 @@ function updateMetrics() {
 
     const balance = totalInc - totalExp;
 
-    document.getElementById('income').textContent = formatVND(totalInc);
-    document.getElementById('expense').textContent = formatVND(totalExp);
-    
+    const incEl = document.getElementById('income');
+    const expEl = document.getElementById('expense');
     const balEl = document.getElementById('balance');
-    balEl.textContent = formatVND(balance);
-    balEl.className = `metric ${balance >= 0 ? 'green' : 'red'}`;
+
+    if (incEl) incEl.textContent = formatVND(totalInc);
+    if (expEl) expEl.textContent = formatVND(totalExp);
+    
+    if (balEl) {
+        balEl.textContent = formatVND(balance);
+        balEl.className = `metric ${balance >= 0 ? 'green' : 'red'}`;
+    }
 
     const savingVal = Math.max(0, balance);
     const goal = state.settings.goal || 1;
     const percent = Math.min(100, Math.round((savingVal / goal) * 100));
 
-    document.getElementById('saving').textContent = formatVND(savingVal);
-    document.getElementById('savingbar').style.width = `${percent}%`;
-    document.getElementById('savinglabel').textContent = `Đã đạt ${percent}% mục tiêu tháng (${formatVND(goal)})`;
+    const savingEl = document.getElementById('saving');
+    const savingBarEl = document.getElementById('savingbar');
+    const savingLabelEl = document.getElementById('savinglabel');
+
+    if (savingEl) savingEl.textContent = formatVND(savingVal);
+    if (savingBarEl) savingBarEl.style.width = `${percent}%`;
+    if (savingLabelEl) savingLabelEl.textContent = `Đã đạt ${percent}% mục tiêu tháng (${formatVND(goal)})`;
 
     renderAgenda();
     renderRecentTransactions();
@@ -463,6 +473,7 @@ function openModal(mode) {
     const modal = document.getElementById('modal');
     const modalTitle = document.getElementById('modaltitle');
     const formFields = document.getElementById('formfields');
+    if (!modal) return;
     modal.classList.add('open');
     const today = getLocalDateString(state.selectedDate);
 
@@ -498,7 +509,8 @@ window.updateCategoryOptions = function() {
 };
 
 function closeModal() {
-    document.getElementById('modal').classList.remove('open');
+    const modal = document.getElementById('modal');
+    if (modal) modal.classList.remove('open');
 }
 
 function updateUI() {
@@ -508,15 +520,15 @@ function updateUI() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Ẩn hoàn toàn nút đăng nhập trên giao diện
+    // Tự động tìm và hiển thị Mã đồng bộ lên góc trên giao diện
+    const userLabel = document.getElementById('userlabel');
     const loginBtn = document.getElementById('login');
     const logoutBtn = document.getElementById('logout');
-    const userLabel = document.getElementById('userlabel');
     const loginHint = document.getElementById('loginhint');
 
+    if (userLabel) userLabel.textContent = `Mã đồng bộ: ${syncId}`;
     if (loginBtn) loginBtn.classList.add('hidden');
     if (logoutBtn) logoutBtn.classList.add('hidden');
-    if (userLabel) userLabel.textContent = `Mã đồng bộ: ${syncId}`;
     if (loginHint) loginHint.classList.add('hidden');
 
     initRealtimeSync();
@@ -541,50 +553,72 @@ document.addEventListener('DOMContentLoaded', () => {
         if (el) el.addEventListener('click', () => { state.currentDate.setMonth(state.currentDate.getMonth() + 1); updateUI(); });
     });
 
-    document.getElementById('addtask').addEventListener('click', () => openModal('task'));
-    document.getElementById('addtask2').addEventListener('click', () => openModal('task'));
-    document.getElementById('addfinance').addEventListener('click', () => openModal('finance'));
-    document.getElementById('close').addEventListener('click', closeModal);
-    document.getElementById('cancel').addEventListener('click', closeModal);
+    const addTaskBtn1 = document.getElementById('addtask');
+    const addTaskBtn2 = document.getElementById('addtask2');
+    const addFinanceBtn = document.getElementById('addfinance');
+    const closeBtn = document.getElementById('close');
+    const cancelBtn = document.getElementById('cancel');
 
-    document.getElementById('filtertype').addEventListener('change', renderFinanceList);
-    document.getElementById('filtermonth').addEventListener('change', renderFinanceList);
-    document.getElementById('taskfilter').addEventListener('change', renderTaskList);
-    document.getElementById('taskstatus').addEventListener('change', renderTaskList);
-    document.getElementById('statsmonth').addEventListener('change', renderStats);
+    if (addTaskBtn1) addTaskBtn1.addEventListener('click', () => openModal('task'));
+    if (addTaskBtn2) addTaskBtn2.addEventListener('click', () => openModal('task'));
+    if (addFinanceBtn) addFinanceBtn.addEventListener('click', () => openModal('finance'));
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
 
-    document.getElementById('form').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const modalTitle = document.getElementById('modaltitle').textContent;
+    const filterType = document.getElementById('filtertype');
+    const filterMonth = document.getElementById('filtermonth');
+    const taskFilter = document.getElementById('taskfilter');
+    const taskStatus = document.getElementById('taskstatus');
+    const statsMonth = document.getElementById('statsmonth');
 
-        if (modalTitle.includes('Giao dịch')) {
-            state.transactions.push({
-                id: Date.now(),
-                type: document.getElementById('m_type').value,
-                amount: Number(document.getElementById('m_amount').value),
-                category: document.getElementById('m_category').value,
-                date: document.getElementById('m_date').value,
-                note: document.getElementById('m_note').value || 'Không có ghi chú'
-            });
-        } else {
-            state.tasks.push({
-                id: Date.now(),
-                title: document.getElementById('m_title').value,
-                type: document.getElementById('m_tasktype').value,
-                time: document.getElementById('m_time').value,
-                date: document.getElementById('m_date').value,
-                status: 'open'
-            });
-        }
-        closeModal();
-        saveData();
-    });
+    if (filterType) filterType.addEventListener('change', renderFinanceList);
+    if (filterMonth) filterMonth.addEventListener('change', renderFinanceList);
+    if (taskFilter) taskFilter.addEventListener('change', renderTaskList);
+    if (taskStatus) taskStatus.addEventListener('change', renderTaskList);
+    if (statsMonth) statsMonth.addEventListener('change', renderStats);
 
-    document.getElementById('settingsform').addEventListener('submit', (e) => {
-        e.preventDefault();
-        state.settings.goal = Number(document.getElementById('goal').value) || 0;
-        state.settings.budget = Number(document.getElementById('budget').value) || 0;
-        saveData();
-        alert('Đã lưu cài đặt mục tiêu!');
-    });
+    const form = document.getElementById('form');
+    if (form) {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const modalTitle = document.getElementById('modaltitle').textContent;
+
+            if (modalTitle.includes('Giao dịch')) {
+                state.transactions.push({
+                    id: Date.now(),
+                    type: document.getElementById('m_type').value,
+                    amount: Number(document.getElementById('m_amount').value),
+                    category: document.getElementById('m_category').value,
+                    date: document.getElementById('m_date').value,
+                    note: document.getElementById('m_note').value || 'Không có ghi chú'
+                });
+            } else {
+                state.tasks.push({
+                    id: Date.now(),
+                    title: document.getElementById('m_title').value,
+                    type: document.getElementById('m_tasktype').value,
+                    time: document.getElementById('m_time').value,
+                    date: document.getElementById('m_date').value,
+                    status: 'open'
+                });
+            }
+            closeModal();
+            saveData();
+        });
+    }
+
+    const settingsForm = document.getElementById('settingsform');
+    if (settingsForm) {
+        settingsForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const goalInput = document.getElementById('goal');
+            const budgetInput = document.getElementById('budget');
+            if (goalInput) state.settings.goal = Number(goalInput.value) || 0;
+            if (budgetInput) state.settings.budget = Number(budgetInput.value) || 0;
+            saveData();
+            alert('Đã lưu cài đặt mục tiêu!');
+        });
+    }
+
+    updateUI();
 });
