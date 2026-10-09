@@ -1,5 +1,5 @@
 // ==========================================
-// LIFE & MONEY - FIXED SYNC ID & LUNAR
+// LIFE & MONEY - MANUAL SYNC ID & LUNAR
 // ==========================================
 
 const firebaseConfig = {
@@ -18,8 +18,8 @@ import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/f
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// CỐ ĐỊNH MÃ ĐỒNG BỘ: Cả máy tính và điện thoại đều dùng chung đúng mã này để kết nối với nhau
-const syncId = 'sam_quanlythuchi_2026';
+// Lấy mã đồng bộ từ localStorage hoặc dùng mã mặc định cá nhân
+let syncId = localStorage.getItem('lm_sync_id') || 'sam_quanlythuchi_2026';
 
 let state = {
     currentDate: new Date(),
@@ -70,6 +70,8 @@ function saveData() {
 }
 
 function initRealtimeSync() {
+    if (unsubscribeFirestore) unsubscribeFirestore();
+
     const docRef = doc(db, 'shared_data', syncId);
     unsubscribeFirestore = onSnapshot(docRef, (docSnap) => {
         isSyncing = true;
@@ -515,15 +517,37 @@ function updateUI() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const userLabel = document.getElementById('userlabel');
+    // Tạo ô nhập mã đồng bộ thủ công trên Header
+    const userLabelContainer = document.getElementById('userlabel')?.parentElement;
     const loginBtn = document.getElementById('login');
     const logoutBtn = document.getElementById('logout');
     const loginHint = document.getElementById('loginhint');
 
-    if (userLabel) userLabel.textContent = `Mã đồng bộ: ${syncId}`;
     if (loginBtn) loginBtn.classList.add('hidden');
     if (logoutBtn) logoutBtn.classList.add('hidden');
     if (loginHint) loginHint.classList.add('hidden');
+
+    if (userLabelContainer) {
+        userLabelContainer.innerHTML = `
+            <div style="display:flex; align-items:center; gap:6px;">
+                <span class="muted small">Mã đồng bộ:</span>
+                <input id="syncidinput" type="text" value="${syncId}" class="field" style="padding:4px 8px; font-size:12px; width:150px;" title="Nhập mã đồng bộ của bạn">
+                <button id="saveSyncId" class="btn primary" style="padding:4px 8px; font-size:12px;">Đổi</button>
+            </div>
+        `;
+
+        document.getElementById('saveSyncId').addEventListener('click', () => {
+            const newId = document.getElementById('syncidinput').value.trim();
+            if (newId) {
+                syncId = newId;
+                localStorage.setItem('lm_sync_id', syncId);
+                alert(`Đã chuyển sang mã đồng bộ: ${syncId}`);
+                initRealtimeSync();
+            } else {
+                alert('Vui lòng nhập mã đồng bộ hợp lệ!');
+            }
+        });
+    }
 
     initRealtimeSync();
 
