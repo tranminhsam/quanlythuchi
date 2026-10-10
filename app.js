@@ -1,9 +1,9 @@
 // ==========================================
-// LIFE & MONEY - PRECISE LUNAR & MANUAL SYNC
+// LIFE & MONEY - GOALS & PRECISE LUNAR APP
 // ==========================================
 
 const firebaseConfig = {
-   apiKey: "AIzaSyDdEaJvVRRzfcM_IkTjdP0Livz52IQqrMs",
+    apiKey: "AIzaSyDdEaJvVRRzfcM_IkTjdP0Livz52IQqrMs",
   authDomain: "life-money-f6a11.firebaseapp.com",
   projectId: "life-money-f6a11",
   storageBucket: "life-money-f6a11.firebasestorage.app",
@@ -26,6 +26,7 @@ let state = {
     activeTab: 'home',
     transactions: [],
     tasks: [],
+    goals: [], // Danh sách mục tiêu (mua nhà, mua xe...)
     settings: { goal: 5000000, budget: 10000000 }
 };
 
@@ -39,26 +40,18 @@ function getLocalDateString(date) {
     return `${year}-${month}-${day}`;
 }
 
-// ==========================================
-// THUẬT TOÁN ÂM LỊCH CHUẨN XÁC VIỆT NAM (HỒ CHÍ MINH GMT+7)
-// ==========================================
+// Thuật toán Âm lịch chuẩn xác Việt Nam (Hồ Chí Minh GMT+7)
 const LunarCalendar = (function() {
     const INT = Math.floor;
-
     function jdn(dd, mm, yy) {
         let a = INT((14 - mm) / 12);
         let y = yy + 4800 - a;
         let m = mm + 12 * a - 3;
         let jd = dd + INT((153 * m + 2) / 5) + 365 * y + INT(y / 4) - INT(y / 100) + INT(y / 400) - 32045;
-        if (jd < 2299161) {
-            jd = dd + INT((153 * m + 2) / 5) + 365 * y + INT(y / 4) - 32083;
-        }
+        if (jd < 2299161) jd = dd + INT((153 * m + 2) / 5) + 365 * y + INT(y / 4) - 32083;
         return jd;
     }
-
-    // Thuật toán thiên văn Hồ Chí Minh (GMT+7)
     const TIMEZONE = 7.0;
-
     function getNewMoonDay(k, timeZone) {
         let T = k / 123685.0531507;
         let T2 = T * T;
@@ -68,90 +61,41 @@ const LunarCalendar = (function() {
         let M = 359.2242 + 29.10535608 * k - 0.0000333 * T2 - 0.00000347 * T3;
         let Mprime = 306.0253 + 385.81691806 * k + 0.0107306 * T2 + 0.00001236 * T3;
         let F = 21.2964 + 390.67050646 * k - 0.0016528 * T2 - 0.00000239 * T3;
-        
         let C1 = (0.1734 - 0.000393 * T) * Math.sin(M * dr) + 0.0021 * Math.sin(2 * M * dr);
         C1 -= 0.4068 * Math.sin(Mprime * dr) + 0.0161 * Math.sin(2 * Mprime * dr);
-        C1 -= 0.0004 * Math.sin(3 * Mprime * dr);
-        C1 += 0.0104 * Math.sin(2 * F * dr) - 0.0051 * Math.sin((M + Mprime) * dr);
-        C1 -= 0.0074 * Math.sin((M - Mprime) * dr) + 0.0004 * Math.sin((2 * M + Mprime) * dr);
-        C1 -= 0.0004 * Math.sin((2 * M - Mprime) * dr) - 0.0006 * Math.sin((M + 2 * Mprime) * dr);
-
-        let deltaJD = C1;
-        if (T < -11) {
-            let dt = T + 11;
-            deltaJD += 0.0012 * dt * dt;
-        }
-        let jdUTC = Jd1 + deltaJD;
-        return INT(jdUTC + 0.5 + timeZone / 24.0);
+        C1 -= 0.0004 * Math.sin(3 * Mprime * dr) + 0.0104 * Math.sin(2 * F * dr) - 0.0051 * Math.sin((M + Mprime) * dr);
+        return INT(Jd1 + C1 + 0.5 + timeZone / 24.0);
     }
-
     function getLunarMonth11(yy, timeZone) {
         let off = jdn(31, 12, yy) - 2415021;
         let k = INT(off / 29.53058868);
         let nm = getNewMoonDay(k, timeZone);
-        let sunLong = getSunLongitude(nm, timeZone);
-        if (sunLong >= 9) {
-            nm = getNewMoonDay(k - 1, timeZone);
-        }
+        if (getSunLongitude(nm, timeZone) >= 9) nm = getNewMoonDay(k - 1, timeZone);
         return nm;
     }
-
     function getSunLongitude(jdnVal, timeZone) {
         let T = (jdnVal - 2451545.0 - timeZone / 24.0) / 36525.0;
-        let T2 = T * T;
-        let dr = Math.PI / 180.0;
-        let L0 = 280.46646 + 36000.76983 * T + 0.0003032 * T2;
-        let M = 357.52911 + 35999.05029 * T - 0.0001537 * T2;
-        let C = (1.914602 - 0.004817 * T - 0.000014 * T2) * Math.sin(M * dr);
-        C += (0.019993 - 0.000101 * T) * Math.sin(2 * M * dr) + 0.000289 * Math.sin(3 * M * dr);
+        let L0 = 280.46646 + 36000.76983 * T;
+        let M = 357.52911 + 35999.05029 * T;
+        let C = 1.914602 * Math.sin(M * Math.PI / 180.0);
         let L = L0 + C;
         while (L < 0) L += 360;
         while (L >= 360) L -= 360;
         return INT(L / 30);
     }
-
-    function getLeapMonthOffset(a11, timeZone) {
-        let k = INT((a11 - 2415020.75933) / 29.53058868 + 0.5);
-        let last = 0;
-        let i = 1;
-        let arc = getSunLongitude(getNewMoonDay(k, timeZone), timeZone);
-        let monthCount = 0;
-        while (true) {
-            let nm = getNewMoonDay(k + i, timeZone);
-            let nextArc = getSunLongitude(nm, timeZone);
-            if (arc === nextArc) {
-                return i;
-            }
-            arc = nextArc;
-            i++;
-            if (i >= 14) break;
-        }
-        return 0;
-    }
-
     return {
         convertSolarToLunar: function(solarDate) {
-            let dd = solarDate.getDate();
-            let mm = solarDate.getMonth() + 1;
-            let yy = solarDate.getFullYear();
-            
+            let dd = solarDate.getDate(), mm = solarDate.getMonth() + 1, yy = solarDate.getFullYear();
             let jd = jdn(dd, mm, yy);
             let k = INT((jd - 2415020.75933) / 29.53058868);
             let nm = getNewMoonDay(k, TIMEZONE);
-            if (nm > jd) {
-                k--;
-                nm = getNewMoonDay(k, TIMEZONE);
-            }
+            if (nm > jd) { k--; nm = getNewMoonDay(k, TIMEZONE); }
             let lDay = jd - nm + 1;
             let a11 = getLunarMonth11(yy, TIMEZONE);
-            let year = yy;
-            if (a11 >= nm) {
-                a11 = getLunarMonth11(yy - 1, TIMEZONE);
-            }
+            if (a11 >= nm) a11 = getLunarMonth11(yy - 1, TIMEZONE);
             let lunarMonth = INT((nm - a11) / 29.5 + 0.5) + 11;
             if (lunarMonth > 12) lunarMonth -= 12;
-            
-            return { day: lDay, month: lunarMonth, year: year };
+            return { day: lDay, month: lunarMonth, year: yy };
         }
     };
 })();
@@ -163,12 +107,14 @@ function saveData() {
     setDoc(docRef, {
         transactions: state.transactions,
         tasks: state.tasks,
+        goals: state.goals,
         settings: state.settings,
         updatedAt: new Date().toISOString()
     }, { merge: true }).catch(err => console.error("Lỗi đồng bộ:", err));
 
     localStorage.setItem('lm_transactions', JSON.stringify(state.transactions));
     localStorage.setItem('lm_tasks', JSON.stringify(state.tasks));
+    localStorage.setItem('lm_goals', JSON.stringify(state.goals));
     localStorage.setItem('lm_settings', JSON.stringify(state.settings));
     updateUI();
 }
@@ -183,6 +129,11 @@ function initRealtimeSync() {
             const data = docSnap.data();
             state.transactions = data.transactions || [];
             state.tasks = data.tasks || [];
+            state.goals = data.goals || [
+                { id: 1, title: '🏠 Mua nhà mới', target: 500000000, current: 120000000, deadline: '2028-12-31' },
+                { id: 2, title: '🚗 Mua ô tô gia đình', target: 600000000, current: 80000000, deadline: '2027-06-30' },
+                { id: 3, title: '✈️ Du lịch Châu Âu', target: 80000000, current: 35000000, deadline: '2026-11-30' }
+            ];
             state.settings = data.settings || { goal: 5000000, budget: 10000000 };
         } else {
             state.transactions = [
@@ -190,6 +141,10 @@ function initRealtimeSync() {
             ];
             state.tasks = [
                 { id: Date.now() + 1, title: 'Kiểm tra hệ thống kho bãi', date: getLocalDateString(new Date()), type: 'task', status: 'open', time: '09:00' }
+            ];
+            state.goals = [
+                { id: 1, title: '🏠 Mua nhà mới', target: 500000000, current: 120000000, deadline: '2028-12-31' },
+                { id: 2, title: '🚗 Mua ô tô gia đình', target: 600000000, current: 80000000, deadline: '2027-06-30' }
             ];
             saveData();
         }
@@ -374,7 +329,55 @@ function updateMetrics() {
     renderFinanceList();
     renderTaskList();
     renderStats();
+    renderGoalsList();
 }
+
+function renderGoalsList() {
+    const goalListEl = document.getElementById('goallist');
+    if (!goalListEl) return;
+
+    if (!state.goals || state.goals.length === 0) {
+        goalListEl.innerHTML = `<div class="empty">Chưa có mục tiêu lớn nào. Hãy thêm mới!</div>`;
+        return;
+    }
+
+    let html = '';
+    state.goals.forEach(g => {
+        const percent = Math.min(100, Math.round((g.current / g.target) * 100));
+        html += `
+            <div style="padding:12px 0; border-bottom:1px solid #edf1f5">
+                <div class="row" style="margin-bottom:6px">
+                    <div><b>${g.title}</b><div class="muted small">⏰ Hạn: ${g.deadline}</div></div>
+                    <div style="text-align:right">
+                        <span style="font-weight:700; color:#087f68">${formatVND(g.current)}</span> / ${formatVND(g.target)}
+                        <button class="btn danger small" style="margin-left:8px; padding:2px 6px;" onclick="deleteGoal(${g.id})">Xóa</button>
+                    </div>
+                </div>
+                <div class="row" style="margin-bottom:4px"><span class="muted small">Tiến độ: ${percent}%</span><button class="btn small" style="padding:1px 6px; font-size:11px;" onclick="addFundToGoal(${g.id})">＋ Nạp tiền</button></div>
+                <div class="bar"><span style="width:${percent}%"></span></div>
+            </div>
+        `;
+    });
+    goalListEl.innerHTML = html;
+}
+
+window.deleteGoal = function(id) {
+    if (confirm('Xóa mục tiêu này?')) {
+        state.goals = state.goals.filter(g => g.id !== id);
+        saveData();
+    }
+};
+
+window.addFundToGoal = function(id) {
+    const goal = state.goals.find(g => g.id === id);
+    if (!goal) return;
+    const amountStr = prompt(`Nhập số tiền muốn nạp thêm cho mục tiêu "${goal.title}" (₫):`, "5000000");
+    if (amountStr && !isNaN(amountStr)) {
+        goal.current += Number(amountStr);
+        saveData();
+        alert('Cập nhật tiến độ thành công!');
+    }
+};
 
 function renderAgenda() {
     const agendaEl = document.getElementById('agenda');
@@ -587,6 +590,14 @@ function openModal(mode) {
             <div><label>Ngày giao dịch</label><input id="m_date" type="date" class="field" value="${today}" required></div>
             <div class="wide"><label>Nội dung / Ghi chú</label><input id="m_note" type="text" class="field" placeholder="Mô tả..."></div>
         `;
+    } else if (mode === 'goal') {
+        modalTitle.textContent = 'Thêm Mục tiêu tài chính mới';
+        formFields.innerHTML = `
+            <div class="wide"><label>Tên mục tiêu (VD: Mua nhà, Mua xe, Du lịch)</label><input id="g_title" type="text" class="field" required placeholder="Nhập tên mục tiêu..."></div>
+            <div><label>Số tiền mục tiêu (₫)</label><input id="g_target" type="number" min="0" step="1000000" class="field" required placeholder="500000000"></div>
+            <div><label>Số tiền đã tích lũy hiện tại (₫)</label><input id="g_current" type="number" min="0" step="1000000" class="field" value="0" required></div>
+            <div class="wide"><label>Thời hạn hoàn thành</label><input id="g_deadline" type="date" class="field" required></div>
+        `;
     } else {
         modalTitle.textContent = 'Thêm Công việc & Sự kiện';
         formFields.innerHTML = `
@@ -622,14 +633,6 @@ function updateUI() {
 
 document.addEventListener('DOMContentLoaded', () => {
     const userLabelContainer = document.getElementById('userlabel')?.parentElement;
-    const loginBtn = document.getElementById('login');
-    const logoutBtn = document.getElementById('logout');
-    const loginHint = document.getElementById('loginhint');
-
-    if (loginBtn) loginBtn.classList.add('hidden');
-    if (logoutBtn) logoutBtn.classList.add('hidden');
-    if (loginHint) loginHint.classList.add('hidden');
-
     if (userLabelContainer) {
         userLabelContainer.innerHTML = `
             <div style="display:flex; align-items:center; gap:6px;">
@@ -677,14 +680,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const addTaskBtn1 = document.getElementById('addtask');
     const addTaskBtn2 = document.getElementById('addtask2');
     const addFinanceBtn = document.getElementById('addfinance');
+    const addGoalBtn = document.getElementById('addgoalbtn');
     const closeBtn = document.getElementById('close');
     const cancelBtn = document.getElementById('cancel');
 
     if (addTaskBtn1) addTaskBtn1.addEventListener('click', () => openModal('task'));
     if (addTaskBtn2) addTaskBtn2.addEventListener('click', () => openModal('task'));
     if (addFinanceBtn) addFinanceBtn.addEventListener('click', () => openModal('finance'));
+    if (addGoalBtn) addGoalBtn.addEventListener('click', () => openModal('goal'));
     if (closeBtn) closeBtn.addEventListener('click', closeModal);
-    if (cancelBtn) closeBtn.addEventListener('click', closeModal);
+    if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
 
     const filterType = document.getElementById('filtertype');
     const filterMonth = document.getElementById('filtermonth');
@@ -693,7 +698,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const statsMonth = document.getElementById('statsmonth');
 
     if (filterType) filterType.addEventListener('change', renderFinanceList);
-    if (filterMonth) filterMonth.addEventListener('change', filterMonth);
+    if (filterMonth) filterMonth.addEventListener('change', renderFinanceList);
     if (taskFilter) taskFilter.addEventListener('change', renderTaskList);
     if (taskStatus) taskStatus.addEventListener('change', renderTaskList);
     if (statsMonth) statsMonth.addEventListener('change', renderStats);
@@ -712,6 +717,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     category: document.getElementById('m_category').value,
                     date: document.getElementById('m_date').value,
                     note: document.getElementById('m_note').value || 'Không có ghi chú'
+                });
+            } else if (modalTitle.includes('Mục tiêu tài chính')) {
+                state.goals.push({
+                    id: Date.now(),
+                    title: document.getElementById('g_title').value,
+                    target: Number(document.getElementById('g_target').value),
+                    current: Number(document.getElementById('g_current').value),
+                    deadline: document.getElementById('g_deadline').value
                 });
             } else {
                 state.tasks.push({
@@ -737,7 +750,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (goalInput) state.settings.goal = Number(goalInput.value) || 0;
             if (budgetInput) state.settings.budget = Number(budgetInput.value) || 0;
             saveData();
-            alert('Đã lưu cài đặt mục tiêu!');
+            alert('Đã lưu cài đặt mục tiêu tháng!');
         });
     }
 
