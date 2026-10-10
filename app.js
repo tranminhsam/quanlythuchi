@@ -1,9 +1,9 @@
 // ==========================================
-// LIFE & MONEY - MANUAL SYNC ID & LUNAR
+// LIFE & MONEY - PRECISE LUNAR & MANUAL SYNC
 // ==========================================
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDdEaJvVRRzfcM_IkTjdP0Livz52IQqrMs",
+   apiKey: "AIzaSyDdEaJvVRRzfcM_IkTjdP0Livz52IQqrMs",
   authDomain: "life-money-f6a11.firebaseapp.com",
   projectId: "life-money-f6a11",
   storageBucket: "life-money-f6a11.firebasestorage.app",
@@ -18,7 +18,6 @@ import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/f
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Lấy mã đồng bộ từ localStorage hoặc dùng mã mặc định cá nhân
 let syncId = localStorage.getItem('lm_sync_id') || 'sam_quanlythuchi_2026';
 
 let state = {
@@ -40,17 +39,122 @@ function getLocalDateString(date) {
     return `${year}-${month}-${day}`;
 }
 
-const LunarCalendar = {
-    convertSolarToLunar: function(solarDate) {
-        let day = solarDate.getDate();
-        let month = solarDate.getMonth() + 1;
-        let year = solarDate.getFullYear();
-        let lDay = (day + 11) % 30 + 1;
-        let lMonth = month === 12 ? 1 : month + 1;
-        if (lDay > 29) lDay = 29;
-        return { day: lDay, month: lMonth, year: year };
+// ==========================================
+// THUẬT TOÁN ÂM LỊCH CHUẨN XÁC VIỆT NAM (HỒ CHÍ MINH GMT+7)
+// ==========================================
+const LunarCalendar = (function() {
+    const INT = Math.floor;
+
+    function jdn(dd, mm, yy) {
+        let a = INT((14 - mm) / 12);
+        let y = yy + 4800 - a;
+        let m = mm + 12 * a - 3;
+        let jd = dd + INT((153 * m + 2) / 5) + 365 * y + INT(y / 4) - INT(y / 100) + INT(y / 400) - 32045;
+        if (jd < 2299161) {
+            jd = dd + INT((153 * m + 2) / 5) + 365 * y + INT(y / 4) - 32083;
+        }
+        return jd;
     }
-};
+
+    // Thuật toán thiên văn Hồ Chí Minh (GMT+7)
+    const TIMEZONE = 7.0;
+
+    function getNewMoonDay(k, timeZone) {
+        let T = k / 123685.0531507;
+        let T2 = T * T;
+        let T3 = T2 * T;
+        let dr = Math.PI / 180.0;
+        let Jd1 = 2415020.75933 + 29.53058868 * k + 0.0001178 * T2 - 0.000000155 * T3;
+        let M = 359.2242 + 29.10535608 * k - 0.0000333 * T2 - 0.00000347 * T3;
+        let Mprime = 306.0253 + 385.81691806 * k + 0.0107306 * T2 + 0.00001236 * T3;
+        let F = 21.2964 + 390.67050646 * k - 0.0016528 * T2 - 0.00000239 * T3;
+        
+        let C1 = (0.1734 - 0.000393 * T) * Math.sin(M * dr) + 0.0021 * Math.sin(2 * M * dr);
+        C1 -= 0.4068 * Math.sin(Mprime * dr) + 0.0161 * Math.sin(2 * Mprime * dr);
+        C1 -= 0.0004 * Math.sin(3 * Mprime * dr);
+        C1 += 0.0104 * Math.sin(2 * F * dr) - 0.0051 * Math.sin((M + Mprime) * dr);
+        C1 -= 0.0074 * Math.sin((M - Mprime) * dr) + 0.0004 * Math.sin((2 * M + Mprime) * dr);
+        C1 -= 0.0004 * Math.sin((2 * M - Mprime) * dr) - 0.0006 * Math.sin((M + 2 * Mprime) * dr);
+
+        let deltaJD = C1;
+        if (T < -11) {
+            let dt = T + 11;
+            deltaJD += 0.0012 * dt * dt;
+        }
+        let jdUTC = Jd1 + deltaJD;
+        return INT(jdUTC + 0.5 + timeZone / 24.0);
+    }
+
+    function getLunarMonth11(yy, timeZone) {
+        let off = jdn(31, 12, yy) - 2415021;
+        let k = INT(off / 29.53058868);
+        let nm = getNewMoonDay(k, timeZone);
+        let sunLong = getSunLongitude(nm, timeZone);
+        if (sunLong >= 9) {
+            nm = getNewMoonDay(k - 1, timeZone);
+        }
+        return nm;
+    }
+
+    function getSunLongitude(jdnVal, timeZone) {
+        let T = (jdnVal - 2451545.0 - timeZone / 24.0) / 36525.0;
+        let T2 = T * T;
+        let dr = Math.PI / 180.0;
+        let L0 = 280.46646 + 36000.76983 * T + 0.0003032 * T2;
+        let M = 357.52911 + 35999.05029 * T - 0.0001537 * T2;
+        let C = (1.914602 - 0.004817 * T - 0.000014 * T2) * Math.sin(M * dr);
+        C += (0.019993 - 0.000101 * T) * Math.sin(2 * M * dr) + 0.000289 * Math.sin(3 * M * dr);
+        let L = L0 + C;
+        while (L < 0) L += 360;
+        while (L >= 360) L -= 360;
+        return INT(L / 30);
+    }
+
+    function getLeapMonthOffset(a11, timeZone) {
+        let k = INT((a11 - 2415020.75933) / 29.53058868 + 0.5);
+        let last = 0;
+        let i = 1;
+        let arc = getSunLongitude(getNewMoonDay(k, timeZone), timeZone);
+        let monthCount = 0;
+        while (true) {
+            let nm = getNewMoonDay(k + i, timeZone);
+            let nextArc = getSunLongitude(nm, timeZone);
+            if (arc === nextArc) {
+                return i;
+            }
+            arc = nextArc;
+            i++;
+            if (i >= 14) break;
+        }
+        return 0;
+    }
+
+    return {
+        convertSolarToLunar: function(solarDate) {
+            let dd = solarDate.getDate();
+            let mm = solarDate.getMonth() + 1;
+            let yy = solarDate.getFullYear();
+            
+            let jd = jdn(dd, mm, yy);
+            let k = INT((jd - 2415020.75933) / 29.53058868);
+            let nm = getNewMoonDay(k, TIMEZONE);
+            if (nm > jd) {
+                k--;
+                nm = getNewMoonDay(k, TIMEZONE);
+            }
+            let lDay = jd - nm + 1;
+            let a11 = getLunarMonth11(yy, TIMEZONE);
+            let year = yy;
+            if (a11 >= nm) {
+                a11 = getLunarMonth11(yy - 1, TIMEZONE);
+            }
+            let lunarMonth = INT((nm - a11) / 29.5 + 0.5) + 11;
+            if (lunarMonth > 12) lunarMonth -= 12;
+            
+            return { day: lDay, month: lunarMonth, year: year };
+        }
+    };
+})();
 
 function saveData() {
     if (isSyncing) return;
@@ -517,7 +621,6 @@ function updateUI() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Tạo ô nhập mã đồng bộ thủ công trên Header
     const userLabelContainer = document.getElementById('userlabel')?.parentElement;
     const loginBtn = document.getElementById('login');
     const logoutBtn = document.getElementById('logout');
@@ -531,7 +634,7 @@ document.addEventListener('DOMContentLoaded', () => {
         userLabelContainer.innerHTML = `
             <div style="display:flex; align-items:center; gap:6px;">
                 <span class="muted small">Mã đồng bộ:</span>
-                <input id="syncidinput" type="text" value="${syncId}" class="field" style="padding:4px 8px; font-size:12px; width:150px;" title="Nhập mã đồng bộ của bạn">
+                <input id="syncidinput" type="text" value="${syncId}" class="field" style="padding:4px 8px; font-size:12px; width:150px;" title="Nhập mã đồng bộ bảo mật của bạn">
                 <button id="saveSyncId" class="btn primary" style="padding:4px 8px; font-size:12px;">Đổi</button>
             </div>
         `;
@@ -581,7 +684,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (addTaskBtn2) addTaskBtn2.addEventListener('click', () => openModal('task'));
     if (addFinanceBtn) addFinanceBtn.addEventListener('click', () => openModal('finance'));
     if (closeBtn) closeBtn.addEventListener('click', closeModal);
-    if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+    if (cancelBtn) closeBtn.addEventListener('click', closeModal);
 
     const filterType = document.getElementById('filtertype');
     const filterMonth = document.getElementById('filtermonth');
@@ -590,7 +693,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const statsMonth = document.getElementById('statsmonth');
 
     if (filterType) filterType.addEventListener('change', renderFinanceList);
-    if (filterMonth) filterMonth.addEventListener('change', renderFinanceList);
+    if (filterMonth) filterMonth.addEventListener('change', filterMonth);
     if (taskFilter) taskFilter.addEventListener('change', renderTaskList);
     if (taskStatus) taskStatus.addEventListener('change', renderTaskList);
     if (statsMonth) statsMonth.addEventListener('change', renderStats);
