@@ -837,13 +837,18 @@
 
           <div>
             <label class="text-xs font-bold text-slate-600 block mb-1">GitHub Personal Access Token (PAT)</label>
-            <input type="password" id="gh-token-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" class="w-full bg-slate-50 border border-slate-200 focus:border-momo-500 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none" />
+            <div class="flex gap-1.5">
+              <input type="password" id="gh-token-input" oninput="onGithubConfigInput()" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" class="flex-1 bg-slate-50 border border-slate-200 focus:border-momo-500 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none" />
+              <button type="button" onclick="toggleGithubTokenVisibility()" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold" title="Hiện/Ẩn Token">
+                <i id="gh-token-eye" class="fa-regular fa-eye"></i>
+              </button>
+            </div>
           </div>
 
           <div>
             <label class="text-xs font-bold text-slate-600 block mb-1">Gist ID (Để trống nếu muốn tạo mới)</label>
             <div class="flex gap-1.5">
-              <input type="text" id="gh-gist-id-input" placeholder="VD: a1b2c3d4e5f6..." class="flex-1 bg-slate-50 border border-slate-200 focus:border-momo-500 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none" />
+              <input type="text" id="gh-gist-id-input" oninput="onGithubConfigInput()" placeholder="VD: a1b2c3d4e5f6..." class="flex-1 bg-slate-50 border border-slate-200 focus:border-momo-500 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none" />
               <button type="button" onclick="copyGistId()" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold" title="Sao chép Gist ID">
                 <i class="fa-regular fa-copy"></i>
               </button>
@@ -852,8 +857,17 @@
 
           <label class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-200 cursor-pointer">
             <span class="text-xs font-bold text-slate-700">Tự động đẩy lên GitHub sau mỗi thay đổi</span>
-            <input type="checkbox" id="gh-autosync-checkbox" onchange="saveGithubSettingsFromUI()" class="w-4 h-4 accent-momo-600 rounded" />
+            <input type="checkbox" id="gh-autosync-checkbox" onchange="saveGithubSettingsFromUI(true)" class="w-4 h-4 accent-momo-600 rounded" />
           </label>
+
+          <div class="flex items-center justify-between bg-emerald-50/70 border border-emerald-200 rounded-xl px-3 py-2 text-xs">
+            <span id="gh-saved-status" class="text-[11px] font-bold text-emerald-800">
+              <i class="fa-solid fa-shield-halved mr-1"></i>Tự động ghi nhớ Token & Gist ID
+            </span>
+            <button type="button" onclick="saveGithubSettingsFromUI(true)" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-extrabold transition">
+              Lưu cấu hình
+            </button>
+          </div>
 
           <div class="grid grid-cols-2 gap-2 pt-1">
             <button type="button" onclick="pushToGithubGist(true)" class="py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-extrabold flex items-center justify-center gap-1.5 transition">
@@ -1129,7 +1143,7 @@
       return { ramDate, mung1Date };
     }
 
-    function generateDefaultSampleData() {
+    function generateDefaultSampleData(isManualReset = false) {
       const y = todayObj.getFullYear();
       const m = todayObj.getMonth() + 1;
       const mStr = String(m).padStart(2, '0');
@@ -1190,7 +1204,8 @@
           completed: true
         }
       ];
-      state.lastUpdated = Date.now();
+      // Quan trọng: Khi khởi động trang, đặt lastUpdated = 0 để dữ liệu từ Cloud luôn được ưu tiên tải về
+      state.lastUpdated = isManualReset ? Date.now() : 0;
     }
 
     /********************************************************************
@@ -1200,8 +1215,11 @@
     let db = null;
     let auth = null;
     let currentUser = null;
+    let unsubscribePrivateSnapshot = null;
     let unsubscribeChannelSnapshot = null;
     let isApplyingRemoteUpdate = false;
+    let hasInitialGitHubAutoPullRun = false;
+    let githubConfigSaveTimer = null;
 
     async function initFirebaseCloud() {
       try {
@@ -1227,16 +1245,379 @@
           if (uidEl) uidEl.textContent = user ? user.uid : 'Chưa đăng nhập';
 
           if (user) {
-            if (state.syncKey) {
-              subscribeToSyncChannel(state.syncKey);
-            } else {
-              subscribeToPrivateUserDoc(user.uid);
-            }
+            // Luôn lắng nghe hồ sơ cá nhân để khôi phục GitHub Token, Gist ID, Sync Key & Dữ liệu
+            subscribeToPrivateUserDoc(user.uid);
           }
         });
       } catch (err) {
         console.error('Firebase init warning:', err);
         updateSyncUIStatus('Sẵn sàng (GitHub / Cục bộ)', 'amber');
+      }
+    }
+
+    function sanitizeSyncKey(rawKey) {
+      return rawKey.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '-');
+    }
+
+    function syncSettingsToUI() {
+      const ghTokenInput = document.getElementById('gh-token-input');
+      const ghGistIdInput = document.getElementById('gh-gist-id-input');
+      const ghAutoCheckbox = document.getElementById('gh-autosync-checkbox');
+      const fbKeyInput = document.getElementById('fb-sync-key-input');
+
+      if (ghTokenInput && state.githubToken && document.activeElement !== ghTokenInput) {
+        ghTokenInput.value = state.githubToken;
+      }
+      if (ghGistIdInput && state.githubGistId && document.activeElement !== ghGistIdInput) {
+        ghGistIdInput.value = state.githubGistId;
+      }
+      if (ghAutoCheckbox) {
+        ghAutoCheckbox.checked = Boolean(state.githubAutoSync);
+      }
+      if (fbKeyInput && state.syncKey && document.activeElement !== fbKeyInput) {
+        fbKeyInput.value = state.syncKey;
+      }
+
+      const ghIdMini = document.getElementById('gh-id-mini');
+      const ghBadgeMini = document.getElementById('gh-badge-mini');
+      const savedStatus = document.getElementById('gh-saved-status');
+
+      if (state.githubToken) {
+        if (ghIdMini) {
+          ghIdMini.textContent = state.githubGistId
+            ? `Gist: ${state.githubGistId.slice(0, 10)}...`
+            : 'Đã lưu Token GitHub';
+        }
+        if (ghBadgeMini) {
+          ghBadgeMini.textContent = state.githubAutoSync ? 'Tự động' : 'Đã lưu Token';
+          ghBadgeMini.className = 'text-[9px] px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700 font-bold';
+        }
+        if (savedStatus) {
+          savedStatus.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i>Đã lưu Token${state.githubGistId ? ' & Gist ID' : ''} trên Cloud`;
+        }
+      }
+    }
+
+    // Private cloud doc per authenticated user (RULE 1 compliant)
+    function subscribeToPrivateUserDoc(uid) {
+      if (!db || !currentUser) return;
+      if (unsubscribePrivateSnapshot) unsubscribePrivateSnapshot();
+
+      const userDocRef = doc(db, 'artifacts', appId, 'users', uid, 'app_state', 'main');
+      updateSyncUIStatus('Đã kết nối Cloud cá nhân', 'emerald');
+
+      unsubscribePrivateSnapshot = onSnapshot(
+        userDocRef,
+        (snap) => {
+          if (snap.exists()) {
+            const data = snap.data();
+            applyRemotePayload(data, 'Cloud cá nhân');
+          } else {
+            // Lần đầu tiên sử dụng, lưu trạng thái khởi tạo lên Cloud cá nhân
+            pushToFirebaseCloud(false);
+          }
+        },
+        (err) => {
+          console.error('Private doc snapshot error:', err);
+        }
+      );
+    }
+
+    // Shared multi-device channel doc using Sync Key (RULE 1 compliant)
+    function subscribeToSyncChannel(rawKey, saveSettingToPrivate = true) {
+      const cleanKey = sanitizeSyncKey(rawKey);
+      if (!cleanKey) return;
+      state.syncKey = cleanKey;
+      document.getElementById('fb-sync-key-input').value = cleanKey;
+      document.getElementById('fb-key-mini').textContent = `Kênh: ${cleanKey}`;
+      document.getElementById('fb-modal-status').textContent = `Đang nối kênh "${cleanKey}"...`;
+
+      if (!db || !currentUser) {
+        showToast(`Đã lưu mã kênh "${cleanKey}"`);
+        return;
+      }
+      if (unsubscribeChannelSnapshot) unsubscribeChannelSnapshot();
+
+      if (saveSettingToPrivate) {
+        saveUserSettingsToPrivateCloud();
+      }
+
+      const channelDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'sync_channels', cleanKey);
+
+      unsubscribeChannelSnapshot = onSnapshot(
+        channelDocRef,
+        (snap) => {
+          updateSyncUIStatus(`Đồng bộ: ${cleanKey}`, 'emerald');
+          document.getElementById('fb-modal-status').textContent = `Đã kết nối kênh "${cleanKey}"`;
+          document.getElementById('fb-badge-mini').textContent = 'Đang đồng bộ';
+
+          if (snap.exists()) {
+            const data = snap.data();
+            applyRemotePayload(data, `Kênh ${cleanKey}`);
+          } else {
+            // Initialize channel with current state
+            pushToFirebaseCloud(false);
+          }
+        },
+        (err) => {
+          console.error('Sync channel error:', err);
+          updateSyncUIStatus('Lỗi kênh đồng bộ', 'red');
+        }
+      );
+    }
+
+    function applyRemotePayload(data, sourceLabel) {
+      if (!data) return;
+
+      // Luôn khôi phục cấu hình GitHub Token, Gist ID & Sync Key nếu có trên Cloud
+      let settingsChanged = false;
+      if (typeof data.githubToken === 'string' && data.githubToken && data.githubToken !== state.githubToken) {
+        state.githubToken = data.githubToken;
+        settingsChanged = true;
+      }
+      if (typeof data.githubGistId === 'string' && data.githubGistId && data.githubGistId !== state.githubGistId) {
+        state.githubGistId = data.githubGistId;
+        settingsChanged = true;
+      }
+      if (typeof data.githubAutoSync === 'boolean' && data.githubAutoSync !== state.githubAutoSync) {
+        state.githubAutoSync = data.githubAutoSync;
+        settingsChanged = true;
+      }
+      if (typeof data.syncKey === 'string' && data.syncKey && data.syncKey !== state.syncKey) {
+        state.syncKey = data.syncKey;
+        settingsChanged = true;
+        // Tự động nối lại kênh Sync Key đã lưu sau khi tải lại trang
+        setTimeout(() => subscribeToSyncChannel(state.syncKey, false), 50);
+      }
+
+      if (settingsChanged) {
+        syncSettingsToUI();
+      }
+
+      // Tự động tải dữ liệu mới nhất từ GitHub Gist khi vừa mở app nếu người dùng bật Auto Sync
+      if (!hasInitialGitHubAutoPullRun && state.githubToken && state.githubGistId && state.githubAutoSync) {
+        hasInitialGitHubAutoPullRun = true;
+        pullFromGithubGist(true);
+      }
+
+      const remoteTime = Number(data.lastUpdated || 0);
+      if (remoteTime && state.lastUpdated > 0 && remoteTime <= state.lastUpdated) return;
+
+      isApplyingRemoteUpdate = true;
+      try {
+        if (typeof data.transactionsJson === 'string') {
+          state.transactions = JSON.parse(data.transactionsJson);
+        } else if (Array.isArray(data.transactions)) {
+          state.transactions = data.transactions;
+        }
+        if (typeof data.tasksJson === 'string') {
+          state.tasks = JSON.parse(data.tasksJson);
+        } else if (Array.isArray(data.tasks)) {
+          state.tasks = data.tasks;
+        }
+        if (data.monthlyBudget) state.monthlyBudget = Number(data.monthlyBudget);
+        if (typeof data.hideAmounts === 'boolean') state.hideAmounts = data.hideAmounts;
+
+        state.lastUpdated = remoteTime || Date.now();
+        syncSettingsToUI();
+        renderAll();
+      } catch (e) {
+        console.error('Parse remote payload error:', e);
+      } finally {
+        isApplyingRemoteUpdate = false;
+      }
+    }
+
+    async function saveUserSettingsToPrivateCloud() {
+      if (!db || !currentUser) return;
+      try {
+        const userDocRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'app_state', 'main');
+        await setDoc(userDocRef, {
+          githubToken: state.githubToken || '',
+          githubGistId: state.githubGistId || '',
+          githubAutoSync: Boolean(state.githubAutoSync),
+          syncKey: state.syncKey || '',
+          hideAmounts: Boolean(state.hideAmounts),
+          updatedBy: currentUser.uid
+        }, { merge: true });
+      } catch (err) {
+        console.error('Save user settings error:', err);
+      }
+    }
+
+    async function pushToFirebaseCloud(manualNotify = false) {
+      if (isApplyingRemoteUpdate || !db || !currentUser) {
+        if (manualNotify && (!db || !currentUser)) {
+          showToast('Chưa kết nối máy chủ Firebase, hãy dùng GitHub Gist!');
+        }
+        return;
+      }
+      try {
+        if (!state.lastUpdated) state.lastUpdated = Date.now();
+        const basePayload = {
+          transactionsJson: JSON.stringify(state.transactions),
+          tasksJson: JSON.stringify(state.tasks),
+          monthlyBudget: state.monthlyBudget,
+          hideAmounts: Boolean(state.hideAmounts),
+          lastUpdated: state.lastUpdated,
+          updatedBy: currentUser.uid
+        };
+
+        // Luôn lưu bản sao kèm cấu hình GitHub Token & Sync Key vào tài khoản cá nhân của thiết bị
+        const userDocRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'app_state', 'main');
+        await setDoc(userDocRef, {
+          ...basePayload,
+          githubToken: state.githubToken || '',
+          githubGistId: state.githubGistId || '',
+          githubAutoSync: Boolean(state.githubAutoSync),
+          syncKey: state.syncKey || ''
+        }, { merge: true });
+
+        // Nếu đang kết nối kênh chung (Sync Key), đồng bộ dữ liệu lên kênh chung
+        if (state.syncKey) {
+          const channelDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'sync_channels', state.syncKey);
+          await setDoc(channelDocRef, basePayload, { merge: true });
+        }
+        if (manualNotify) showToast('Đã đồng bộ và lưu cấu hình lên Cloud!');
+      } catch (err) {
+        console.error('Push Firebase error:', err);
+        if (manualNotify) showToast('Lỗi khi đẩy dữ liệu lên Firebase');
+      }
+    }
+
+    function connectFirebaseSyncKey() {
+      const val = document.getElementById('fb-sync-key-input').value.trim();
+      if (!val) {
+        showToast('Vui lòng nhập Mã Đồng Bộ (Sync Key)!');
+        return;
+      }
+      subscribeToSyncChannel(val, true);
+      showToast(`Đã kết nối kênh đồng bộ: ${sanitizeSyncKey(val)}`);
+    }
+
+    function toggleGithubTokenVisibility() {
+      const input = document.getElementById('gh-token-input');
+      const icon = document.getElementById('gh-token-eye');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'fa-regular fa-eye-slash';
+      } else {
+        input.type = 'password';
+        icon.className = 'fa-regular fa-eye';
+      }
+    }
+
+    function onGithubConfigInput() {
+      clearTimeout(githubConfigSaveTimer);
+      githubConfigSaveTimer = setTimeout(() => {
+        saveGithubSettingsFromUI(false);
+      }, 450);
+    }
+
+    function saveGithubSettingsFromUI(notifyUser = false) {
+      state.githubToken = document.getElementById('gh-token-input').value.trim();
+      state.githubGistId = document.getElementById('gh-gist-id-input').value.trim();
+      state.githubAutoSync = document.getElementById('gh-autosync-checkbox').checked;
+      syncSettingsToUI();
+      saveUserSettingsToPrivateCloud();
+      if (notifyUser) {
+        showToast('Đã lưu cấu hình GitHub Token & Gist ID!');
+      }
+    }
+
+    async function pushToGithubGist(manualNotify = true) {
+      saveGithubSettingsFromUI(false);
+      if (!state.githubToken) {
+        if (manualNotify) showToast('Vui lòng nhập GitHub Personal Access Token!');
+        return;
+      }
+
+      try {
+        if (manualNotify) showToast('Đang đẩy dữ liệu lên GitHub Gist...');
+        state.lastUpdated = Date.now();
+        const contentObj = {
+          transactions: state.transactions,
+          tasks: state.tasks,
+          monthlyBudget: state.monthlyBudget,
+          githubGistId: state.githubGistId,
+          githubAutoSync: state.githubAutoSync,
+          syncKey: state.syncKey,
+          lastUpdated: state.lastUpdated
+        };
+
+        const bodyPayload = {
+          description: 'MoMo Quan Ly Thu Chi & Lich Am Duong Sync Data',
+          public: false,
+          files: {
+            'momo_expense_lunar_sync.json': {
+              content: JSON.stringify(contentObj, null, 2)
+            }
+          }
+        };
+
+        const url = state.githubGistId
+          ? `https://api.github.com/gists/${state.githubGistId}`
+          : `https://api.github.com/gists`;
+        const method = state.githubGistId ? 'PATCH' : 'POST';
+
+        const res = await fetch(url, {
+          method,
+          headers: {
+            'Authorization': `token ${state.githubToken}`,
+            'Accept': 'application/vnd.github+json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(bodyPayload)
+        });
+
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        if (data && data.id) {
+          state.githubGistId = data.id;
+          syncSettingsToUI();
+          // Lưu ngay Gist ID mới và Token lên Cloud để không bao giờ bị mất khi tải lại trang
+          await pushToFirebaseCloud(false);
+          updateSyncUIStatus(`GitHub Gist: ${data.id.slice(0, 6)}`, 'emerald');
+        }
+        if (manualNotify) showToast('Đã đồng bộ & lưu cấu hình GitHub Gist!');
+      } catch (err) {
+        console.error('GitHub Push Error:', err);
+        if (manualNotify) showToast('Lỗi đẩy GitHub Gist! Kiểm tra lại Token/Gist ID.');
+      }
+    }
+
+    async function pullFromGithubGist(silent = false) {
+      saveGithubSettingsFromUI(false);
+      if (!state.githubToken || !state.githubGistId) {
+        if (!silent) showToast('Vui lòng nhập cả GitHub Token và Gist ID để tải về!');
+        return;
+      }
+      try {
+        if (!silent) showToast('Đang tải dữ liệu từ GitHub Gist...');
+        const res = await fetch(`https://api.github.com/gists/${state.githubGistId}`, {
+          headers: {
+            'Authorization': `token ${state.githubToken}`,
+            'Accept': 'application/vnd.github+json'
+          }
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        const fileObj = data.files && (data.files['momo_expense_lunar_sync.json'] || Object.values(data.files)[0]);
+        if (!fileObj || !fileObj.content) throw new Error('Không tìm thấy nội dung JSON trong Gist');
+
+        const parsed = JSON.parse(fileObj.content);
+        if (Array.isArray(parsed.transactions)) state.transactions = parsed.transactions;
+        if (Array.isArray(parsed.tasks)) state.tasks = parsed.tasks;
+        if (parsed.monthlyBudget) state.monthlyBudget = Number(parsed.monthlyBudget);
+        state.lastUpdated = Number(parsed.lastUpdated) || Date.now();
+
+        renderAll();
+        await pushToFirebaseCloud(false);
+        updateSyncUIStatus(`GitHub Gist: ${state.githubGistId.slice(0, 6)}`, 'emerald');
+        if (!silent) showToast('Đã tải dữ liệu từ GitHub Gist thành công!');
+      } catch (err) {
+        console.error('GitHub Pull Error:', err);
+        if (!silent) showToast('Không thể tải từ GitHub Gist! Kiểm tra Gist ID.');
       }
     }
 
@@ -1574,6 +1955,7 @@
     function toggleHideAmount() {
       state.hideAmounts = !state.hideAmounts;
       renderAll();
+      saveUserSettingsToPrivateCloud();
     }
 
     function jumpToNextRam() {
@@ -2733,18 +3115,19 @@
     }
 
     function resetSampleData() {
-      generateDefaultSampleData();
+      generateDefaultSampleData(true);
       renderAll();
       triggerCloudSyncAfterChange();
-      showToast('Đã khôi phục dữ liệu mẫu!');
+      showToast('Đã khôi phục dữ liệu mẫu (Giữ nguyên cấu hình đồng bộ)!');
     }
 
     function clearAllData() {
       state.transactions = [];
       state.tasks = [];
+      state.lastUpdated = Date.now();
       renderAll();
       triggerCloudSyncAfterChange();
-      showToast('Đã xóa trắng toàn bộ dữ liệu');
+      showToast('Đã xóa trắng giao dịch & việc (Giữ nguyên GitHub Token)');
     }
 
     function updateTopLunarPill() {
@@ -2795,6 +3178,8 @@
       connectFirebaseSyncKey,
       pushToFirebaseCloud,
       saveGithubSettingsFromUI,
+      onGithubConfigInput,
+      toggleGithubTokenVisibility,
       pushToGithubGist,
       pullFromGithubGist,
       copyGistId,
@@ -2809,7 +3194,7 @@
     });
 
     // Startup initialization
-    generateDefaultSampleData();
+    generateDefaultSampleData(false);
     renderAll();
     initFirebaseCloud();
   </script>
