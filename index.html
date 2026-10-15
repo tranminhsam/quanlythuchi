@@ -1,26 +1,2817 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#087f68"><meta name="description" content="Quản lý thu chi, lịch âm, công việc và sự kiện.">
-<title>Life & Money</title>
-<style>
-:root{font-family:Inter,system-ui,-apple-system,sans-serif;color:#203047;background:#f5f8fb;font-size:14px}*{box-sizing:border-box}body{margin:0}button,input,select,textarea{font:inherit}button{cursor:pointer}.wrap{max-width:1200px;margin:auto;padding:20px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}.brand{font-size:24px;font-weight:850;letter-spacing:-.7px}.muted{color:#718096}.btn{padding:9px 13px;border:1px solid #dce4ec;border-radius:10px;background:white;color:#344256}.primary{background:#087f68;border-color:#087f68;color:white}.danger{color:#bf3948}.tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px}.tab{border:1px solid #dce4ec;border-radius:10px;padding:9px 12px;background:#fff}.tab.active{background:#d9f3eb;border-color:#b5e6d8;color:#06735c;font-weight:700}.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:16px}.card{background:white;border:1px solid #e4eaf0;border-radius:15px;padding:16px;min-width:0}.metric{font-size:clamp(17px,2.5vw,25px);font-weight:800;margin-top:10px;overflow-wrap:anywhere}.green{color:#087f68}.red{color:#d34b4b}.blue{color:#2467b7}.grid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(270px,1fr);gap:15px;align-items:start}.stack{display:grid;gap:15px}.row{display:flex;align-items:center;justify-content:space-between;gap:9px;flex-wrap:wrap}.calendar{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border-top:1px solid #e6ecf2;border-left:1px solid #e6ecf2;border-radius:8px;overflow:hidden}.weekday{text-align:center;padding:9px 1px;background:#f8fafc;border-right:1px solid #e6ecf2;border-bottom:1px solid #e6ecf2;font-size:11px;font-weight:700}.day{height:88px;min-width:0;padding:6px 4px;border:0;border-right:1px solid #e6ecf2;border-bottom:1px solid #e6ecf2;background:#fff;text-align:left;overflow:hidden}.day.out{background:#fafbfc;color:#a3adba}.day.sel{background:#ddf6ed;box-shadow:inset 0 0 0 1px #48b69c}.day.today .solar{color:#087f68;font-weight:850}.solar{font-weight:700;font-size:13px}.lunar{font-size:10px;color:#8794a7;margin-top:3px}.eventline{font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:4px}.item{display:flex;gap:10px;align-items:flex-start;padding:12px 0;border-bottom:1px solid #edf1f5}.item:last-child{border-bottom:0}.itembody{flex:1;min-width:0}.itemtitle{font-weight:700;overflow-wrap:anywhere}.small{font-size:12px}.field{width:100%;border:1px solid #dce3eb;border-radius:9px;padding:10px;background:white;min-width:0}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.formgrid label{display:block;font-size:12px;color:#627084;margin-bottom:6px}.wide{grid-column:1/-1}.modal{position:fixed;inset:0;background:#13223888;z-index:20;display:none;align-items:center;justify-content:center;padding:16px}.modal.open{display:flex}.modalbox{background:white;border-radius:16px;padding:22px;width:min(490px,100%);max-height:90vh;overflow:auto}.empty{text-align:center;padding:24px 8px;color:#8794a7}.pill{display:inline-block;padding:3px 7px;border-radius:20px;background:#eff6ff;color:#2465b6;font-size:11px}.bar{height:8px;background:#e9eef3;border-radius:8px;overflow:hidden}.bar span{height:100%;display:block;background:#119b78}.notice{padding:12px;border-radius:10px;background:#fff8e6;color:#785b16;font-size:12px;line-height:1.6}.hidden{display:none!important}.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#173b34;color:white;padding:12px 18px;border-radius:10px;display:none;z-index:40;max-width:90%}
-@media(max-width:760px){.wrap{padding:12px}.grid{grid-template-columns:1fr}.cards{gap:7px}.card{padding:11px}.day{height:69px;padding:4px 2px}.solar{font-size:12px}.lunar{font-size:9px}.eventline{font-size:9px}.weekday{font-size:10px}.formgrid{grid-template-columns:1fr}.wide{grid-column:auto}.brand{font-size:21px}}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Quản Lý Thu Chi & Lịch Âm Dương</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Be Vietnam Pro"', 'sans-serif'],
+          },
+          colors: {
+            momo: {
+              50: '#fff2f8',
+              100: '#ffe5f2',
+              200: '#ffcbe6',
+              300: '#ffa1d0',
+              400: '#ff66b0',
+              500: '#f0328f',
+              600: '#d82d8b',
+              700: '#b81d71',
+              800: '#981b5e',
+              900: '#7f1b50',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * {
+      -webkit-tap-highlight-color: transparent;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Be Vietnam Pro', sans-serif;
+      background: linear-gradient(135deg, #fce7f3 0%, #f3e8ff 50%, #ffe4e6 100%);
+      color: #1e293b;
+      overflow-x: hidden;
+      margin: 0;
+    }
+    ::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(216, 45, 139, 0.22);
+      border-radius: 9999px;
+    }
+    .momo-bg-gradient {
+      background: linear-gradient(180deg, #ffeef7 0%, #f6f7fb 230px, #f4f5f9 100%);
+    }
+    .nav-shadow {
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.06);
+    }
+    .card-shadow {
+      box-shadow: 0 4px 20px -2px rgba(216, 45, 139, 0.06), 0 2px 8px -2px rgba(15, 23, 42, 0.04);
+    }
+    /* Highlight Ngày Rằm (15 Âm lịch) Tô Đỏ */
+    .ram-cell {
+      background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%) !important;
+      border: 1.5px solid #ef4444 !important;
+      color: #b91c1c !important;
+    }
+    .ram-cell-selected {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+      color: #ffffff !important;
+      border: 1.5px solid #991b1b !important;
+      box-shadow: 0 6px 15px -3px rgba(239, 68, 68, 0.45);
+    }
+    .day-selected {
+      background: linear-gradient(135deg, #d82d8b 0%, #f0469b 100%) !important;
+      color: #ffffff !important;
+      border-color: #d82d8b !important;
+      box-shadow: 0 6px 15px -3px rgba(216, 45, 139, 0.4);
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .animate-slide-up {
+      animation: slideUp 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+  </style>
 </head>
-<body><div class="wrap">
-<header class="top"><div><div class="brand">🌿 Life & Money</div><div class="muted small" id="subtitle">Quản lý tài chính và cuộc sống</div></div><div class="row" style="justify-content:flex-end"><span id="userlabel" class="muted small">Chưa đăng nhập</span><button class="btn primary" id="login">Đăng nhập Google</button><button class="btn hidden" id="logout">Đăng xuất</button></div></header>
-<div id="loginhint" class="notice" style="margin-bottom:16px">Đăng nhập Google để đồng bộ dữ liệu riêng tư giữa các thiết bị. Dữ liệu không được chia sẻ với người dùng khác.</div>
-<nav class="tabs"><button class="tab active" data-page="home">Tổng quan</button><button class="tab" data-page="calendar">Lịch tháng</button><button class="tab" data-page="finance">Thu chi</button><button class="tab" data-page="tasks">Công việc & sự kiện</button><button class="tab" data-page="stats">Thống kê</button></nav>
-<div class="cards"><div class="card"><div class="muted">Tổng thu tháng này</div><div id="income" class="metric green">0 ₫</div></div><div class="card"><div class="muted">Tổng chi tháng này</div><div id="expense" class="metric red">0 ₫</div></div><div class="card"><div class="muted">Chênh lệch tháng này</div><div id="balance" class="metric blue">0 ₫</div></div></div>
-<section id="page-home"><div class="grid"><div class="stack"><div class="card"><div class="row" style="margin-bottom:12px"><div><b id="monthtitle" style="font-size:18px">Lịch tháng</b><div class="muted small">Ngày dương và ngày âm Việt Nam</div></div><div class="row"><button class="btn" id="prev">‹</button><button class="btn" id="today">Hôm nay</button><button class="btn" id="next">›</button></div></div><div class="calendar" id="calendar"></div><div class="muted small" style="margin-top:10px">🔵 Công việc　🔴 Sự kiện　🟢 Sức khỏe　🟠 Giao dịch</div></div><div class="card"><b>Thu chi 4 tháng gần nhất</b><div id="chart"></div></div></div><div class="stack"><div class="card"><div class="row"><b style="font-size:17px">Kế hoạch trong ngày</b><button class="btn" id="addtask">＋ Thêm</button></div><div id="agenda"></div></div><div class="card"><div class="row"><b style="font-size:17px">Giao dịch gần đây</b><button class="btn" data-goto="finance">Xem sổ</button></div><div id="recent"></div></div><div class="card" style="background:#eaf8f1"><b>🌱 Mục tiêu tiết kiệm</b><div id="saving" class="metric green">0 ₫</div><div class="bar" style="margin:10px 0"><span id="savingbar" style="width:0%"></span></div><div class="muted small" id="savinglabel"></div><button class="btn" style="margin-top:10px" data-goto="stats">Xem thống kê</button></div></div></div></section>
-<section id="page-calendar" class="hidden"><div class="card"><div class="row" style="margin-bottom:14px"><div><b id="monthtitle2" style="font-size:20px">Lịch tháng</b><div class="muted small">Chọn ngày để xem hoặc thêm kế hoạch</div></div><div class="row"><button class="btn" id="prev2">‹</button><button class="btn" id="today2">Hôm nay</button><button class="btn" id="next2">›</button></div></div><div class="calendar" id="calendar2"></div><div id="daydetail" style="margin-top:16px"></div></div></section>
-<section id="page-finance" class="hidden"><div class="card"><div class="row"><div><b style="font-size:20px">Sổ thu chi</b><div class="muted small">Các giao dịch chỉ tài khoản của bạn truy cập được</div></div><button class="btn primary" id="addfinance">＋ Thêm giao dịch</button></div><div class="row" style="margin:16px 0"><select id="filtertype" class="field" style="max-width:200px"><option value="all">Tất cả</option><option value="income">Khoản thu</option><option value="expense">Khoản chi</option></select><input id="filtermonth" type="month" class="field" style="max-width:200px"></div><div id="financelist"></div></div></section>
-<section id="page-tasks" class="hidden"><div class="card"><div class="row"><div><b style="font-size:20px">Công việc & sự kiện</b><div class="muted small">Tạo kế hoạch, đặt giờ và đánh dấu hoàn thành</div></div><button class="btn primary" id="addtask2">＋ Thêm mới</button></div><div class="row" style="margin:16px 0"><select id="taskfilter" class="field" style="max-width:210px"><option value="all">Tất cả loại</option><option value="task">Công việc</option><option value="event">Sự kiện</option><option value="health">Sức khỏe</option></select><select id="taskstatus" class="field" style="max-width:210px"><option value="all">Mọi trạng thái</option><option value="open">Chưa hoàn thành</option><option value="done">Đã hoàn thành</option></select></div><div id="tasklist"></div></div></section>
-<section id="page-stats" class="hidden"><div class="card" style="margin-bottom:15px"><b style="font-size:20px">Thống kê tài chính</b><label class="muted small" style="display:block;margin:12px 0 6px">Tháng thống kê</label><input id="statsmonth" type="month" class="field" style="max-width:230px"><div id="statssummary" style="margin-top:15px"></div></div><div class="card"><b>Chi tiêu theo danh mục</b><div id="categorychart"></div></div><div class="card" style="margin-top:15px"><b>Cài đặt mục tiêu</b><form id="settingsform" style="margin-top:12px"><div class="formgrid"><div><label for="goal">Mục tiêu tiết kiệm tháng (₫)</label><input id="goal" type="number" min="0" step="100000" class="field"></div><div><label for="budget">Ngân sách chi tiêu tháng (₫)</label><input id="budget" type="number" min="0" step="100000" class="field"></div><div class="wide"><button class="btn primary">Lưu mục tiêu</button></div></div></form></div></section>
-<div class="muted small" style="text-align:center;margin:20px 0">Life & Money · Đồng bộ đám mây bằng Firebase</div>
-</div>
-<div class="modal" id="modal" role="dialog" aria-modal="true"><div class="modalbox"><div class="row" style="margin-bottom:18px"><b id="modaltitle" style="font-size:20px">Thêm mới</b><button class="btn" id="close">✕</button></div><form id="form"><div id="formfields" class="formgrid"></div><div class="row" style="justify-content:flex-end;margin-top:18px"><button type="button" class="btn" id="cancel">Hủy</button><button class="btn primary">Lưu lại</button></div></form></div></div><div id="toast" class="toast" role="status"></div>
-<script type="module" src="./app.js"></script>
-</body></html>
+<body class="min-h-screen flex justify-center items-start md:py-3">
+
+  <!-- Mobile App Container (No status bar, no top title header) -->
+  <div id="app-container" class="w-full max-w-[440px] min-h-screen md:min-h-[860px] md:max-h-[95vh] momo-bg-gradient md:rounded-[34px] md:shadow-2xl md:border-[5px] md:border-white flex flex-col relative overflow-hidden">
+
+    <!-- Compact Cloud Sync & Lunar Status Strip (Replaces old header) -->
+    <div class="px-3.5 pt-3 pb-1 flex items-center justify-between gap-2 shrink-0">
+      <!-- Cloud Sync Status Pill -->
+      <button onclick="openSyncModal()" class="flex items-center gap-1.5 bg-white/90 hover:bg-white border border-pink-100/90 px-2.5 py-1 rounded-full shadow-xs active:scale-95 transition max-w-[62%]">
+        <span id="sync-status-dot" class="w-2 h-2 rounded-full bg-amber-400 shrink-0"></span>
+        <span id="sync-status-text" class="text-[11px] font-bold text-slate-700 truncate">Đồng bộ đám mây</span>
+        <i class="fa-solid fa-cloud-arrow-up text-[10px] text-momo-600 shrink-0"></i>
+      </button>
+
+      <!-- Quick Today Lunar & Next Rằm Pill -->
+      <div class="flex items-center gap-1.5 shrink-0">
+        <button onclick="jumpToNextRam()" class="px-2.5 py-1 rounded-full bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 text-[11px] font-extrabold flex items-center gap-1 active:scale-95 transition shadow-xs" title="Xem Ngày Rằm 15 ÂL gần nhất">
+          <span class="w-1.5 h-1.5 rounded-full bg-red-600 animate-ping"></span>
+          <span id="top-lunar-pill">ÂL hôm nay</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Scrollable Content Area -->
+    <main id="main-scroll" class="flex-1 overflow-y-auto pb-28 px-3.5 pt-2 space-y-4">
+
+      <!-- ==================== TAB 1: TỔNG QUAN (OVERVIEW) ==================== -->
+      <section id="tab-overview" class="space-y-4">
+        
+        <!-- 4 Quick Shortcut Icons Card (Exact MoMo Layout) -->
+        <div class="bg-white rounded-2xl p-3.5 card-shadow border border-white">
+          <div class="grid grid-cols-4 gap-2 text-center">
+            <!-- 1. Nhập giao dịch -->
+            <button onclick="openAddModal('expense')" class="flex flex-col items-center group active:scale-95 transition">
+              <div class="w-12 h-12 rounded-2xl bg-cyan-50 border border-cyan-100/80 flex items-center justify-center text-teal-600 group-hover:bg-cyan-100 transition mb-1.5">
+                <i class="fa-regular fa-file-lines text-xl"></i>
+                <i class="fa-solid fa-plus text-[9px] -ml-1.5 mt-1.5"></i>
+              </div>
+              <span class="text-[11px] font-medium text-slate-700 leading-tight">Nhập<br>giao dịch</span>
+            </button>
+
+            <!-- 2. Biến động thu chi -->
+            <button onclick="setChartMode('bar'); scrollToElement('chart-section')" class="flex flex-col items-center group active:scale-95 transition">
+              <div class="w-12 h-12 rounded-2xl bg-cyan-50 border border-cyan-100/80 flex items-center justify-center text-teal-600 group-hover:bg-cyan-100 transition mb-1.5">
+                <i class="fa-solid fa-arrow-trend-up text-xl"></i>
+              </div>
+              <span class="text-[11px] font-medium text-slate-700 leading-tight">Biến động<br>thu chi</span>
+            </button>
+
+            <!-- 3. Ngân sách chi tiêu (+Xu) -->
+            <button onclick="switchTab('utilities'); scrollToElement('budget-card-section')" class="flex flex-col items-center group active:scale-95 transition relative">
+              <span class="absolute -top-1 right-0.5 bg-gradient-to-r from-orange-500 to-red-500 text-white text-[9px] font-extrabold px-1.5 py-0.5 rounded-full shadow-xs z-10">+Xu</span>
+              <div class="w-12 h-12 rounded-2xl bg-cyan-50 border border-cyan-100/80 flex items-center justify-center text-teal-600 group-hover:bg-cyan-100 transition mb-1.5">
+                <i class="fa-solid fa-sack-dollar text-xl"></i>
+              </div>
+              <span class="text-[11px] font-medium text-slate-700 leading-tight">Ngân sách<br>chi tiêu</span>
+            </button>
+
+            <!-- 4. Tiện ích khác -->
+            <button onclick="switchTab('utilities')" class="flex flex-col items-center group active:scale-95 transition relative">
+              <div class="w-12 h-12 rounded-2xl bg-cyan-50 border border-cyan-100/80 flex items-center justify-center text-teal-600 group-hover:bg-cyan-100 transition mb-1.5">
+                <i class="fa-solid fa-table-cells-large text-xl"></i>
+              </div>
+              <span class="text-[11px] font-medium text-slate-700 leading-tight">Tiện ích<br>khác</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Section Header: Tình hình thu chi + Eye Icon + Chart Mode Switch -->
+        <div class="flex items-center justify-between px-0.5">
+          <div class="flex items-center gap-2">
+            <h2 class="text-[18px] font-extrabold text-slate-800">Tình hình thu chi</h2>
+            <button onclick="toggleHideAmount()" class="text-momo-600 hover:text-momo-700 p-1 rounded-full active:scale-90 transition" title="Ẩn/Hiện số tiền">
+              <i id="eye-icon" class="fa-regular fa-eye text-base"></i>
+            </button>
+          </div>
+
+          <!-- Toggle Phân bổ / Biến động -->
+          <div class="bg-white p-0.5 rounded-xl border border-pink-100 flex items-center shadow-xs">
+            <button id="btn-mode-donut" onclick="setChartMode('donut')" class="px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 transition bg-momo-50 text-momo-600">
+              <i class="fa-solid fa-chart-pie text-[11px]"></i>
+              <span>Phân bổ</span>
+            </button>
+            <button id="btn-mode-bar" onclick="setChartMode('bar')" class="px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 transition text-slate-700 hover:text-slate-900">
+              <i class="fa-solid fa-chart-simple text-[11px]"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Main Financial Situation Card -->
+        <div class="bg-white rounded-2xl p-3.5 card-shadow space-y-3.5">
+          
+          <!-- Month Selector Bar (< Tháng này >) -->
+          <div class="flex items-center justify-between pb-1 border-b border-slate-100">
+            <button onclick="changeOverviewMonth(-1)" class="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-600 active:scale-90 transition">
+              <i class="fa-solid fa-chevron-left text-xs"></i>
+            </button>
+            <div class="text-center">
+              <div class="flex items-center justify-center gap-1.5 text-[15px] font-bold text-slate-800">
+                <i class="fa-regular fa-calendar-days text-slate-600 text-xs"></i>
+                <span id="overview-month-label">Tháng này</span>
+              </div>
+              <p id="overview-lunar-range" class="text-[10px] text-slate-400 font-medium"></p>
+            </div>
+            <button onclick="changeOverviewMonth(1)" class="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-600 active:scale-90 transition">
+              <i class="fa-solid fa-chevron-right text-xs"></i>
+            </button>
+          </div>
+
+          <!-- 2 Selectable Cards: Chi tiêu & Thu nhập -->
+          <div class="grid grid-cols-2 gap-2.5">
+            <!-- Chi tiêu Box -->
+            <button id="box-type-expense" onclick="setOverviewType('expense')" class="text-left p-3 rounded-2xl border-2 border-momo-400 bg-momo-50/30 transition relative overflow-hidden">
+              <div class="flex items-center justify-between mb-1.5">
+                <div class="flex items-center gap-1.5">
+                  <span class="w-5 h-5 rounded-full bg-momo-100 text-momo-600 flex items-center justify-center text-[10px]">
+                    <i class="fa-solid fa-coins"></i>
+                  </span>
+                  <span class="text-xs font-semibold text-slate-600">Chi tiêu</span>
+                </div>
+                <span id="expense-diff-badge" class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-500">--</span>
+              </div>
+              <div id="overview-expense-amount" class="text-[16px] font-extrabold text-slate-900 truncate">0đ</div>
+            </button>
+
+            <!-- Thu nhập Box -->
+            <button id="box-type-income" onclick="setOverviewType('income')" class="text-left p-3 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 transition relative overflow-hidden">
+              <div class="flex items-center justify-between mb-1.5">
+                <div class="flex items-center gap-1.5">
+                  <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-[10px]">
+                    <i class="fa-solid fa-sack-dollar"></i>
+                  </span>
+                  <span class="text-xs font-semibold text-slate-600">Thu nhập</span>
+                </div>
+                <span id="income-diff-badge" class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-500">--</span>
+              </div>
+              <div id="overview-income-amount" class="text-[16px] font-extrabold text-slate-900 truncate">0đ</div>
+            </button>
+          </div>
+
+          <!-- Status Banner (Like MoMo light-blue info strip) -->
+          <div onclick="openSyncModal()" class="bg-[#f0f6ff] hover:bg-blue-50 border border-blue-100 rounded-xl px-3 py-2 flex items-center justify-between cursor-pointer transition">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-chart-column text-blue-500 text-sm"></i>
+              <span id="overview-net-summary" class="text-xs text-slate-700 font-medium">Số dư tháng: <strong class="text-slate-900">0đ</strong></span>
+            </div>
+            <i class="fa-solid fa-chevron-right text-[10px] text-slate-400"></i>
+          </div>
+
+          <!-- Call-to-action Box (Ghi chép mọi chi tiêu...) -->
+          <div class="bg-[#f7f9fc] rounded-2xl p-3.5 border border-slate-100 space-y-2.5">
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Ghi chép mọi chi tiêu giúp bạn <strong class="text-slate-800">theo dõi chính xác tình hình tài chính</strong> của mình.
+            </p>
+            <button onclick="openAddModal(state.overviewType)" class="w-full py-2.5 rounded-xl border border-momo-500 bg-white hover:bg-momo-50 text-momo-600 font-bold text-xs flex items-center justify-center gap-1.5 active:scale-[0.99] transition shadow-xs">
+              <i class="fa-regular fa-file-lines"></i>
+              <span id="btn-quick-record-label">Nhập giao dịch chi</span>
+            </button>
+          </div>
+
+          <!-- Chart Container (Donut Chart OR Bar Chart) -->
+          <div id="chart-section" class="pt-1">
+            <!-- Donut Chart View (Phân bổ) -->
+            <div id="donut-chart-wrapper" class="flex flex-col items-center">
+              <div id="donut-svg-container" class="w-full flex justify-center items-center py-1 relative min-h-[215px]">
+                <!-- Populated dynamically via SVG -->
+              </div>
+              <!-- Category Breakdown List -->
+              <div id="category-breakdown-list" class="w-full space-y-2 mt-2 pt-3 border-t border-slate-100"></div>
+            </div>
+
+            <!-- Bar Chart View (Biến động) -->
+            <div id="bar-chart-wrapper" class="hidden space-y-3">
+              <div class="flex items-center justify-between text-xs text-slate-500 px-1">
+                <span>Biến động theo ngày trong tháng</span>
+                <span id="bar-chart-subtitle" class="font-bold text-momo-600">Chi tiêu</span>
+              </div>
+              <div id="bar-chart-container" class="h-44 flex items-end gap-1.5 pt-6 pb-2 px-2 bg-slate-50 rounded-xl border border-slate-100 overflow-x-auto">
+                <!-- Populated dynamically -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Today's & Rằm Tasks Preview Card -->
+        <div class="bg-white rounded-2xl p-3.5 card-shadow space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-6 h-6 rounded-lg bg-red-100 text-red-600 flex items-center justify-center text-xs">
+                <i class="fa-solid fa-calendar-check"></i>
+              </span>
+              <h3 class="text-sm font-bold text-slate-800">Công việc & Lịch Rằm sắp tới</h3>
+            </div>
+            <button onclick="switchTab('tasks')" class="text-xs font-bold text-momo-600 hover:underline">Xem tất cả</button>
+          </div>
+          <div id="overview-tasks-preview" class="space-y-2"></div>
+        </div>
+
+        <!-- Recent Transactions in Month -->
+        <div class="bg-white rounded-2xl p-3.5 card-shadow space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-6 h-6 rounded-lg bg-momo-100 text-momo-600 flex items-center justify-center text-xs">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+              </span>
+              <h3 class="text-sm font-bold text-slate-800">Chi tiết giao dịch trong tháng</h3>
+            </div>
+            <span id="recent-tx-count" class="text-[11px] text-slate-400 font-medium"></span>
+          </div>
+          <div id="overview-recent-tx" class="space-y-2"></div>
+        </div>
+
+      </section>
+
+      <!-- ==================== TAB 2: LỊCH ÂM DƯƠNG VIỆT NAM ==================== -->
+      <section id="tab-calendar" class="hidden space-y-3.5">
+        
+        <!-- Lunar Today & Quick Jump Header Banner -->
+        <div class="bg-gradient-to-r from-momo-600 via-pink-600 to-rose-500 rounded-2xl p-3.5 text-white shadow-md space-y-2.5">
+          <div class="flex items-center justify-between">
+            <div class="space-y-0.5">
+              <div class="flex items-center gap-1.5 text-[11px] font-semibold text-pink-100">
+                <i class="fa-solid fa-moon"></i>
+                <span>Lịch Âm Dương Việt Nam (Hồ Ngọc Đức • UTC+7)</span>
+              </div>
+              <h2 id="cal-banner-solar" class="text-base font-extrabold">Hôm nay</h2>
+              <p id="cal-banner-lunar" class="text-xs text-pink-100 font-medium"></p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 pt-1">
+            <button onclick="goToTodayCalendar()" class="flex-1 py-1.5 px-3 rounded-xl bg-white/20 hover:bg-white/30 text-xs font-bold border border-white/30 active:scale-95 transition">
+              <i class="fa-solid fa-location-crosshairs mr-1"></i>Hôm nay
+            </button>
+            <button onclick="jumpToNextRam()" class="flex-1 py-1.5 px-3 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-extrabold border border-red-300 shadow-xs active:scale-95 transition">
+              🌕 Ngày Rằm gần nhất
+            </button>
+          </div>
+        </div>
+
+        <!-- Calendar Card -->
+        <div class="bg-white rounded-2xl p-3 card-shadow space-y-3">
+          <!-- Calendar Month Navigation -->
+          <div class="flex items-center justify-between px-1">
+            <button onclick="changeCalendarMonth(-1)" class="w-8 h-8 rounded-xl bg-slate-50 hover:bg-pink-50 text-slate-700 flex items-center justify-center active:scale-90 transition border border-slate-200/60">
+              <i class="fa-solid fa-chevron-left text-xs"></i>
+            </button>
+            <div class="text-center">
+              <h3 id="cal-month-title" class="text-base font-extrabold text-slate-800">Tháng 10 / 2026</h3>
+              <p id="cal-month-lunar-subtitle" class="text-[11px] font-bold text-red-600"></p>
+            </div>
+            <button onclick="changeCalendarMonth(1)" class="w-8 h-8 rounded-xl bg-slate-50 hover:bg-pink-50 text-slate-700 flex items-center justify-center active:scale-90 transition border border-slate-200/60">
+              <i class="fa-solid fa-chevron-right text-xs"></i>
+            </button>
+          </div>
+
+          <!-- Legend for Calendar -->
+          <div class="flex flex-wrap items-center justify-center gap-2.5 text-[10px] font-semibold text-slate-500 bg-slate-50 py-1.5 px-2 rounded-xl border border-slate-100">
+            <span class="flex items-center gap-1 text-red-600 font-extrabold">
+              <span class="w-2.5 h-2.5 rounded-xs bg-red-100 border border-red-500 inline-block"></span>
+              Ngày Rằm (15 ÂL)
+            </span>
+            <span class="flex items-center gap-1 text-amber-600 font-bold">
+              <span class="w-2.5 h-2.5 rounded-xs bg-amber-100 border border-amber-500 inline-block"></span>
+              Mùng 1 (M1)
+            </span>
+            <span class="flex items-center gap-1 text-momo-600">
+              <span class="w-2 h-2 rounded-full bg-momo-500 inline-block"></span>
+              Thu/Chi
+            </span>
+            <span class="flex items-center gap-1 text-blue-600">
+              <span class="w-2 h-2 rounded-full bg-blue-500 inline-block"></span>
+              Công việc
+            </span>
+          </div>
+
+          <!-- Weekday Headers (T2 - CN) -->
+          <div class="grid grid-cols-7 gap-1 text-center text-[11px] font-bold text-slate-400">
+            <div>T2</div>
+            <div>T3</div>
+            <div>T4</div>
+            <div>T5</div>
+            <div>T6</div>
+            <div class="text-blue-500">T7</div>
+            <div class="text-red-500">CN</div>
+          </div>
+
+          <!-- Calendar Days Grid -->
+          <div id="calendar-grid" class="grid grid-cols-7 gap-1">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+
+        <!-- Selected Day Detail Card (Can Chi + Rằm/Mùng 1 + Công việc + Giao dịch) -->
+        <div id="selected-day-panel" class="bg-white rounded-2xl p-4 card-shadow space-y-4 border border-pink-100">
+          <!-- Selected Day Header -->
+          <div class="flex items-start justify-between border-b border-slate-100 pb-3 gap-2">
+            <div class="space-y-1">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span id="sel-day-solar" class="text-base font-extrabold text-slate-800">15/10/2026</span>
+                <span id="sel-day-special-badge" class="hidden px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-red-600 text-white shadow-xs">
+                  🌕 NGÀY RẰM (15 ÂL)
+                </span>
+              </div>
+              <p id="sel-day-lunar" class="text-xs font-bold text-momo-600"></p>
+              <p id="sel-day-canchi" class="text-[11px] text-slate-500 font-medium"></p>
+            </div>
+            <div class="text-right shrink-0">
+              <div class="text-[10px] text-slate-400 font-semibold">Thu / Chi ngày này</div>
+              <div id="sel-day-net" class="text-xs font-extrabold text-slate-700 mt-0.5">0đ</div>
+            </div>
+          </div>
+
+          <!-- 2 Quick Action Buttons for Selected Date -->
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="openAddModal('expense', state.selectedDate)" class="py-2 px-3 rounded-xl bg-momo-50 hover:bg-momo-100 text-momo-600 border border-momo-200 text-xs font-extrabold flex items-center justify-center gap-1.5 active:scale-95 transition">
+              <i class="fa-solid fa-plus-circle"></i>
+              <span>Thêm giao dịch</span>
+            </button>
+            <button onclick="openAddModal('task', state.selectedDate)" class="py-2 px-3 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-600 border border-blue-200 text-xs font-extrabold flex items-center justify-center gap-1.5 active:scale-95 transition">
+              <i class="fa-solid fa-calendar-plus"></i>
+              <span>Thêm công việc</span>
+            </button>
+          </div>
+
+          <!-- Tasks on Selected Day -->
+          <div class="space-y-2">
+            <h4 class="text-xs font-extrabold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+              <i class="fa-solid fa-list-check text-blue-500"></i>
+              <span>Công việc cần làm trong ngày</span>
+            </h4>
+            <div id="sel-day-tasks-list" class="space-y-2"></div>
+          </div>
+
+          <!-- Transactions on Selected Day -->
+          <div class="space-y-2 pt-2 border-t border-slate-100">
+            <h4 class="text-xs font-extrabold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+              <i class="fa-solid fa-wallet text-momo-500"></i>
+              <span>Giao dịch thu / chi trong ngày</span>
+            </h4>
+            <div id="sel-day-tx-list" class="space-y-2"></div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ==================== TAB 3: CÔNG VIỆC GẮN LỊCH (TASKS) ==================== -->
+      <section id="tab-tasks" class="hidden space-y-3.5">
+        
+        <!-- Summary Header Card -->
+        <div class="bg-white rounded-2xl p-3.5 card-shadow space-y-3">
+          <div class="flex items-center justify-between gap-2">
+            <div>
+              <h2 class="text-base font-extrabold text-slate-800">Công việc & Lịch trình</h2>
+              <p class="text-xs text-slate-500">Gắn liền Lịch Âm Dương & Nhắc ngày Rằm</p>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <button onclick="generateRamMung1Tasks()" class="px-2.5 py-2 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-[11px] font-extrabold flex items-center gap-1 active:scale-95 transition" title="Tạo nhanh nhắc nhở ngày Rằm & Mùng 1">
+                <span>🌕 +Lịch Rằm</span>
+              </button>
+              <button onclick="openAddModal('task')" class="px-3 py-2 rounded-xl bg-momo-600 hover:bg-momo-700 text-white text-xs font-bold flex items-center gap-1 shadow-xs active:scale-95 transition">
+                <i class="fa-solid fa-plus"></i>
+                <span>Thêm việc</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Progress Counter Grid -->
+          <div class="grid grid-cols-3 gap-2 pt-1">
+            <div class="bg-slate-50 rounded-xl p-2.5 border border-slate-100 text-center">
+              <div id="task-stat-pending" class="text-base font-extrabold text-blue-600">0</div>
+              <div class="text-[10px] font-semibold text-slate-500">Chưa xong</div>
+            </div>
+            <div class="bg-red-50/70 rounded-xl p-2.5 border border-red-100 text-center">
+              <div id="task-stat-ram" class="text-base font-extrabold text-red-600">0</div>
+              <div class="text-[10px] font-semibold text-red-600">Rằm / Mùng 1</div>
+            </div>
+            <div class="bg-emerald-50/70 rounded-xl p-2.5 border border-emerald-100 text-center">
+              <div id="task-stat-done" class="text-base font-extrabold text-emerald-600">0</div>
+              <div class="text-[10px] font-semibold text-emerald-600">Đã xong</div>
+            </div>
+          </div>
+
+          <!-- Filter Pills -->
+          <div class="flex items-center gap-1.5 overflow-x-auto pb-1">
+            <button onclick="setTaskFilter('all')" id="tfilter-all" class="px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap bg-momo-600 text-white transition">Tất cả</button>
+            <button onclick="setTaskFilter('today')" id="tfilter-today" class="px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap bg-slate-100 text-slate-600 hover:bg-slate-200 transition">Hôm nay</button>
+            <button onclick="setTaskFilter('upcoming')" id="tfilter-upcoming" class="px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap bg-slate-100 text-slate-600 hover:bg-slate-200 transition">Sắp tới</button>
+            <button onclick="setTaskFilter('ram')" id="tfilter-ram" class="px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap bg-red-50 text-red-600 border border-red-200 transition">🌕 Ngày Rằm / Mùng 1</button>
+            <button onclick="setTaskFilter('done')" id="tfilter-done" class="px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap bg-slate-100 text-slate-600 hover:bg-slate-200 transition">Đã xong</button>
+          </div>
+        </div>
+
+        <!-- Tasks List Container -->
+        <div id="tasks-full-list" class="space-y-2.5"></div>
+
+      </section>
+
+      <!-- ==================== TAB 4: TIỆN ÍCH & ĐỒNG BỘ (UTILITIES) ==================== -->
+      <section id="tab-utilities" class="hidden space-y-3.5">
+        
+        <!-- Cloud Multi-Device Sync Card (Firebase + GitHub Gist) -->
+        <div class="bg-white rounded-2xl p-4 card-shadow space-y-3 border border-pink-100">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-momo-600 to-pink-500 text-white flex items-center justify-center text-base shadow-xs">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+              </div>
+              <div>
+                <h2 class="text-sm font-extrabold text-slate-800">Đồng bộ dữ liệu đa thiết bị</h2>
+                <p id="util-sync-subtitle" class="text-[11px] text-slate-500">Firebase Realtime & GitHub Gist</p>
+              </div>
+            </div>
+            <button onclick="openSyncModal()" class="px-3 py-1.5 rounded-xl bg-momo-600 hover:bg-momo-700 text-white text-xs font-bold shadow-xs active:scale-95 transition">
+              Cấu hình
+            </button>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 pt-1">
+            <button onclick="openSyncModal('firebase')" class="p-2.5 rounded-xl bg-amber-50/70 hover:bg-amber-100/70 border border-amber-200 text-left transition">
+              <div class="flex items-center justify-between text-xs font-extrabold text-amber-800">
+                <span><i class="fa-solid fa-bolt text-amber-500 mr-1"></i>Firebase Sync</span>
+                <span id="fb-badge-mini" class="text-[9px] px-1.5 py-0.5 rounded bg-amber-200/80 text-amber-900">Sẵn sàng</span>
+              </div>
+              <p class="text-[10px] text-slate-500 mt-1 truncate" id="fb-key-mini">Nhập Mã Đồng Bộ để nối máy</p>
+            </button>
+
+            <button onclick="openSyncModal('github')" class="p-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-left transition">
+              <div class="flex items-center justify-between text-xs font-extrabold text-slate-800">
+                <span><i class="fa-brands fa-github mr-1"></i>GitHub Gist</span>
+                <span id="gh-badge-mini" class="text-[9px] px-1.5 py-0.5 rounded bg-slate-200 text-slate-700">Thủ công/Tự động</span>
+              </div>
+              <p class="text-[10px] text-slate-500 mt-1 truncate" id="gh-id-mini">Lưu trữ trên GitHub cá nhân</p>
+            </button>
+          </div>
+        </div>
+
+        <!-- Monthly Budget Card -->
+        <div id="budget-card-section" class="bg-white rounded-2xl p-4 card-shadow space-y-3.5">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-base font-extrabold text-slate-800">Ngân sách chi tiêu tháng</h2>
+              <p class="text-xs text-slate-500">Kiểm soát hạn mức chi tiêu hàng tháng</p>
+            </div>
+            <button onclick="openBudgetEditModal()" class="px-3 py-1.5 rounded-xl bg-momo-50 text-momo-600 text-xs font-bold hover:bg-momo-100 transition">
+              <i class="fa-solid fa-pen mr-1"></i>Đặt hạn mức
+            </button>
+          </div>
+
+          <div class="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-4 text-white space-y-3">
+            <div class="flex items-center justify-between text-xs text-slate-300">
+              <span>Đã chi trong tháng</span>
+              <span id="budget-percent-label" class="font-bold text-pink-400">0%</span>
+            </div>
+            <div class="flex items-baseline justify-between">
+              <div id="budget-spent-label" class="text-xl font-extrabold">0đ</div>
+              <div class="text-xs text-slate-300">/ <span id="budget-limit-label">12.000.000đ</span></div>
+            </div>
+            <div class="w-full h-2.5 bg-slate-700 rounded-full overflow-hidden">
+              <div id="budget-progress-bar" class="h-full bg-gradient-to-r from-momo-500 to-rose-400 rounded-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+            <p id="budget-status-msg" class="text-[11px] text-slate-300"></p>
+          </div>
+
+          <div id="budget-category-list" class="space-y-2.5 pt-1"></div>
+        </div>
+
+        <!-- Lunar Upcoming Rằm & Mùng 1 Lookup Table -->
+        <div class="bg-white rounded-2xl p-4 card-shadow space-y-3">
+          <div class="flex items-center gap-2">
+            <span class="w-7 h-7 rounded-lg bg-red-100 text-red-600 flex items-center justify-center text-xs">
+              <i class="fa-solid fa-calendar-day"></i>
+            </span>
+            <div>
+              <h3 class="text-sm font-bold text-slate-800">Lịch Ngày Rằm (15 ÂL) & Mùng 1 sắp tới</h3>
+              <p class="text-[11px] text-slate-500">Bấm để nhảy tới lịch hoặc tạo nhắc việc</p>
+            </div>
+          </div>
+          <div id="upcoming-lunar-events" class="space-y-2"></div>
+        </div>
+
+        <!-- Backup JSON Export / Import Card -->
+        <div class="bg-white rounded-2xl p-4 card-shadow space-y-2.5">
+          <h3 class="text-sm font-bold text-slate-800">Sao lưu & Khôi phục tệp JSON</h3>
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="exportDataJSON()" class="py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold flex items-center justify-center gap-1.5 transition">
+              <i class="fa-solid fa-download text-momo-600"></i>
+              <span>Xuất file JSON</span>
+            </button>
+            <label class="py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition">
+              <i class="fa-solid fa-upload text-blue-600"></i>
+              <span>Nhập file JSON</span>
+              <input type="file" accept=".json" onchange="importDataJSON(event)" class="hidden" />
+            </label>
+          </div>
+          <div class="flex gap-2 pt-1">
+            <button onclick="resetSampleData()" class="flex-1 py-2 rounded-xl bg-pink-50 hover:bg-pink-100 text-momo-600 text-[11px] font-bold transition">
+              <i class="fa-solid fa-rotate mr-1"></i>Khôi phục dữ liệu mẫu
+            </button>
+            <button onclick="clearAllData()" class="py-2 px-3 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 text-[11px] font-bold transition">
+              <i class="fa-solid fa-trash-can mr-1"></i>Xóa trắng
+            </button>
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+
+    <!-- ==================== BOTTOM NAVIGATION BAR (5 ITEMS MOMO STYLE) ==================== -->
+    <nav class="sticky bottom-0 left-0 right-0 bg-white nav-shadow border-t border-slate-100 px-2 pt-1.5 pb-2.5 z-30 shrink-0">
+      <div class="grid grid-cols-5 items-end">
+        
+        <!-- 1. Tổng quan -->
+        <button onclick="switchTab('overview')" id="nav-overview" class="flex flex-col items-center justify-center py-1 text-momo-600 transition relative">
+          <div id="nav-ind-overview" class="w-8 h-0.5 bg-momo-600 rounded-full absolute -top-1.5"></div>
+          <i class="fa-solid fa-receipt text-lg mb-1"></i>
+          <span class="text-[10px] font-bold">Tổng quan</span>
+        </button>
+
+        <!-- 2. Lịch -->
+        <button onclick="switchTab('calendar')" id="nav-calendar" class="flex flex-col items-center justify-center py-1 text-slate-500 hover:text-momo-600 transition relative">
+          <div id="nav-ind-calendar" class="hidden w-8 h-0.5 bg-momo-600 rounded-full absolute -top-1.5"></div>
+          <div class="relative">
+            <i class="fa-regular fa-calendar-days text-lg mb-1"></i>
+            <span class="w-2 h-2 rounded-full bg-red-500 absolute -top-0.5 -right-1.5 border border-white"></span>
+          </div>
+          <span class="text-[10px] font-semibold">Lịch</span>
+        </button>
+
+        <!-- 3. Center Floating Button: Ghi chép GD -->
+        <div class="flex flex-col items-center justify-end relative -top-3">
+          <button onclick="openAddModal('expense')" class="w-12 h-12 rounded-full bg-gradient-to-tr from-momo-600 to-momo-400 text-white shadow-lg shadow-momo-500/40 border-4 border-white flex items-center justify-center active:scale-90 transition">
+            <i class="fa-solid fa-file-circle-plus text-lg"></i>
+          </button>
+          <span class="mt-1 bg-momo-600 text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-xs whitespace-nowrap">
+            Ghi chép GD
+          </span>
+        </div>
+
+        <!-- 4. Công việc -->
+        <button onclick="switchTab('tasks')" id="nav-tasks" class="flex flex-col items-center justify-center py-1 text-slate-500 hover:text-momo-600 transition relative">
+          <div id="nav-ind-tasks" class="hidden w-8 h-0.5 bg-momo-600 rounded-full absolute -top-1.5"></div>
+          <div class="relative">
+            <i class="fa-solid fa-calendar-check text-lg mb-1"></i>
+            <span id="nav-task-badge" class="hidden absolute -top-1 -right-2.5 bg-blue-600 text-white text-[8px] font-extrabold px-1 rounded-full">0</span>
+          </div>
+          <span class="text-[10px] font-semibold">Công việc</span>
+        </button>
+
+        <!-- 5. Tiện ích -->
+        <button onclick="switchTab('utilities')" id="nav-utilities" class="flex flex-col items-center justify-center py-1 text-slate-500 hover:text-momo-600 transition relative">
+          <div id="nav-ind-utilities" class="hidden w-8 h-0.5 bg-momo-600 rounded-full absolute -top-1.5"></div>
+          <i class="fa-solid fa-table-cells-large text-lg mb-1"></i>
+          <span class="text-[10px] font-semibold">Tiện ích</span>
+        </button>
+
+      </div>
+    </nav>
+
+    <!-- ==================== MODAL 1: GHI CHÉP GD / CÔNG VIỆC (ADD & EDIT) ==================== -->
+    <div id="record-modal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-end justify-center">
+      <div class="bg-white w-full max-w-[440px] rounded-t-3xl p-4 pb-6 space-y-3.5 animate-slide-up max-h-[92vh] overflow-y-auto">
+        
+        <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+          <h3 id="modal-title" class="text-base font-extrabold text-slate-800">Ghi chép mới</h3>
+          <button onclick="closeRecordModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-slate-200">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <!-- Mode Switcher: Chi tiêu | Thu nhập | Công việc -->
+        <div id="modal-mode-tabs" class="grid grid-cols-3 gap-1.5 bg-slate-100 p-1 rounded-2xl">
+          <button type="button" onclick="switchModalMode('expense')" id="mmode-expense" class="py-2 rounded-xl text-xs font-extrabold transition bg-white text-momo-600 shadow-xs">
+            Chi tiêu
+          </button>
+          <button type="button" onclick="switchModalMode('income')" id="mmode-income" class="py-2 rounded-xl text-xs font-extrabold transition text-slate-600">
+            Thu nhập
+          </button>
+          <button type="button" onclick="switchModalMode('task')" id="mmode-task" class="py-2 rounded-xl text-xs font-extrabold transition text-slate-600">
+            Công việc
+          </button>
+        </div>
+
+        <!-- Date Input + Live Lunar Preview -->
+        <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200/70 space-y-1.5">
+          <div class="flex items-center justify-between">
+            <label class="text-xs font-bold text-slate-600">Ngày thực hiện</label>
+            <span id="modal-lunar-preview" class="text-[11px] font-bold text-momo-600"></span>
+          </div>
+          <input type="date" id="modal-date-input" onchange="updateModalLunarPreview()" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-800 focus:outline-none focus:border-momo-500" />
+        </div>
+
+        <!-- FORM PART A: TRANSACTION (EXPENSE / INCOME) -->
+        <div id="modal-tx-fields" class="space-y-3.5">
+          <div>
+            <label class="text-xs font-bold text-slate-600 block mb-1">Số tiền (VNĐ)</label>
+            <div class="relative">
+              <input type="number" id="tx-amount-input" placeholder="Nhập số tiền, vd: 50000" oninput="renderQuickAmountSuggestions()" class="w-full bg-slate-50 border-2 border-momo-200 focus:border-momo-500 rounded-2xl px-3.5 py-2.5 text-lg font-extrabold text-slate-800 focus:outline-none" />
+              <span class="absolute right-3.5 top-3 text-xs font-bold text-slate-400">VNĐ</span>
+            </div>
+            <div id="quick-amount-chips" class="flex items-center gap-1.5 overflow-x-auto pt-2 pb-0.5">
+              <button type="button" onclick="setTxAmount(35000)" class="px-2.5 py-1 rounded-lg bg-pink-50 text-momo-600 text-[11px] font-bold whitespace-nowrap">35.000đ</button>
+              <button type="button" onclick="setTxAmount(50000)" class="px-2.5 py-1 rounded-lg bg-pink-50 text-momo-600 text-[11px] font-bold whitespace-nowrap">50.000đ</button>
+              <button type="button" onclick="setTxAmount(100000)" class="px-2.5 py-1 rounded-lg bg-pink-50 text-momo-600 text-[11px] font-bold whitespace-nowrap">100.000đ</button>
+              <button type="button" onclick="setTxAmount(200000)" class="px-2.5 py-1 rounded-lg bg-pink-50 text-momo-600 text-[11px] font-bold whitespace-nowrap">200.000đ</button>
+              <button type="button" onclick="setTxAmount(500000)" class="px-2.5 py-1 rounded-lg bg-pink-50 text-momo-600 text-[11px] font-bold whitespace-nowrap">500.000đ</button>
+            </div>
+          </div>
+
+          <div>
+            <label class="text-xs font-bold text-slate-600 block mb-1.5">Danh mục</label>
+            <div id="tx-category-grid" class="grid grid-cols-4 gap-2"></div>
+          </div>
+
+          <div>
+            <label class="text-xs font-bold text-slate-600 block mb-1">Ghi chú giao dịch</label>
+            <input type="text" id="tx-note-input" placeholder="VD: Ăn trưa, mua hoa quả cúng Rằm..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-800 focus:outline-none focus:border-momo-500" />
+          </div>
+        </div>
+
+        <!-- FORM PART B: TASK (CÔNG VIỆC LỊCH TRÌNH) -->
+        <div id="modal-task-fields" class="hidden space-y-3.5">
+          <div>
+            <label class="text-xs font-bold text-slate-600 block mb-1">Tên công việc / Lịch trình</label>
+            <input type="text" id="task-title-input" placeholder="VD: Mua hoa quả cúng Rằm, Họp dự án..." class="w-full bg-slate-50 border-2 border-blue-200 focus:border-blue-500 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-800 focus:outline-none" />
+          </div>
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="text-xs font-bold text-slate-600 block mb-1">Giờ nhắc</label>
+              <input type="time" id="task-time-input" value="08:00" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-800 focus:outline-none" />
+            </div>
+            <div>
+              <label class="text-xs font-bold text-slate-600 block mb-1">Mức độ ưu tiên</label>
+              <select id="task-priority-input" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-800 focus:outline-none">
+                <option value="high">🔴 Cao</option>
+                <option value="medium" selected>🟡 Trung bình</option>
+                <option value="low">🟢 Thấp</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="text-xs font-bold text-slate-600 block mb-1">Nhóm công việc</label>
+            <div class="grid grid-cols-3 gap-2">
+              <button type="button" onclick="selectTaskCat('Lễ / Rằm')" data-tcat="Lễ / Rằm" class="tcat-btn py-2 px-2 rounded-xl border text-xs font-bold border-momo-500 bg-momo-50 text-momo-600">🌕 Lễ / Rằm</button>
+              <button type="button" onclick="selectTaskCat('Công việc')" data-tcat="Công việc" class="tcat-btn py-2 px-2 rounded-xl border text-xs font-bold border-slate-200 bg-slate-50 text-slate-600">💼 Công việc</button>
+              <button type="button" onclick="selectTaskCat('Gia đình')" data-tcat="Gia đình" class="tcat-btn py-2 px-2 rounded-xl border text-xs font-bold border-slate-200 bg-slate-50 text-slate-600">🏠 Gia đình</button>
+              <button type="button" onclick="selectTaskCat('Tài chính')" data-tcat="Tài chính" class="tcat-btn py-2 px-2 rounded-xl border text-xs font-bold border-slate-200 bg-slate-50 text-slate-600">💳 Tài chính</button>
+              <button type="button" onclick="selectTaskCat('Cá nhân')" data-tcat="Cá nhân" class="tcat-btn py-2 px-2 rounded-xl border text-xs font-bold border-slate-200 bg-slate-50 text-slate-600">✨ Cá nhân</button>
+              <button type="button" onclick="selectTaskCat('Sức khỏe')" data-tcat="Sức khỏe" class="tcat-btn py-2 px-2 rounded-xl border text-xs font-bold border-slate-200 bg-slate-50 text-slate-600">❤️ Sức khỏe</button>
+            </div>
+          </div>
+
+          <div>
+            <label class="text-xs font-bold text-slate-600 block mb-1">Ghi chú chi tiết</label>
+            <input type="text" id="task-note-input" placeholder="Ghi chú thêm cho lịch trình..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-800 focus:outline-none" />
+          </div>
+        </div>
+
+        <button type="button" onclick="submitRecordModal()" class="w-full py-3 rounded-2xl bg-gradient-to-r from-momo-600 to-momo-500 hover:from-momo-700 hover:to-momo-600 text-white font-extrabold text-sm shadow-lg shadow-momo-500/30 active:scale-[0.99] transition">
+          Lưu thông tin
+        </button>
+
+      </div>
+    </div>
+
+    <!-- ==================== MODAL 2: ĐỒNG BỘ ĐA THIẾT BỊ (FIREBASE & GITHUB GIST) ==================== -->
+    <div id="sync-modal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
+      <div class="bg-white w-full max-w-[440px] rounded-t-3xl sm:rounded-3xl p-4 pb-6 space-y-4 animate-slide-up max-h-[92vh] overflow-y-auto shadow-2xl">
+        
+        <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+          <div class="flex items-center gap-2">
+            <span class="w-7 h-7 rounded-xl bg-momo-100 text-momo-600 flex items-center justify-center text-xs">
+              <i class="fa-solid fa-cloud"></i>
+            </span>
+            <h3 class="text-base font-extrabold text-slate-800">Đồng bộ dữ liệu đa thiết bị</h3>
+          </div>
+          <button onclick="closeSyncModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <!-- Sync Provider Switcher -->
+        <div class="grid grid-cols-2 gap-1.5 bg-slate-100 p-1 rounded-2xl">
+          <button type="button" onclick="switchSyncProviderTab('firebase')" id="stab-firebase" class="py-2 rounded-xl text-xs font-extrabold transition bg-white text-momo-600 shadow-xs">
+            <i class="fa-solid fa-bolt text-amber-500 mr-1"></i>Firebase Realtime
+          </button>
+          <button type="button" onclick="switchSyncProviderTab('github')" id="stab-github" class="py-2 rounded-xl text-xs font-extrabold transition text-slate-600">
+            <i class="fa-brands fa-github mr-1"></i>GitHub Gist API
+          </button>
+        </div>
+
+        <!-- TAB A: FIREBASE SYNC -->
+        <div id="sync-panel-firebase" class="space-y-3">
+          <div class="bg-amber-50/80 border border-amber-200 rounded-2xl p-3 text-xs text-amber-900 space-y-1">
+            <div class="font-extrabold flex items-center gap-1.5">
+              <i class="fa-solid fa-circle-info text-amber-600"></i>
+              <span>Đồng bộ tức thời bằng Mã Đồng Bộ (Sync Key)</span>
+            </div>
+            <p class="text-[11px] text-amber-800 leading-relaxed">
+              Chỉ cần nhập cùng một <strong>Mã Đồng Bộ</strong> (ví dụ: <code class="bg-white px-1 rounded">gia-dinh-2026</code>) trên điện thoại và máy tính, dữ liệu thu chi & lịch công việc sẽ tự động đồng bộ theo thời gian thực.
+            </p>
+          </div>
+
+          <div>
+            <label class="text-xs font-bold text-slate-600 block mb-1">Mã Đồng Bộ (Sync Key)</label>
+            <div class="flex gap-2">
+              <input type="text" id="fb-sync-key-input" placeholder="VD: thu-chi-ca-nhan-2026" class="flex-1 bg-slate-50 border-2 border-slate-200 focus:border-momo-500 rounded-xl px-3 py-2 text-sm font-bold text-slate-800 focus:outline-none" />
+              <button type="button" onclick="connectFirebaseSyncKey()" class="px-4 py-2 rounded-xl bg-momo-600 hover:bg-momo-700 text-white text-xs font-extrabold shrink-0 transition">
+                Kết nối
+              </button>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between bg-slate-50 px-3 py-2.5 rounded-xl border border-slate-200/70 text-xs">
+            <div>
+              <span class="text-slate-500">Trạng thái kênh: </span>
+              <strong id="fb-modal-status" class="text-slate-800">Chưa kết nối kênh chung</strong>
+            </div>
+            <button type="button" onclick="pushToFirebaseCloud(true)" class="text-momo-600 font-extrabold hover:underline">
+              Đẩy lên ngay
+            </button>
+          </div>
+
+          <div class="text-[10px] text-slate-400 flex items-center justify-between px-1">
+            <span>UID thiết bị: <code id="fb-uid-display" class="text-slate-500">Đang xác thực...</code></span>
+          </div>
+        </div>
+
+        <!-- TAB B: GITHUB GIST SYNC -->
+        <div id="sync-panel-github" class="hidden space-y-3">
+          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3 text-xs text-slate-700 space-y-1">
+            <div class="font-extrabold flex items-center gap-1.5">
+              <i class="fa-brands fa-github text-slate-900"></i>
+              <span>Đồng bộ qua GitHub Gist cá nhân</span>
+            </div>
+            <p class="text-[11px] text-slate-500 leading-relaxed">
+              Nhập <strong>Personal Access Token</strong> (có quyền <code class="bg-white px-1 rounded border">gist</code>). Nếu để trống <strong>Gist ID</strong> khi bấm Đẩy lên, ứng dụng sẽ tự tạo Gist bí mật mới cho bạn.
+            </p>
+          </div>
+
+          <div>
+            <label class="text-xs font-bold text-slate-600 block mb-1">GitHub Personal Access Token (PAT)</label>
+            <input type="password" id="gh-token-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" class="w-full bg-slate-50 border border-slate-200 focus:border-momo-500 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none" />
+          </div>
+
+          <div>
+            <label class="text-xs font-bold text-slate-600 block mb-1">Gist ID (Để trống nếu muốn tạo mới)</label>
+            <div class="flex gap-1.5">
+              <input type="text" id="gh-gist-id-input" placeholder="VD: a1b2c3d4e5f6..." class="flex-1 bg-slate-50 border border-slate-200 focus:border-momo-500 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none" />
+              <button type="button" onclick="copyGistId()" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold" title="Sao chép Gist ID">
+                <i class="fa-regular fa-copy"></i>
+              </button>
+            </div>
+          </div>
+
+          <label class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-200 cursor-pointer">
+            <span class="text-xs font-bold text-slate-700">Tự động đẩy lên GitHub sau mỗi thay đổi</span>
+            <input type="checkbox" id="gh-autosync-checkbox" onchange="saveGithubSettingsFromUI()" class="w-4 h-4 accent-momo-600 rounded" />
+          </label>
+
+          <div class="grid grid-cols-2 gap-2 pt-1">
+            <button type="button" onclick="pushToGithubGist(true)" class="py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-extrabold flex items-center justify-center gap-1.5 transition">
+              <i class="fa-solid fa-cloud-arrow-up"></i>
+              <span>Đẩy lên (Push)</span>
+            </button>
+            <button type="button" onclick="pullFromGithubGist()" class="py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-extrabold flex items-center justify-center gap-1.5 transition">
+              <i class="fa-solid fa-cloud-arrow-down"></i>
+              <span>Tải về (Pull)</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ==================== MODAL 3: ĐẶT HẠN MỨC NGÂN SÁCH ==================== -->
+    <div id="utility-modal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+      <div class="bg-white w-full max-w-[380px] rounded-3xl p-5 space-y-4 shadow-2xl">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+          <h3 id="utility-modal-title" class="text-base font-extrabold text-slate-800">Đặt hạn mức ngân sách</h3>
+          <button onclick="closeUtilityModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <div id="utility-modal-body" class="space-y-3"></div>
+      </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast-box" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 hidden bg-slate-900/95 text-white text-xs font-bold px-4 py-2.5 rounded-full shadow-xl flex items-center gap-2 transition">
+      <i class="fa-solid fa-circle-check text-emerald-400"></i>
+      <span id="toast-msg">Đã lưu!</span>
+    </div>
+
+  </div>
+
+  <!-- ==================== JAVASCRIPT & FIREBASE MODULE ==================== -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    /********************************************************************
+     * 1. THUẬT TOÁN LỊCH ÂM VIỆT NAM (HỒ NGỌC ĐỨC - UTC+7)
+     ********************************************************************/
+    const PI = Math.PI;
+    function INT(d) { return Math.floor(d); }
+
+    function jdFromDate(dd, mm, yy) {
+      let a = INT((14 - mm) / 12);
+      let y = yy + 4800 - a;
+      let m = mm + 12 * a - 3;
+      let jd = dd + INT((153 * m + 2) / 5) + 365 * y + INT(y / 4) - INT(y / 100) + INT(y / 400) - 32045;
+      if (jd < 2299161) {
+        jd = dd + INT((153 * m + 2) / 5) + 365 * y + INT(y / 4) - 32083;
+      }
+      return jd;
+    }
+
+    function getNewMoonDay(k, timeZone) {
+      let T = k / 1236.85;
+      let T2 = T * T;
+      let T3 = T2 * T;
+      let dr = PI / 180;
+      let Jd1 = 2415020.75933 + 29.53058868 * k + 0.0001178 * T2 - 0.000000155 * T3;
+      Jd1 = Jd1 + 0.00033 * Math.sin((166.56 + 132.87 * T - 0.009173 * T2) * dr);
+      let M = 359.2242 + 29.10535608 * k - 0.0000333 * T2 - 0.00000347 * T3;
+      let Mpr = 306.0253 + 385.81691806 * k + 0.0107306 * T2 + 0.00001236 * T3;
+      let F = 21.2964 + 390.67050646 * k - 0.0016528 * T2 - 0.00000239 * T3;
+      let C1 = (0.1734 - 0.000393 * T) * Math.sin(M * dr) + 0.0021 * Math.sin(2 * dr * M);
+      C1 = C1 - 0.4068 * Math.sin(Mpr * dr) + 0.0161 * Math.sin(dr * 2 * Mpr);
+      C1 = C1 - 0.0004 * Math.sin(dr * 3 * Mpr);
+      C1 = C1 + 0.0104 * Math.sin(dr * 2 * F) - 0.0051 * Math.sin(dr * (M + Mpr));
+      C1 = C1 - 0.0074 * Math.sin(dr * (M - Mpr)) + 0.0004 * Math.sin(dr * (2 * F + M));
+      C1 = C1 - 0.0004 * Math.sin(dr * (2 * F - M)) - 0.0006 * Math.sin(dr * (2 * F + Mpr));
+      C1 = C1 + 0.0010 * Math.sin(dr * (2 * F - Mpr)) + 0.0005 * Math.sin(dr * (2 * Mpr + M));
+      let deltat;
+      if (T < -11) {
+        deltat = 0.001 + 0.000839 * T + 0.0002261 * T2 - 0.00000845 * T3 - 0.000000081 * T * T3;
+      } else {
+        deltat = -0.000278 + 0.000265 * T + 0.000262 * T2;
+      }
+      let JdNew = Jd1 + C1 - deltat;
+      return INT(JdNew + 0.5 + timeZone / 24);
+    }
+
+    function getSunLongitude(jdn, timeZone) {
+      let T = (jdn - 2451545.5 - timeZone / 24) / 36525;
+      let T2 = T * T;
+      let dr = PI / 180;
+      let M = 357.52910 + 35999.05030 * T - 0.0001559 * T2 - 0.00000048 * T * T2;
+      let L0 = 280.46645 + 36000.76983 * T + 0.0003032 * T2;
+      let DL = (1.914600 - 0.004817 * T - 0.000014 * T2) * Math.sin(dr * M);
+      DL = DL + (0.019993 - 0.000101 * T) * Math.sin(dr * 2 * M) + 0.000290 * Math.sin(dr * 3 * M);
+      let L = L0 + DL;
+      L = L * dr;
+      L = L - PI * 2 * (INT(L / (PI * 2)));
+      return INT(L / PI * 6);
+    }
+
+    function getLunarMonth11(yy, timeZone) {
+      let off = jdFromDate(31, 12, yy) - 2415021;
+      let k = INT(off / 29.530588853);
+      let nm = getNewMoonDay(k, timeZone);
+      let sunLong = getSunLongitude(nm, timeZone);
+      if (sunLong >= 9) {
+        nm = getNewMoonDay(k - 1, timeZone);
+      }
+      return nm;
+    }
+
+    function getLeapMonthOffset(a11, timeZone) {
+      let k = INT((a11 - 2415021.076998695) / 29.530588853 + 0.5);
+      let last = 0;
+      let i = 1;
+      let arc = getSunLongitude(getNewMoonDay(k + i, timeZone), timeZone);
+      do {
+        last = arc;
+        i++;
+        arc = getSunLongitude(getNewMoonDay(k + i, timeZone), timeZone);
+      } while (arc !== last && i < 14);
+      return i - 1;
+    }
+
+    function convertSolar2Lunar(dd, mm, yy, timeZone = 7) {
+      let dayNumber = jdFromDate(dd, mm, yy);
+      let k = INT((dayNumber - 2415021.076998695) / 29.530588853);
+      let monthStart = getNewMoonDay(k + 1, timeZone);
+      if (monthStart > dayNumber) {
+        monthStart = getNewMoonDay(k, timeZone);
+      }
+      let a11 = getLunarMonth11(yy, timeZone);
+      let b11 = a11;
+      let lunarYear;
+      if (a11 >= monthStart) {
+        lunarYear = yy;
+        a11 = getLunarMonth11(yy - 1, timeZone);
+      } else {
+        lunarYear = yy + 1;
+        b11 = getLunarMonth11(yy + 1, timeZone);
+      }
+      let lunarDay = dayNumber - monthStart + 1;
+      let diff = INT((monthStart - a11) / 29);
+      let lunarLeap = 0;
+      let lunarMonth = diff + 11;
+      if (b11 - a11 > 365) {
+        let leapMonthDiff = getLeapMonthOffset(a11, timeZone);
+        if (diff >= leapMonthDiff) {
+          lunarMonth = diff + 10;
+          if (diff === leapMonthDiff) {
+            lunarLeap = 1;
+          }
+        }
+      }
+      if (lunarMonth > 12) {
+        lunarMonth = lunarMonth - 12;
+      }
+      if (lunarMonth >= 11 && diff < 4) {
+        lunarYear -= 1;
+      }
+      return {
+        day: lunarDay,
+        month: lunarMonth,
+        year: lunarYear,
+        leap: lunarLeap,
+        jd: dayNumber
+      };
+    }
+
+    const CAN = ['Giáp', 'Ất', 'Bính', 'Đinh', 'Mậu', 'Kỷ', 'Canh', 'Tân', 'Nhâm', 'Quý'];
+    const CHI = ['Tý', 'Sửu', 'Dần', 'Mão', 'Thìn', 'Tỵ', 'Ngọ', 'Mùi', 'Thân', 'Dậu', 'Tuất', 'Hợi'];
+
+    function getCanChiInfo(lunarObj) {
+      const yearCanChi = `${CAN[(lunarObj.year + 6) % 10]} ${CHI[(lunarObj.year + 8) % 12]}`;
+      const dayCanChi = `${CAN[(lunarObj.jd + 9) % 10]} ${CHI[(lunarObj.jd + 1) % 12]}`;
+      const monthCan = CAN[(lunarObj.year * 12 + lunarObj.month + 3) % 10];
+      const monthChi = CHI[(lunarObj.month + 1) % 12];
+      return {
+        year: yearCanChi,
+        month: `${monthCan} ${monthChi}`,
+        day: dayCanChi
+      };
+    }
+
+    function getLunarInfoFromISO(isoDateStr) {
+      const [y, m, d] = isoDateStr.split('-').map(Number);
+      const lunar = convertSolar2Lunar(d, m, y, 7);
+      const canChi = getCanChiInfo(lunar);
+      return {
+        ...lunar,
+        canChi,
+        isRam: lunar.day === 15,
+        isMung1: lunar.day === 1
+      };
+    }
+
+    /********************************************************************
+     * 2. DANH MỤC & TRẠNG THÁI ỨNG DỤNG (STATE)
+     ********************************************************************/
+    const EXPENSE_CATEGORIES = [
+      { id: 'food', name: 'Ăn uống', icon: 'fa-utensils', color: '#f0328f', bg: '#fff0f7' },
+      { id: 'shopping', name: 'Mua sắm', icon: 'fa-bag-shopping', color: '#8b5cf6', bg: '#f5f3ff' },
+      { id: 'transport', name: 'Di chuyển', icon: 'fa-motorcycle', color: '#06b6d4', bg: '#ecfeff' },
+      { id: 'bills', name: 'Hóa đơn', icon: 'fa-file-invoice-dollar', color: '#f59e0b', bg: '#fffbeb' },
+      { id: 'ram_le', name: 'Lễ Rằm/Cúng', icon: 'fa-yin-yang', color: '#ef4444', bg: '#fef2f2' },
+      { id: 'entertainment', name: 'Giải trí', icon: 'fa-film', color: '#10b981', bg: '#ecfdf5' },
+      { id: 'health', name: 'Sức khỏe', icon: 'fa-heart-pulse', color: '#ec4899', bg: '#fdf2f8' },
+      { id: 'other_exp', name: 'Khác', icon: 'fa-ellipsis', color: '#64748b', bg: '#f8fafc' }
+    ];
+
+    const INCOME_CATEGORIES = [
+      { id: 'salary', name: 'Tiền lương', icon: 'fa-money-bill-wave', color: '#10b981', bg: '#ecfdf5' },
+      { id: 'bonus', name: 'Thưởng', icon: 'fa-gift', color: '#f59e0b', bg: '#fffbeb' },
+      { id: 'invest', name: 'Đầu tư', icon: 'fa-chart-pie', color: '#3b82f6', bg: '#eff6ff' },
+      { id: 'other_inc', name: 'Thu khác', icon: 'fa-coins', color: '#8b5cf6', bg: '#f5f3ff' }
+    ];
+
+    function formatISO(dateObj) {
+      const y = dateObj.getFullYear();
+      const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const d = String(dateObj.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+
+    function formatDisplayDate(isoStr) {
+      if (!isoStr) return '';
+      const [y, m, d] = isoStr.split('-');
+      return `${d}/${m}/${y}`;
+    }
+
+    const todayObj = new Date();
+    const todayISO = formatISO(todayObj);
+
+    const state = {
+      activeTab: 'overview',
+      hideAmounts: false,
+      overviewType: 'expense',
+      chartMode: 'donut',
+      overviewYear: todayObj.getFullYear(),
+      overviewMonth: todayObj.getMonth() + 1,
+      calYear: todayObj.getFullYear(),
+      calMonth: todayObj.getMonth() + 1,
+      selectedDate: todayISO,
+      taskFilter: 'all',
+      modalMode: 'expense',
+      editingRecordId: null,
+      selectedTxCategory: 'food',
+      selectedTaskCategory: 'Lễ / Rằm',
+      monthlyBudget: 12000000,
+      transactions: [],
+      tasks: [],
+      // Sync state
+      syncKey: '',
+      githubToken: '',
+      githubGistId: '',
+      githubAutoSync: false,
+      lastUpdated: 0
+    };
+
+    window.state = state;
+
+    function findLunarDaysInSolarMonth(year, month) {
+      const daysInMonth = new Date(year, month, 0).getDate();
+      let ramDate = null;
+      let mung1Date = null;
+      for (let d = 1; d <= daysInMonth; d++) {
+        const iso = `${year}-${String(month).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        const l = getLunarInfoFromISO(iso);
+        if (l.isRam && !ramDate) ramDate = iso;
+        if (l.isMung1 && !mung1Date) mung1Date = iso;
+      }
+      return { ramDate, mung1Date };
+    }
+
+    function generateDefaultSampleData() {
+      const y = todayObj.getFullYear();
+      const m = todayObj.getMonth() + 1;
+      const mStr = String(m).padStart(2, '0');
+      const { ramDate, mung1Date } = findLunarDaysInSolarMonth(y, m);
+      const safeDay = (d) => `${y}-${mStr}-${String(Math.min(d, 28)).padStart(2, '0')}`;
+
+      state.monthlyBudget = 12000000;
+      state.transactions = [
+        { id: 't1', type: 'income', amount: 18500000, category: 'salary', date: safeDay(5), note: 'Lương tháng chuyển khoản' },
+        { id: 't2', type: 'income', amount: 2500000, category: 'bonus', date: safeDay(10), note: 'Thưởng hiệu suất công việc' },
+        { id: 't3', type: 'expense', amount: 1450000, category: 'food', date: todayISO, note: 'Đi siêu thị & ăn trưa' },
+        { id: 't4', type: 'expense', amount: 850000, category: 'bills', date: safeDay(8), note: 'Thanh toán tiền điện & Internet' },
+        { id: 't5', type: 'expense', amount: 620000, category: 'shopping', date: safeDay(12), note: 'Mua đồ dùng gia đình' },
+        { id: 't6', type: 'expense', amount: 320000, category: 'transport', date: safeDay(14), note: 'Đổ xăng & gửi xe tháng' },
+        { id: 't7', type: 'expense', amount: 480000, category: 'ram_le', date: ramDate || safeDay(15), note: 'Mua hoa tươi, trái cây cúng Rằm 15 ÂL' },
+        { id: 't8', type: 'expense', amount: 390000, category: 'entertainment', date: safeDay(18), note: 'Cà phê & xem phim cuối tuần' }
+      ];
+
+      state.tasks = [
+        {
+          id: 'k1',
+          title: 'Mua hoa tươi & ngũ quả cúng Rằm tháng',
+          date: ramDate || safeDay(15),
+          time: '07:30',
+          priority: 'high',
+          category: 'Lễ / Rằm',
+          note: 'Chuẩn bị hoa cúc vàng, trái cây tươi và xôi chè cúng Rằm 15 ÂL',
+          completed: false
+        },
+        {
+          id: 'k2',
+          title: 'Ăn chay & Đi chùa cầu bình an ngày Rằm',
+          date: ramDate || safeDay(15),
+          time: '18:30',
+          priority: 'medium',
+          category: 'Lễ / Rằm',
+          note: 'Ăn tối chay thanh đạm cùng gia đình',
+          completed: false
+        },
+        {
+          id: 'k3',
+          title: 'Kiểm tra chi tiêu & cân đối ngân sách tháng',
+          date: todayISO,
+          time: '20:00',
+          priority: 'high',
+          category: 'Tài chính',
+          note: 'Rà soát các khoản chi lớn trong tháng',
+          completed: false
+        },
+        {
+          id: 'k4',
+          title: 'Thắp hương Mùng 1 đầu tháng Âm lịch',
+          date: mung1Date || safeDay(1),
+          time: '07:00',
+          priority: 'medium',
+          category: 'Lễ / Rằm',
+          note: 'Sắm lễ hoa quả đầu tháng',
+          completed: true
+        }
+      ];
+      state.lastUpdated = Date.now();
+    }
+
+    /********************************************************************
+     * 3. FIREBASE REALTIME (FIRESTORE) & GITHUB GIST CLOUD SYNC
+     ********************************************************************/
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-momo-lunar-app';
+    let db = null;
+    let auth = null;
+    let currentUser = null;
+    let unsubscribeChannelSnapshot = null;
+    let isApplyingRemoteUpdate = false;
+
+    async function initFirebaseCloud() {
+      try {
+        if (typeof __firebase_config === 'undefined' || !__firebase_config) {
+          updateSyncUIStatus('Chế độ ngoại tuyến / GitHub', 'amber');
+          return;
+        }
+        const firebaseConfig = JSON.parse(__firebase_config);
+        const app = initializeApp(firebaseConfig);
+        db = getFirestore(app);
+        auth = getAuth(app);
+
+        // RULE 3: Auth Before Queries
+        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+          await signInWithCustomToken(auth, __initial_auth_token);
+        } else {
+          await signInAnonymously(auth);
+        }
+
+        onAuthStateChanged(auth, (user) => {
+          currentUser = user;
+          const uidEl = document.getElementById('fb-uid-display');
+          if (uidEl) uidEl.textContent = user ? user.uid : 'Chưa đăng nhập';
+
+          if (user) {
+            if (state.syncKey) {
+              subscribeToSyncChannel(state.syncKey);
+            } else {
+              subscribeToPrivateUserDoc(user.uid);
+            }
+          }
+        });
+      } catch (err) {
+        console.error('Firebase init warning:', err);
+        updateSyncUIStatus('Sẵn sàng (GitHub / Cục bộ)', 'amber');
+      }
+    }
+
+    function sanitizeSyncKey(rawKey) {
+      return rawKey.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '-');
+    }
+
+    // Private cloud doc per authenticated user (RULE 1 compliant)
+    function subscribeToPrivateUserDoc(uid) {
+      if (!db || !currentUser) return;
+      if (unsubscribeChannelSnapshot) unsubscribeChannelSnapshot();
+
+      const userDocRef = doc(db, 'artifacts', appId, 'users', uid, 'app_state', 'main');
+      updateSyncUIStatus('Đã kết nối Cloud cá nhân', 'emerald');
+
+      unsubscribeChannelSnapshot = onSnapshot(
+        userDocRef,
+        (snap) => {
+          if (snap.exists()) {
+            const data = snap.data();
+            applyRemotePayload(data, 'Cloud cá nhân');
+          } else {
+            pushToFirebaseCloud(false);
+          }
+        },
+        (err) => {
+          console.error('Private doc snapshot error:', err);
+        }
+      );
+    }
+
+    // Shared multi-device channel doc using Sync Key (RULE 1 compliant)
+    function subscribeToSyncChannel(rawKey) {
+      const cleanKey = sanitizeSyncKey(rawKey);
+      if (!cleanKey) return;
+      state.syncKey = cleanKey;
+      document.getElementById('fb-sync-key-input').value = cleanKey;
+      document.getElementById('fb-key-mini').textContent = `Kênh: ${cleanKey}`;
+      document.getElementById('fb-modal-status').textContent = `Đang nối kênh "${cleanKey}"...`;
+
+      if (!db || !currentUser) {
+        showToast(`Đã lưu mã kênh "${cleanKey}"`);
+        return;
+      }
+      if (unsubscribeChannelSnapshot) unsubscribeChannelSnapshot();
+
+      const channelDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'sync_channels', cleanKey);
+
+      unsubscribeChannelSnapshot = onSnapshot(
+        channelDocRef,
+        (snap) => {
+          updateSyncUIStatus(`Đồng bộ: ${cleanKey}`, 'emerald');
+          document.getElementById('fb-modal-status').textContent = `Đã kết nối kênh "${cleanKey}"`;
+          document.getElementById('fb-badge-mini').textContent = 'Đang đồng bộ';
+
+          if (snap.exists()) {
+            const data = snap.data();
+            applyRemotePayload(data, `Kênh ${cleanKey}`);
+          } else {
+            // Initialize channel with current state
+            pushToFirebaseCloud(false);
+          }
+        },
+        (err) => {
+          console.error('Sync channel error:', err);
+          updateSyncUIStatus('Lỗi kênh đồng bộ', 'red');
+        }
+      );
+    }
+
+    function applyRemotePayload(data, sourceLabel) {
+      if (!data) return;
+      const remoteTime = Number(data.lastUpdated || 0);
+      if (remoteTime && remoteTime <= state.lastUpdated) return;
+
+      isApplyingRemoteUpdate = true;
+      try {
+        if (typeof data.transactionsJson === 'string') {
+          state.transactions = JSON.parse(data.transactionsJson);
+        } else if (Array.isArray(data.transactions)) {
+          state.transactions = data.transactions;
+        }
+        if (typeof data.tasksJson === 'string') {
+          state.tasks = JSON.parse(data.tasksJson);
+        } else if (Array.isArray(data.tasks)) {
+          state.tasks = data.tasks;
+        }
+        if (data.monthlyBudget) state.monthlyBudget = Number(data.monthlyBudget);
+        state.lastUpdated = remoteTime || Date.now();
+        renderAll();
+      } catch (e) {
+        console.error('Parse remote payload error:', e);
+      } finally {
+        isApplyingRemoteUpdate = false;
+      }
+    }
+
+    async function pushToFirebaseCloud(manualNotify = false) {
+      if (isApplyingRemoteUpdate || !db || !currentUser) {
+        if (manualNotify && (!db || !currentUser)) {
+          showToast('Chưa kết nối máy chủ Firebase, hãy dùng GitHub Gist!');
+        }
+        return;
+      }
+      try {
+        state.lastUpdated = Date.now();
+        const payload = {
+          transactionsJson: JSON.stringify(state.transactions),
+          tasksJson: JSON.stringify(state.tasks),
+          monthlyBudget: state.monthlyBudget,
+          lastUpdated: state.lastUpdated,
+          updatedBy: currentUser.uid
+        };
+
+        if (state.syncKey) {
+          const channelDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'sync_channels', state.syncKey);
+          await setDoc(channelDocRef, payload, { merge: true });
+        } else {
+          const userDocRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'app_state', 'main');
+          await setDoc(userDocRef, payload, { merge: true });
+        }
+        if (manualNotify) showToast('Đã đồng bộ lên Firebase Cloud!');
+      } catch (err) {
+        console.error('Push Firebase error:', err);
+        if (manualNotify) showToast('Lỗi khi đẩy dữ liệu lên Firebase');
+      }
+    }
+
+    function connectFirebaseSyncKey() {
+      const val = document.getElementById('fb-sync-key-input').value.trim();
+      if (!val) {
+        showToast('Vui lòng nhập Mã Đồng Bộ (Sync Key)!');
+        return;
+      }
+      subscribeToSyncChannel(val);
+      showToast(`Đã kết nối kênh đồng bộ: ${sanitizeSyncKey(val)}`);
+    }
+
+    // GITHUB GIST SYNC FUNCTIONS
+    function saveGithubSettingsFromUI() {
+      state.githubToken = document.getElementById('gh-token-input').value.trim();
+      state.githubGistId = document.getElementById('gh-gist-id-input').value.trim();
+      state.githubAutoSync = document.getElementById('gh-autosync-checkbox').checked;
+      document.getElementById('gh-id-mini').textContent = state.githubGistId
+        ? `Gist: ${state.githubGistId.slice(0, 10)}...`
+        : 'Đã nhập Token GitHub';
+    }
+
+    async function pushToGithubGist(manualNotify = true) {
+      saveGithubSettingsFromUI();
+      if (!state.githubToken) {
+        if (manualNotify) showToast('Vui lòng nhập GitHub Personal Access Token!');
+        return;
+      }
+
+      try {
+        if (manualNotify) showToast('Đang đẩy dữ liệu lên GitHub Gist...');
+        state.lastUpdated = Date.now();
+        const contentObj = {
+          transactions: state.transactions,
+          tasks: state.tasks,
+          monthlyBudget: state.monthlyBudget,
+          lastUpdated: state.lastUpdated
+        };
+
+        const bodyPayload = {
+          description: 'MoMo Quan Ly Thu Chi & Lich Am Duong Sync Data',
+          public: false,
+          files: {
+            'momo_expense_lunar_sync.json': {
+              content: JSON.stringify(contentObj, null, 2)
+            }
+          }
+        };
+
+        const url = state.githubGistId
+          ? `https://api.github.com/gists/${state.githubGistId}`
+          : `https://api.github.com/gists`;
+        const method = state.githubGistId ? 'PATCH' : 'POST';
+
+        const res = await fetch(url, {
+          method,
+          headers: {
+            'Authorization': `token ${state.githubToken}`,
+            'Accept': 'application/vnd.github+json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(bodyPayload)
+        });
+
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        if (data && data.id) {
+          state.githubGistId = data.id;
+          document.getElementById('gh-gist-id-input').value = data.id;
+          document.getElementById('gh-id-mini').textContent = `Gist: ${data.id.slice(0, 10)}...`;
+          document.getElementById('gh-badge-mini').textContent = 'Đã đồng bộ';
+          updateSyncUIStatus(`GitHub Gist: ${data.id.slice(0, 6)}`, 'emerald');
+        }
+        if (manualNotify) showToast('Đã đồng bộ lên GitHub Gist thành công!');
+      } catch (err) {
+        console.error('GitHub Push Error:', err);
+        if (manualNotify) showToast('Lỗi đẩy GitHub Gist! Kiểm tra lại Token/Gist ID.');
+      }
+    }
+
+    async function pullFromGithubGist() {
+      saveGithubSettingsFromUI();
+      if (!state.githubToken || !state.githubGistId) {
+        showToast('Vui lòng nhập cả GitHub Token và Gist ID để tải về!');
+        return;
+      }
+      try {
+        showToast('Đang tải dữ liệu từ GitHub Gist...');
+        const res = await fetch(`https://api.github.com/gists/${state.githubGistId}`, {
+          headers: {
+            'Authorization': `token ${state.githubToken}`,
+            'Accept': 'application/vnd.github+json'
+          }
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        const fileObj = data.files && (data.files['momo_expense_lunar_sync.json'] || Object.values(data.files)[0]);
+        if (!fileObj || !fileObj.content) throw new Error('Không tìm thấy nội dung JSON trong Gist');
+
+        const parsed = JSON.parse(fileObj.content);
+        if (Array.isArray(parsed.transactions)) state.transactions = parsed.transactions;
+        if (Array.isArray(parsed.tasks)) state.tasks = parsed.tasks;
+        if (parsed.monthlyBudget) state.monthlyBudget = Number(parsed.monthlyBudget);
+        state.lastUpdated = Date.now();
+
+        renderAll();
+        pushToFirebaseCloud(false);
+        updateSyncUIStatus(`GitHub Gist: ${state.githubGistId.slice(0, 6)}`, 'emerald');
+        showToast('Đã tải dữ liệu từ GitHub Gist thành công!');
+      } catch (err) {
+        console.error('GitHub Pull Error:', err);
+        showToast('Không thể tải từ GitHub Gist! Kiểm tra Gist ID.');
+      }
+    }
+
+    function copyGistId() {
+      const input = document.getElementById('gh-gist-id-input');
+      if (!input.value) {
+        showToast('Chưa có Gist ID để sao chép');
+        return;
+      }
+      input.select();
+      document.execCommand('copy');
+      showToast('Đã sao chép Gist ID!');
+    }
+
+    function updateSyncUIStatus(text, color = 'emerald') {
+      const dot = document.getElementById('sync-status-dot');
+      const label = document.getElementById('sync-status-text');
+      label.textContent = text;
+      const colorMap = {
+        emerald: 'w-2 h-2 rounded-full bg-emerald-500 shrink-0',
+        amber: 'w-2 h-2 rounded-full bg-amber-400 shrink-0',
+        red: 'w-2 h-2 rounded-full bg-red-500 shrink-0'
+      };
+      dot.className = colorMap[color] || colorMap.emerald;
+    }
+
+    function triggerCloudSyncAfterChange() {
+      state.lastUpdated = Date.now();
+      pushToFirebaseCloud(false);
+      if (state.githubAutoSync && state.githubToken) {
+        pushToGithubGist(false);
+      }
+    }
+
+    /********************************************************************
+     * 4. HÀM TIỆN ÍCH HIỂN THỊ (FORMATTERS & HELPERS)
+     ********************************************************************/
+    function formatMoney(amount, forceShow = false) {
+      if (state.hideAmounts && !forceShow) return '******';
+      const num = Number(amount) || 0;
+      return num.toLocaleString('vi-VN') + 'đ';
+    }
+
+    function formatShortMoney(amount) {
+      if (state.hideAmounts) return '***';
+      const n = Math.abs(Number(amount) || 0);
+      if (n >= 1000000) return (n / 1000000).toFixed(n % 1000000 === 0 ? 0 : 1) + 'tr';
+      if (n >= 1000) return Math.round(n / 1000) + 'k';
+      return n + 'đ';
+    }
+
+    function getCategoryMeta(catId, type = 'expense') {
+      const list = [...EXPENSE_CATEGORIES, ...INCOME_CATEGORIES];
+      return list.find(c => c.id === catId) || (type === 'income' ? INCOME_CATEGORIES[0] : EXPENSE_CATEGORIES[0]);
+    }
+
+    function showToast(msg) {
+      const box = document.getElementById('toast-box');
+      document.getElementById('toast-msg').textContent = msg;
+      box.classList.remove('hidden');
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => {
+        box.classList.add('hidden');
+      }, 2400);
+    }
+
+    function scrollToElement(id) {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    /********************************************************************
+     * 5. ĐIỀU HƯỚNG TAB & TOP STRIP
+     ********************************************************************/
+    function switchTab(tabName) {
+      state.activeTab = tabName;
+      const tabs = ['overview', 'calendar', 'tasks', 'utilities'];
+      tabs.forEach(t => {
+        const sec = document.getElementById(`tab-${t}`);
+        const navBtn = document.getElementById(`nav-${t}`);
+        const navInd = document.getElementById(`nav-ind-${t}`);
+        if (t === tabName) {
+          sec.classList.remove('hidden');
+          navBtn.classList.remove('text-slate-500');
+          navBtn.classList.add('text-momo-600');
+          navInd.classList.remove('hidden');
+        } else {
+          sec.classList.add('hidden');
+          navBtn.classList.remove('text-momo-600');
+          navBtn.classList.add('text-slate-500');
+          navInd.classList.add('hidden');
+        }
+      });
+      renderAll();
+    }
+
+    function toggleHideAmount() {
+      state.hideAmounts = !state.hideAmounts;
+      renderAll();
+    }
+
+    function jumpToNextRam() {
+      let cursor = new Date();
+      for (let i = 0; i < 40; i++) {
+        const iso = formatISO(cursor);
+        const lunar = getLunarInfoFromISO(iso);
+        if (lunar.isRam) {
+          state.calYear = cursor.getFullYear();
+          state.calMonth = cursor.getMonth() + 1;
+          state.selectedDate = iso;
+          switchTab('calendar');
+          showToast(`Ngày Rằm ${lunar.day}/${lunar.month} ÂL (${formatDisplayDate(iso)})`);
+          setTimeout(() => scrollToElement('selected-day-panel'), 150);
+          return;
+        }
+        cursor.setDate(cursor.getDate() + 1);
+      }
+    }
+
+    /********************************************************************
+     * 6. RENDER TAB 1: TỔNG QUAN (OVERVIEW)
+     ********************************************************************/
+    function changeOverviewMonth(delta) {
+      let m = state.overviewMonth + delta;
+      let y = state.overviewYear;
+      if (m < 1) { m = 12; y--; }
+      if (m > 12) { m = 1; y++; }
+      state.overviewMonth = m;
+      state.overviewYear = y;
+      renderOverview();
+    }
+
+    function setOverviewType(type) {
+      state.overviewType = type;
+      renderOverview();
+    }
+
+    function setChartMode(mode) {
+      state.chartMode = mode;
+      const btnDonut = document.getElementById('btn-mode-donut');
+      const btnBar = document.getElementById('btn-mode-bar');
+      if (mode === 'donut') {
+        btnDonut.className = 'px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 transition bg-momo-50 text-momo-600';
+        btnBar.className = 'px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 transition text-slate-700 hover:text-slate-900';
+        document.getElementById('donut-chart-wrapper').classList.remove('hidden');
+        document.getElementById('bar-chart-wrapper').classList.add('hidden');
+      } else {
+        btnBar.className = 'px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 transition bg-momo-50 text-momo-600';
+        btnDonut.className = 'px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 transition text-slate-700 hover:text-slate-900';
+        document.getElementById('donut-chart-wrapper').classList.add('hidden');
+        document.getElementById('bar-chart-wrapper').classList.remove('hidden');
+      }
+      renderOverview();
+    }
+
+    function renderOverview() {
+      const eyeIcon = document.getElementById('eye-icon');
+      eyeIcon.className = state.hideAmounts ? 'fa-regular fa-eye-slash text-base' : 'fa-regular fa-eye text-base';
+
+      const nowM = todayObj.getMonth() + 1;
+      const nowY = todayObj.getFullYear();
+      const monthLabelEl = document.getElementById('overview-month-label');
+      if (state.overviewMonth === nowM && state.overviewYear === nowY) {
+        monthLabelEl.textContent = 'Tháng này';
+      } else {
+        monthLabelEl.textContent = `Tháng ${String(state.overviewMonth).padStart(2, '0')}/${state.overviewYear}`;
+      }
+
+      const firstDayLunar = convertSolar2Lunar(1, state.overviewMonth, state.overviewYear, 7);
+      const lastDayDate = new Date(state.overviewYear, state.overviewMonth, 0).getDate();
+      const lastDayLunar = convertSolar2Lunar(lastDayDate, state.overviewMonth, state.overviewYear, 7);
+      const { ramDate } = findLunarDaysInSolarMonth(state.overviewYear, state.overviewMonth);
+      document.getElementById('overview-lunar-range').innerHTML =
+        `Âm lịch: ${firstDayLunar.day}/${firstDayLunar.month} → ${lastDayLunar.day}/${lastDayLunar.month} ÂL` +
+        (ramDate ? ` • <span class="text-red-600 font-bold">Rằm: ${formatDisplayDate(ramDate).slice(0,5)}</span>` : '');
+
+      // Current month transactions
+      const prefix = `${state.overviewYear}-${String(state.overviewMonth).padStart(2, '0')}`;
+      const monthTx = state.transactions.filter(t => t.date.startsWith(prefix));
+      const expenses = monthTx.filter(t => t.type === 'expense');
+      const incomes = monthTx.filter(t => t.type === 'income');
+
+      const totalExp = expenses.reduce((s, t) => s + Number(t.amount), 0);
+      const totalInc = incomes.reduce((s, t) => s + Number(t.amount), 0);
+      const net = totalInc - totalExp;
+
+      // Previous month comparison
+      let prevM = state.overviewMonth - 1;
+      let prevY = state.overviewYear;
+      if (prevM < 1) { prevM = 12; prevY--; }
+      const prevPrefix = `${prevY}-${String(prevM).padStart(2, '0')}`;
+      const prevTx = state.transactions.filter(t => t.date.startsWith(prevPrefix));
+      const prevExp = prevTx.filter(t => t.type === 'expense').reduce((s, t) => s + Number(t.amount), 0);
+      const prevInc = prevTx.filter(t => t.type === 'income').reduce((s, t) => s + Number(t.amount), 0);
+
+      document.getElementById('overview-expense-amount').textContent = formatMoney(totalExp);
+      document.getElementById('overview-income-amount').textContent = formatMoney(totalInc);
+
+      const expBadge = document.getElementById('expense-diff-badge');
+      if (prevExp > 0) {
+        const diffPct = Math.round(((totalExp - prevExp) / prevExp) * 100);
+        expBadge.textContent = `${diffPct >= 0 ? '+' : ''}${diffPct}%`;
+        expBadge.className = `text-[10px] font-bold px-1.5 py-0.5 rounded-full ${diffPct > 0 ? 'bg-red-100 text-red-600' : 'bg-emerald-100 text-emerald-600'}`;
+      } else {
+        expBadge.textContent = `${expenses.length} GD`;
+        expBadge.className = 'text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-500';
+      }
+
+      const incBadge = document.getElementById('income-diff-badge');
+      if (prevInc > 0) {
+        const diffPct = Math.round(((totalInc - prevInc) / prevInc) * 100);
+        incBadge.textContent = `${diffPct >= 0 ? '+' : ''}${diffPct}%`;
+        incBadge.className = `text-[10px] font-bold px-1.5 py-0.5 rounded-full ${diffPct >= 0 ? 'bg-emerald-100 text-emerald-600' : 'bg-amber-100 text-amber-600'}`;
+      } else {
+        incBadge.textContent = `${incomes.length} GD`;
+        incBadge.className = 'text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-500';
+      }
+
+      document.getElementById('overview-net-summary').innerHTML =
+        `Số dư tháng này: <strong class="${net >= 0 ? 'text-emerald-600' : 'text-red-600'}">${net >= 0 ? '+' : ''}${formatMoney(net)}</strong>`;
+
+      const expBox = document.getElementById('box-type-expense');
+      const incBox = document.getElementById('box-type-income');
+      const btnQuickLabel = document.getElementById('btn-quick-record-label');
+      if (state.overviewType === 'expense') {
+        expBox.className = 'text-left p-3 rounded-2xl border-2 border-momo-400 bg-momo-50/30 transition relative overflow-hidden';
+        incBox.className = 'text-left p-3 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 transition relative overflow-hidden';
+        btnQuickLabel.textContent = 'Nhập giao dịch chi';
+      } else {
+        incBox.className = 'text-left p-3 rounded-2xl border-2 border-emerald-500 bg-emerald-50/30 transition relative overflow-hidden';
+        expBox.className = 'text-left p-3 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 transition relative overflow-hidden';
+        btnQuickLabel.textContent = 'Nhập giao dịch thu';
+      }
+
+      const activeList = state.overviewType === 'expense' ? expenses : incomes;
+      const activeTotal = state.overviewType === 'expense' ? totalExp : totalInc;
+      renderDonutAndBreakdown(activeList, activeTotal, state.overviewType);
+      renderBarChart(activeList, state.overviewYear, state.overviewMonth, state.overviewType);
+      renderOverviewTasksPreview();
+      renderOverviewRecentTransactions(monthTx);
+    }
+
+    function renderDonutAndBreakdown(txList, totalAmount, type) {
+      const svgContainer = document.getElementById('donut-svg-container');
+      const breakdownEl = document.getElementById('category-breakdown-list');
+
+      const grouped = {};
+      txList.forEach(t => {
+        grouped[t.category] = (grouped[t.category] || 0) + Number(t.amount);
+      });
+
+      const items = Object.keys(grouped).map(catId => {
+        const meta = getCategoryMeta(catId, type);
+        const amount = grouped[catId];
+        const pct = totalAmount > 0 ? (amount / totalAmount) * 100 : 0;
+        return { ...meta, amount, pct };
+      }).sort((a, b) => b.amount - a.amount);
+
+      if (items.length === 0 || totalAmount === 0) {
+        svgContainer.innerHTML = `
+          <svg viewBox="0 0 320 210" class="w-full max-w-[310px] h-auto">
+            <circle cx="160" cy="105" r="72" fill="none" stroke="#f1f5f9" stroke-width="2" />
+            <circle cx="160" cy="105" r="52" fill="none" stroke="#e2e8f0" stroke-width="24" stroke-dasharray="95 8" />
+            <line x1="95" y1="68" x2="55" y2="55" stroke="#cbd5e1" stroke-dasharray="3 3" />
+            <rect x="18" y="46" width="10" height="10" rx="2" fill="#cbd5e1" />
+            <text x="33" y="55" font-size="11" fill="#94a3b8" font-weight="600">X%</text>
+            <line x1="225" y1="68" x2="265" y2="55" stroke="#cbd5e1" stroke-dasharray="3 3" />
+            <rect x="268" y="46" width="10" height="10" rx="2" fill="#cbd5e1" />
+            <text x="283" y="55" font-size="11" fill="#94a3b8" font-weight="600">X%</text>
+            <line x1="175" y1="162" x2="255" y2="175" stroke="#cbd5e1" stroke-dasharray="3 3" />
+            <rect x="268" y="168" width="10" height="10" rx="2" fill="#cbd5e1" />
+            <text x="283" y="177" font-size="11" fill="#94a3b8" font-weight="600">X%</text>
+          </svg>
+        `;
+        breakdownEl.innerHTML = `<p class="text-center text-xs text-slate-400 py-2">Chưa có khoản ${type === 'expense' ? 'chi tiêu' : 'thu nhập'} nào trong tháng này.</p>`;
+        return;
+      }
+
+      const cx = 160, cy = 105, r = 54;
+      const circumference = 2 * Math.PI * r;
+      let currentAngle = -90;
+      let circlesHTML = '';
+      let labelsHTML = '';
+
+      items.forEach((item, idx) => {
+        const sliceLength = (item.pct / 100) * circumference;
+        const dashArray = `${Math.max(sliceLength - 2, 1)} ${circumference}`;
+        const dashOffset = -((currentAngle + 90) / 360) * circumference;
+
+        circlesHTML += `
+          <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${item.color}"
+            stroke-width="24" stroke-dasharray="${dashArray}" stroke-dashoffset="${dashOffset}"
+            class="transition-all duration-500" />
+        `;
+
+        if (idx < 4) {
+          const midAngleDeg = currentAngle + (item.pct * 3.6) / 2;
+          const midRad = (midAngleDeg * Math.PI) / 180;
+          const x1 = cx + (r + 14) * Math.cos(midRad);
+          const y1 = cy + (r + 14) * Math.sin(midRad);
+          const isRight = Math.cos(midRad) >= 0;
+          const x2 = isRight ? cx + 86 : cx - 86;
+          const y2 = Math.max(24, Math.min(186, cy + (r + 32) * Math.sin(midRad)));
+          const rectX = isRight ? x2 + 3 : x2 - 42;
+
+          labelsHTML += `
+            <polyline points="${x1.toFixed(1)},${y1.toFixed(1)} ${x2.toFixed(1)},${y2.toFixed(1)}" fill="none" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="2 2" />
+            <rect x="${rectX.toFixed(1)}" y="${(y2 - 5).toFixed(1)}" width="9" height="9" rx="2.5" fill="${item.color}" />
+            <text x="${(rectX + 13).toFixed(1)}" y="${(y2 + 3).toFixed(1)}" font-size="10.5" font-weight="700" fill="#475569">${item.pct.toFixed(0)}%</text>
+          `;
+        }
+        currentAngle += (item.pct * 3.6);
+      });
+
+      svgContainer.innerHTML = `
+        <svg viewBox="0 0 320 210" class="w-full max-w-[320px] h-auto overflow-visible">
+          <circle cx="${cx}" cy="${cy}" r="73" fill="none" stroke="#f1f5f9" stroke-width="1.5" />
+          ${circlesHTML}
+          ${labelsHTML}
+          <text x="${cx}" y="${cy - 4}" text-anchor="middle" font-size="10" fill="#64748b" font-weight="600">Tổng ${type === 'expense' ? 'chi' : 'thu'}</text>
+          <text x="${cx}" y="${cy + 12}" text-anchor="middle" font-size="11.5" fill="#0f172a" font-weight="800">${formatShortMoney(totalAmount)}</text>
+        </svg>
+      `;
+
+      breakdownEl.innerHTML = items.map(item => `
+        <div class="flex items-center justify-between py-1.5 px-2 rounded-xl hover:bg-slate-50 transition">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <span class="w-8 h-8 rounded-xl flex items-center justify-center text-xs shrink-0" style="background:${item.bg}; color:${item.color}">
+              <i class="fa-solid ${item.icon}"></i>
+            </span>
+            <div class="min-w-0">
+              <div class="text-xs font-bold text-slate-800 truncate">${item.name}</div>
+              <div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden mt-1">
+                <div class="h-full rounded-full" style="width:${item.pct.toFixed(0)}%; background:${item.color}"></div>
+              </div>
+            </div>
+          </div>
+          <div class="text-right shrink-0">
+            <div class="text-xs font-extrabold text-slate-800">${formatMoney(item.amount)}</div>
+            <div class="text-[10px] font-bold text-slate-400">${item.pct.toFixed(1)}%</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderBarChart(txList, year, month, type) {
+      const container = document.getElementById('bar-chart-container');
+      document.getElementById('bar-chart-subtitle').textContent = type === 'expense' ? 'Chi tiêu theo ngày' : 'Thu nhập theo ngày';
+
+      const byDay = {};
+      txList.forEach(t => {
+        const d = Number(t.date.split('-')[2]);
+        byDay[d] = (byDay[d] || 0) + Number(t.amount);
+      });
+
+      const daysInMonth = new Date(year, month, 0).getDate();
+      const maxVal = Math.max(...Object.values(byDay), 100000);
+      let barsHTML = '';
+
+      for (let d = 1; d <= daysInMonth; d++) {
+        const val = byDay[d] || 0;
+        if (val === 0 && d % 3 !== 0 && d !== 1 && d !== 15 && d !== daysInMonth) continue;
+        const heightPct = val > 0 ? Math.max(Math.round((val / maxVal) * 100), 10) : 4;
+        const iso = `${year}-${String(month).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        const lunar = getLunarInfoFromISO(iso);
+        const barColor = lunar.isRam ? 'bg-red-500' : (type === 'expense' ? 'bg-momo-500' : 'bg-emerald-500');
+
+        barsHTML += `
+          <div onclick="jumpToCalendarDate('${iso}')" class="flex flex-col items-center justify-end h-full min-w-[26px] cursor-pointer group">
+            <span class="text-[9px] font-bold text-slate-500 mb-1">${val > 0 ? formatShortMoney(val) : ''}</span>
+            <div class="w-4 rounded-t-md transition-all ${val > 0 ? barColor : 'bg-slate-200'}" style="height:${heightPct}%"></div>
+            <span class="text-[9px] font-bold mt-1 ${lunar.isRam ? 'text-red-600' : 'text-slate-500'}">${d}${lunar.isRam ? '🌕' : ''}</span>
+          </div>
+        `;
+      }
+      container.innerHTML = barsHTML;
+    }
+
+    function renderOverviewTasksPreview() {
+      const container = document.getElementById('overview-tasks-preview');
+      const pendingTasks = state.tasks.filter(t => !t.completed).sort((a, b) => a.date.localeCompare(b.date));
+      
+      const badge = document.getElementById('nav-task-badge');
+      if (pendingTasks.length > 0) {
+        badge.textContent = pendingTasks.length;
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+
+      if (pendingTasks.length === 0) {
+        container.innerHTML = `<div class="text-center py-3 text-xs text-slate-400">Bạn đã hoàn thành hết công việc!</div>`;
+        return;
+      }
+
+      container.innerHTML = pendingTasks.slice(0, 3).map(task => {
+        const lunar = getLunarInfoFromISO(task.date);
+        return `
+          <div class="flex items-center justify-between p-2.5 rounded-xl border ${lunar.isRam ? 'bg-red-50/70 border-red-200' : 'bg-slate-50 border-slate-100'}">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <button onclick="toggleTaskDone('${task.id}')" class="w-5 h-5 rounded-md border-2 ${lunar.isRam ? 'border-red-500' : 'border-momo-500'} flex items-center justify-center text-white shrink-0"></button>
+              <div class="min-w-0">
+                <div class="text-xs font-bold text-slate-800 truncate">${task.title}</div>
+                <div class="flex items-center gap-1.5 text-[10px] font-semibold mt-0.5 flex-wrap">
+                  <span class="text-slate-500">${formatDisplayDate(task.date)} • ${task.time || '08:00'}</span>
+                  <span class="${lunar.isRam ? 'bg-red-600 text-white px-1.5 rounded-full font-extrabold' : 'text-momo-600'}">
+                    ${lunar.day}/${lunar.month} ÂL${lunar.isRam ? ' • Rằm 15 ÂL' : ''}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <button onclick="jumpToCalendarDate('${task.date}')" class="text-slate-400 hover:text-momo-600 px-1.5">
+              <i class="fa-regular fa-calendar text-xs"></i>
+            </button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderOverviewRecentTransactions(monthTx) {
+      const container = document.getElementById('overview-recent-tx');
+      const countEl = document.getElementById('recent-tx-count');
+      const sorted = [...monthTx].sort((a, b) => b.date.localeCompare(a.date));
+      countEl.textContent = `${sorted.length} giao dịch`;
+
+      if (sorted.length === 0) {
+        container.innerHTML = `<div class="text-center py-4 text-xs text-slate-400">Chưa có giao dịch nào trong tháng này.</div>`;
+        return;
+      }
+
+      container.innerHTML = sorted.slice(0, 8).map(tx => {
+        const meta = getCategoryMeta(tx.category, tx.type);
+        const lunar = getLunarInfoFromISO(tx.date);
+        const isExp = tx.type === 'expense';
+        return `
+          <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50/80 hover:bg-slate-100/70 border border-slate-100 transition">
+            <div onclick="openEditTransaction('${tx.id}')" class="flex items-center gap-2.5 min-w-0 cursor-pointer flex-1">
+              <span class="w-9 h-9 rounded-xl flex items-center justify-center text-sm shrink-0" style="background:${meta.bg}; color:${meta.color}">
+                <i class="fa-solid ${meta.icon}"></i>
+              </span>
+              <div class="min-w-0">
+                <div class="flex items-center gap-1.5">
+                  <span class="text-xs font-bold text-slate-800 truncate">${tx.note || meta.name}</span>
+                  ${lunar.isRam ? '<span class="text-[9px] font-extrabold bg-red-600 text-white px-1.5 rounded-full shrink-0">Rằm 15 ÂL</span>' : ''}
+                </div>
+                <div class="text-[10px] text-slate-400 font-medium">
+                  ${meta.name} • ${formatDisplayDate(tx.date)} (${lunar.day}/${lunar.month} ÂL)
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center gap-1.5 shrink-0">
+              <span class="text-xs font-extrabold ${isExp ? 'text-momo-600' : 'text-emerald-600'}">
+                ${isExp ? '-' : '+'}${formatMoney(tx.amount)}
+              </span>
+              <button onclick="deleteTransaction('${tx.id}')" class="text-slate-300 hover:text-red-500 text-xs px-1" title="Xóa">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    /********************************************************************
+     * 7. RENDER TAB 2: LỊCH ÂM DƯƠNG VIỆT NAM (TÔ ĐỎ NGÀY RẰM)
+     ********************************************************************/
+    function changeCalendarMonth(delta) {
+      let m = state.calMonth + delta;
+      let y = state.calYear;
+      if (m < 1) { m = 12; y--; }
+      if (m > 12) { m = 1; y++; }
+      state.calMonth = m;
+      state.calYear = y;
+      renderCalendar();
+    }
+
+    function goToTodayCalendar() {
+      state.calYear = todayObj.getFullYear();
+      state.calMonth = todayObj.getMonth() + 1;
+      state.selectedDate = todayISO;
+      renderCalendar();
+    }
+
+    function jumpToCalendarDate(isoDate) {
+      const [y, m] = isoDate.split('-').map(Number);
+      state.calYear = y;
+      state.calMonth = m;
+      state.selectedDate = isoDate;
+      switchTab('calendar');
+      setTimeout(() => scrollToElement('selected-day-panel'), 120);
+    }
+
+    function selectCalendarDate(isoDate) {
+      state.selectedDate = isoDate;
+      renderCalendar();
+    }
+
+    function renderCalendar() {
+      const todayLunar = getLunarInfoFromISO(todayISO);
+      document.getElementById('cal-banner-solar').textContent = `Hôm nay: ${formatDisplayDate(todayISO)}`;
+      document.getElementById('cal-banner-lunar').textContent =
+        `Âm lịch: Ngày ${todayLunar.day} tháng ${todayLunar.month} năm ${todayLunar.canChi.year} (${todayLunar.canChi.day})` +
+        (todayLunar.isRam ? ' • 🌕 HÔM NAY NGÀY RẰM!' : todayLunar.isMung1 ? ' • 🌑 MÙNG 1 ĐẦU THÁNG' : '');
+
+      document.getElementById('cal-month-title').textContent = `Tháng ${String(state.calMonth).padStart(2, '0')} / ${state.calYear}`;
+      const { ramDate, mung1Date } = findLunarDaysInSolarMonth(state.calYear, state.calMonth);
+      let subParts = [];
+      if (ramDate) subParts.push(`🌕 Ngày Rằm (15 ÂL): ${formatDisplayDate(ramDate)}`);
+      if (mung1Date) subParts.push(`Mùng 1 ÂL: ${formatDisplayDate(mung1Date).slice(0,5)}`);
+      document.getElementById('cal-month-lunar-subtitle').textContent = subParts.join(' • ');
+
+      const firstDayObj = new Date(state.calYear, state.calMonth - 1, 1);
+      const daysInMonth = new Date(state.calYear, state.calMonth, 0).getDate();
+      const startOffset = (firstDayObj.getDay() + 6) % 7;
+
+      const txByDate = {};
+      state.transactions.forEach(tx => {
+        if (!txByDate[tx.date]) txByDate[tx.date] = { exp: 0, inc: 0 };
+        if (tx.type === 'expense') txByDate[tx.date].exp += Number(tx.amount);
+        else txByDate[tx.date].inc += Number(tx.amount);
+      });
+
+      const tasksByDate = {};
+      state.tasks.forEach(tk => {
+        if (!tasksByDate[tk.date]) tasksByDate[tk.date] = [];
+        tasksByDate[tk.date].push(tk);
+      });
+
+      let gridHTML = '';
+      for (let i = 0; i < startOffset; i++) {
+        gridHTML += `<div class="h-[68px] rounded-xl bg-slate-50/40"></div>`;
+      }
+
+      for (let d = 1; d <= daysInMonth; d++) {
+        const iso = `${state.calYear}-${String(state.calMonth).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        const lunar = getLunarInfoFromISO(iso);
+        const isSelected = state.selectedDate === iso;
+        const isToday = todayISO === iso;
+        const dayTx = txByDate[iso];
+        const dayTasks = tasksByDate[iso] || [];
+
+        let cellClasses = 'h-[68px] rounded-xl p-1 flex flex-col justify-between border transition cursor-pointer relative select-none ';
+        if (lunar.isRam && isSelected) {
+          cellClasses += 'ram-cell-selected';
+        } else if (lunar.isRam) {
+          cellClasses += 'ram-cell shadow-xs';
+        } else if (isSelected) {
+          cellClasses += 'day-selected';
+        } else if (isToday) {
+          cellClasses += 'bg-pink-50 border-momo-400 text-slate-900 font-bold';
+        } else {
+          cellClasses += 'bg-white hover:bg-slate-50 border-slate-100 text-slate-700';
+        }
+
+        let lunarLabel = lunar.day;
+        if (lunar.day === 1 || lunar.day === 15 || d === 1) {
+          lunarLabel = `${lunar.day}/${lunar.month}`;
+        }
+
+        let topRightBadge = '';
+        if (lunar.isRam) {
+          topRightBadge = `<span class="text-[8px] font-extrabold px-1 rounded ${isSelected ? 'bg-white text-red-600' : 'bg-red-600 text-white'} leading-tight">Rằm</span>`;
+        } else if (lunar.isMung1) {
+          topRightBadge = `<span class="text-[8px] font-extrabold px-1 rounded ${isSelected ? 'bg-white text-amber-600' : 'bg-amber-100 text-amber-700 border border-amber-300'} leading-tight">M1</span>`;
+        }
+
+        // Compact money summary in cell
+        let compactMoneyHTML = '';
+        if (dayTx) {
+          const netDay = dayTx.inc - dayTx.exp;
+          if (dayTx.exp > 0) {
+            compactMoneyHTML = `<div class="text-[8px] font-bold truncate leading-none ${isSelected ? 'text-pink-100' : 'text-momo-600'}">-${formatShortMoney(dayTx.exp)}</div>`;
+          } else if (dayTx.inc > 0) {
+            compactMoneyHTML = `<div class="text-[8px] font-bold truncate leading-none ${isSelected ? 'text-emerald-100' : 'text-emerald-600'}">+${formatShortMoney(dayTx.inc)}</div>`;
+          }
+        }
+
+        let dotsHTML = '';
+        if (dayTx && dayTx.exp > 0) dotsHTML += `<span class="w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-white' : 'bg-momo-500'}"></span>`;
+        if (dayTx && dayTx.inc > 0) dotsHTML += `<span class="w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-emerald-200' : 'bg-emerald-500'}"></span>`;
+        if (dayTasks.length > 0) dotsHTML += `<span class="w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-yellow-200' : 'bg-blue-500'}"></span>`;
+
+        gridHTML += `
+          <div onclick="selectCalendarDate('${iso}')" class="${cellClasses}">
+            <div class="flex items-start justify-between w-full">
+              <span class="text-xs font-extrabold leading-none ${lunar.isRam && !isSelected ? 'text-red-600' : ''}">${d}</span>
+              ${topRightBadge}
+            </div>
+
+            <div class="flex flex-col items-center justify-center my-auto">
+              ${compactMoneyHTML}
+              <div class="flex items-center gap-0.5 mt-0.5">${dotsHTML}</div>
+            </div>
+
+            <div class="flex items-end justify-between w-full">
+              <span class="text-[8px] font-bold ${isSelected ? 'text-white/90' : 'text-blue-600'}">
+                ${dayTasks.length > 0 ? `${dayTasks.length} việc` : ''}
+              </span>
+              <span class="text-[9.5px] font-bold leading-none ${
+                isSelected ? 'text-white' : lunar.isRam ? 'text-red-600 font-extrabold' : lunar.isMung1 ? 'text-amber-600 font-extrabold' : 'text-slate-400'
+              }">${lunarLabel}</span>
+            </div>
+          </div>
+        `;
+      }
+
+      document.getElementById('calendar-grid').innerHTML = gridHTML;
+      renderSelectedDayDetails();
+    }
+
+    function renderSelectedDayDetails() {
+      const iso = state.selectedDate;
+      const lunar = getLunarInfoFromISO(iso);
+
+      document.getElementById('sel-day-solar').textContent = `Ngày ${formatDisplayDate(iso)}`;
+      const specialBadge = document.getElementById('sel-day-special-badge');
+      if (lunar.isRam) {
+        specialBadge.textContent = '🌕 NGÀY RẰM (15 ÂM LỊCH)';
+        specialBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-red-600 text-white shadow-xs';
+      } else if (lunar.isMung1) {
+        specialBadge.textContent = `🌑 MÙNG 1 THÁNG ${lunar.month} ÂL`;
+        specialBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-500 text-white shadow-xs';
+      } else {
+        specialBadge.className = 'hidden';
+      }
+
+      document.getElementById('sel-day-lunar').textContent =
+        `Âm lịch: Ngày ${lunar.day} tháng ${lunar.month}${lunar.leap ? ' (Nhuận)' : ''} năm ${lunar.canChi.year}`;
+      document.getElementById('sel-day-canchi').textContent =
+        `Can chi: Ngày ${lunar.canChi.day} • Tháng ${lunar.canChi.month} • Năm ${lunar.canChi.year}`;
+
+      const dayTxs = state.transactions.filter(t => t.date === iso);
+      const dayTasks = state.tasks.filter(t => t.date === iso);
+
+      const expSum = dayTxs.filter(t => t.type === 'expense').reduce((s, t) => s + Number(t.amount), 0);
+      const incSum = dayTxs.filter(t => t.type === 'income').reduce((s, t) => s + Number(t.amount), 0);
+      document.getElementById('sel-day-net').innerHTML =
+        `<span class="text-momo-600">-${formatMoney(expSum)}</span> / <span class="text-emerald-600">+${formatMoney(incSum)}</span>`;
+
+      const taskContainer = document.getElementById('sel-day-tasks-list');
+      if (dayTasks.length === 0) {
+        taskContainer.innerHTML = `
+          <div class="text-xs text-slate-400 bg-slate-50 rounded-xl p-2.5 text-center">
+            Chưa có công việc nào trong ngày này.
+          </div>
+        `;
+      } else {
+        taskContainer.innerHTML = dayTasks.map(tk => `
+          <div class="flex items-center justify-between p-2.5 rounded-xl border ${tk.completed ? 'bg-slate-50 border-slate-100 opacity-65' : lunar.isRam ? 'bg-red-50/60 border-red-200' : 'bg-blue-50/30 border-blue-100'}">
+            <div class="flex items-center gap-2.5 min-w-0 flex-1">
+              <button onclick="toggleTaskDone('${tk.id}')" class="w-5 h-5 rounded-md border-2 ${tk.completed ? 'bg-emerald-500 border-emerald-500' : 'border-blue-500'} flex items-center justify-center text-white text-[10px] shrink-0">
+                ${tk.completed ? '<i class="fa-solid fa-check"></i>' : ''}
+              </button>
+              <div onclick="openEditTask('${tk.id}')" class="min-w-0 cursor-pointer flex-1">
+                <div class="text-xs font-bold text-slate-800 ${tk.completed ? 'line-through text-slate-400' : ''} truncate">${tk.title}</div>
+                <div class="text-[10px] text-slate-500">${tk.time || '08:00'} • ${tk.category} ${tk.note ? '• ' + tk.note : ''}</div>
+              </div>
+            </div>
+            <div class="flex items-center gap-1 shrink-0">
+              <button onclick="openEditTask('${tk.id}')" class="text-slate-400 hover:text-blue-600 text-xs px-1">
+                <i class="fa-solid fa-pen"></i>
+              </button>
+              <button onclick="deleteTask('${tk.id}')" class="text-slate-300 hover:text-red-500 text-xs px-1">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      const txContainer = document.getElementById('sel-day-tx-list');
+      if (dayTxs.length === 0) {
+        txContainer.innerHTML = `<div class="text-xs text-slate-400 bg-slate-50 rounded-xl p-2.5 text-center">Chưa có giao dịch thu chi trong ngày này.</div>`;
+      } else {
+        txContainer.innerHTML = dayTxs.map(tx => {
+          const meta = getCategoryMeta(tx.category, tx.type);
+          const isExp = tx.type === 'expense';
+          return `
+            <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+              <div onclick="openEditTransaction('${tx.id}')" class="flex items-center gap-2.5 min-w-0 flex-1 cursor-pointer">
+                <span class="w-8 h-8 rounded-xl flex items-center justify-center text-xs shrink-0" style="background:${meta.bg}; color:${meta.color}">
+                  <i class="fa-solid ${meta.icon}"></i>
+                </span>
+                <div class="min-w-0">
+                  <div class="text-xs font-bold text-slate-800 truncate">${tx.note || meta.name}</div>
+                  <div class="text-[10px] text-slate-400">${meta.name}</div>
+                </div>
+              </div>
+              <div class="flex items-center gap-1.5 shrink-0">
+                <span class="text-xs font-extrabold ${isExp ? 'text-momo-600' : 'text-emerald-600'}">
+                  ${isExp ? '-' : '+'}${formatMoney(tx.amount)}
+                </span>
+                <button onclick="deleteTransaction('${tx.id}')" class="text-slate-300 hover:text-red-500 text-xs px-1">
+                  <i class="fa-solid fa-trash-can"></i>
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    /********************************************************************
+     * 8. RENDER TAB 3: CÔNG VIỆC GẮN LỊCH (TASKS)
+     ********************************************************************/
+    function setTaskFilter(filter) {
+      state.taskFilter = filter;
+      ['all', 'today', 'upcoming', 'ram', 'done'].forEach(f => {
+        const btn = document.getElementById(`tfilter-${f}`);
+        if (f === filter) {
+          btn.className = 'px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap bg-momo-600 text-white transition shadow-xs';
+        } else if (f === 'ram') {
+          btn.className = 'px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap bg-red-50 text-red-600 border border-red-200 transition';
+        } else {
+          btn.className = 'px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap bg-slate-100 text-slate-600 hover:bg-slate-200 transition';
+        }
+      });
+      renderTasksTab();
+    }
+
+    function toggleTaskDone(id) {
+      const tk = state.tasks.find(t => t.id === id);
+      if (tk) {
+        tk.completed = !tk.completed;
+        renderAll();
+        triggerCloudSyncAfterChange();
+        showToast(tk.completed ? 'Đã hoàn thành công việc!' : 'Đã mở lại công việc');
+      }
+    }
+
+    function deleteTask(id) {
+      state.tasks = state.tasks.filter(t => t.id !== id);
+      renderAll();
+      triggerCloudSyncAfterChange();
+      showToast('Đã xóa công việc');
+    }
+
+    function deleteTransaction(id) {
+      state.transactions = state.transactions.filter(t => t.id !== id);
+      renderAll();
+      triggerCloudSyncAfterChange();
+      showToast('Đã xóa giao dịch');
+    }
+
+    function generateRamMung1Tasks() {
+      let cursor = new Date();
+      let addedCount = 0;
+      for (let i = 0; i < 35; i++) {
+        const iso = formatISO(cursor);
+        const l = getLunarInfoFromISO(iso);
+        if (l.isRam || l.isMung1) {
+          const title = l.isRam
+            ? `Sắm lễ hoa quả cúng Rằm tháng ${l.month} ÂL`
+            : `Thắp hương & mua hoa tươi Mùng 1 tháng ${l.month} ÂL`;
+          const exists = state.tasks.some(t => t.date === iso && t.title === title);
+          if (!exists) {
+            state.tasks.unshift({
+              id: 'tk_auto_' + Date.now() + '_' + i,
+              title,
+              date: iso,
+              time: '07:30',
+              priority: 'high',
+              category: 'Lễ / Rằm',
+              note: l.isRam ? 'Ngày Rằm 15 Âm lịch hàng tháng' : 'Ngày Mùng 1 đầu tháng Âm lịch',
+              completed: false
+            });
+            addedCount++;
+          }
+        }
+        cursor.setDate(cursor.getDate() + 1);
+      }
+      renderAll();
+      triggerCloudSyncAfterChange();
+      showToast(addedCount > 0 ? `Đã tạo ${addedCount} lịch nhắc Rằm & Mùng 1 sắp tới!` : 'Lịch nhắc Rằm & Mùng 1 sắp tới đã có sẵn!');
+    }
+
+    function renderTasksTab() {
+      const allTasks = [...state.tasks].sort((a, b) => a.date.localeCompare(b.date));
+      const pendingCount = allTasks.filter(t => !t.completed).length;
+      const doneCount = allTasks.filter(t => t.completed).length;
+      const ramCount = allTasks.filter(t => {
+        const l = getLunarInfoFromISO(t.date);
+        return l.isRam || l.isMung1 || t.category === 'Lễ / Rằm';
+      }).length;
+
+      document.getElementById('task-stat-pending').textContent = pendingCount;
+      document.getElementById('task-stat-ram').textContent = ramCount;
+      document.getElementById('task-stat-done').textContent = doneCount;
+
+      let filtered = allTasks;
+      if (state.taskFilter === 'today') {
+        filtered = allTasks.filter(t => t.date === todayISO);
+      } else if (state.taskFilter === 'ram') {
+        filtered = allTasks.filter(t => {
+          const l = getLunarInfoFromISO(t.date);
+          return l.isRam || l.isMung1 || t.category === 'Lễ / Rằm';
+        });
+      } else if (state.taskFilter === 'upcoming') {
+        filtered = allTasks.filter(t => !t.completed && t.date >= todayISO);
+      } else if (state.taskFilter === 'done') {
+        filtered = allTasks.filter(t => t.completed);
+      }
+
+      const listEl = document.getElementById('tasks-full-list');
+      if (filtered.length === 0) {
+        listEl.innerHTML = `
+          <div class="bg-white rounded-2xl p-6 text-center card-shadow space-y-2">
+            <div class="w-12 h-12 rounded-full bg-pink-50 text-momo-500 flex items-center justify-center mx-auto text-lg">
+              <i class="fa-solid fa-calendar-check"></i>
+            </div>
+            <p class="text-xs font-bold text-slate-600">Không có công việc nào trong bộ lọc này</p>
+            <button onclick="openAddModal('task')" class="text-xs font-extrabold text-momo-600 underline">+ Thêm công việc mới gắn vào lịch</button>
+          </div>
+        `;
+        return;
+      }
+
+      listEl.innerHTML = filtered.map(tk => {
+        const lunar = getLunarInfoFromISO(tk.date);
+        const prioBadge = tk.priority === 'high'
+          ? '<span class="px-1.5 py-0.5 rounded bg-red-100 text-red-600 text-[9px] font-bold">Cao</span>'
+          : tk.priority === 'medium'
+          ? '<span class="px-1.5 py-0.5 rounded bg-amber-100 text-amber-700 text-[9px] font-bold">TB</span>'
+          : '<span class="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700 text-[9px] font-bold">Thấp</span>';
+
+        return `
+          <div class="bg-white rounded-2xl p-3.5 card-shadow border ${lunar.isRam ? 'border-red-300 bg-gradient-to-r from-white to-red-50/40' : 'border-white'} space-y-2">
+            <div class="flex items-start justify-between gap-2">
+              <div class="flex items-start gap-2.5 min-w-0 flex-1">
+                <button onclick="toggleTaskDone('${tk.id}')" class="mt-0.5 w-5 h-5 rounded-md border-2 ${tk.completed ? 'bg-emerald-500 border-emerald-500 text-white' : lunar.isRam ? 'border-red-500' : 'border-momo-500'} flex items-center justify-center text-xs shrink-0">
+                  ${tk.completed ? '<i class="fa-solid fa-check text-[10px]"></i>' : ''}
+                </button>
+                <div onclick="openEditTask('${tk.id}')" class="min-w-0 cursor-pointer flex-1">
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    <span class="text-sm font-bold text-slate-800 ${tk.completed ? 'line-through text-slate-400' : ''}">${tk.title}</span>
+                    ${lunar.isRam ? '<span class="px-2 py-0.5 rounded-full bg-red-600 text-white text-[9px] font-extrabold">🌕 Rằm 15 ÂL</span>' : ''}
+                    ${lunar.isMung1 ? '<span class="px-2 py-0.5 rounded-full bg-amber-500 text-white text-[9px] font-extrabold">🌑 Mùng 1 ÂL</span>' : ''}
+                  </div>
+                  ${tk.note ? `<p class="text-xs text-slate-500 mt-0.5">${tk.note}</p>` : ''}
+                </div>
+              </div>
+              <div class="flex items-center gap-1 shrink-0">
+                <button onclick="openEditTask('${tk.id}')" class="text-slate-400 hover:text-blue-600 text-xs p-1" title="Sửa">
+                  <i class="fa-solid fa-pen"></i>
+                </button>
+                <button onclick="deleteTask('${tk.id}')" class="text-slate-300 hover:text-red-500 text-xs p-1" title="Xóa">
+                  <i class="fa-solid fa-trash-can"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between pt-2 border-t border-slate-100 flex-wrap gap-1.5">
+              <button onclick="jumpToCalendarDate('${tk.date}')" class="flex items-center gap-1.5 text-[11px] font-bold ${lunar.isRam ? 'text-red-600 bg-red-100/80' : 'text-momo-600 bg-pink-50'} px-2.5 py-1 rounded-lg hover:opacity-90 transition">
+                <i class="fa-regular fa-calendar"></i>
+                <span>${formatDisplayDate(tk.date)}</span>
+                <span>• ${lunar.day}/${lunar.month} ÂL</span>
+              </button>
+
+              <div class="flex items-center gap-1.5">
+                <span class="text-[10px] font-semibold text-slate-500"><i class="fa-regular fa-clock mr-0.5"></i>${tk.time || '08:00'}</span>
+                <span class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 text-[9px] font-bold">${tk.category}</span>
+                ${prioBadge}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    /********************************************************************
+     * 9. RENDER TAB 4: TIỆN ÍCH, NGÂN SÁCH & LỊCH RẰM SẮP TỚI
+     ********************************************************************/
+    function renderUtilitiesTab() {
+      const nowPrefix = `${todayObj.getFullYear()}-${String(todayObj.getMonth() + 1).padStart(2, '0')}`;
+      const monthExp = state.transactions.filter(t => t.type === 'expense' && t.date.startsWith(nowPrefix));
+      const totalSpent = monthExp.reduce((s, t) => s + Number(t.amount), 0);
+      const limit = state.monthlyBudget || 12000000;
+      const pct = Math.min(Math.round((totalSpent / limit) * 100), 100);
+
+      document.getElementById('budget-spent-label').textContent = formatMoney(totalSpent);
+      document.getElementById('budget-limit-label').textContent = formatMoney(limit);
+      document.getElementById('budget-percent-label').textContent = `${((totalSpent / limit) * 100).toFixed(1)}%`;
+      document.getElementById('budget-progress-bar').style.width = `${pct}%`;
+
+      const remain = limit - totalSpent;
+      document.getElementById('budget-status-msg').textContent =
+        remain >= 0
+          ? `Bạn còn có thể chi tiêu ${formatMoney(remain)} trong tháng này.`
+          : `Cảnh báo: Bạn đã vượt ngân sách ${formatMoney(Math.abs(remain))}!`;
+
+      const byCat = {};
+      monthExp.forEach(t => { byCat[t.category] = (byCat[t.category] || 0) + Number(t.amount); });
+
+      document.getElementById('budget-category-list').innerHTML = EXPENSE_CATEGORIES.map(cat => {
+        const spent = byCat[cat.id] || 0;
+        const catPct = limit > 0 ? Math.min((spent / (limit * 0.35)) * 100, 100) : 0;
+        return `
+          <div class="space-y-1">
+            <div class="flex items-center justify-between text-xs">
+              <div class="flex items-center gap-2 font-bold text-slate-700">
+                <span class="w-6 h-6 rounded-lg flex items-center justify-center text-[11px]" style="background:${cat.bg}; color:${cat.color}">
+                  <i class="fa-solid ${cat.icon}"></i>
+                </span>
+                <span>${cat.name}</span>
+              </div>
+              <span class="font-extrabold text-slate-800">${formatMoney(spent)}</span>
+            </div>
+            <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+              <div class="h-full rounded-full" style="width:${catPct.toFixed(0)}%; background:${cat.color}"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      const upcomingList = [];
+      let cursor = new Date();
+      for (let i = 0; i < 65; i++) {
+        const iso = formatISO(cursor);
+        const l = getLunarInfoFromISO(iso);
+        if (l.isRam || l.isMung1) {
+          upcomingList.push({ iso, lunar: l, diffDays: i });
+        }
+        cursor.setDate(cursor.getDate() + 1);
+      }
+
+      document.getElementById('upcoming-lunar-events').innerHTML = upcomingList.slice(0, 4).map(item => `
+        <div class="flex items-center justify-between p-2.5 rounded-xl border ${item.lunar.isRam ? 'bg-red-50/70 border-red-200' : 'bg-amber-50/60 border-amber-200'}">
+          <div>
+            <div class="text-xs font-extrabold ${item.lunar.isRam ? 'text-red-600' : 'text-amber-700'}">
+              ${item.lunar.isRam ? '🌕 Ngày Rằm tháng ' + item.lunar.month + ' ÂL (15/' + item.lunar.month + ')' : '🌑 Mùng 1 tháng ' + item.lunar.month + ' ÂL (1/' + item.lunar.month + ')'}
+            </div>
+            <div class="text-[11px] text-slate-600 font-medium">
+              Dương lịch: <strong>${formatDisplayDate(item.iso)}</strong> (${item.diffDays === 0 ? 'Hôm nay' : 'Còn ' + item.diffDays + ' ngày'})
+            </div>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button onclick="openAddModal('task', '${item.iso}')" class="px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-[11px] font-bold text-slate-700 hover:bg-slate-100">
+              + Việc
+            </button>
+            <button onclick="jumpToCalendarDate('${item.iso}')" class="px-2.5 py-1 rounded-lg ${item.lunar.isRam ? 'bg-red-600 text-white' : 'bg-amber-500 text-white'} text-[11px] font-bold">
+              Lịch
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    /********************************************************************
+     * 10. MODAL THÊM / SỬA GIAO DỊCH & CÔNG VIỆC
+     ********************************************************************/
+    function openAddModal(mode = 'expense', customDate = null) {
+      state.editingRecordId = null;
+      document.getElementById('modal-mode-tabs').classList.remove('hidden');
+      document.getElementById('record-modal').classList.remove('hidden');
+      const targetDate = customDate || state.selectedDate || todayISO;
+      document.getElementById('modal-date-input').value = targetDate;
+      document.getElementById('tx-amount-input').value = '';
+      document.getElementById('tx-note-input').value = '';
+      document.getElementById('task-title-input').value = '';
+      document.getElementById('task-note-input').value = '';
+      switchModalMode(mode);
+      updateModalLunarPreview();
+    }
+
+    function openEditTask(taskId) {
+      const tk = state.tasks.find(t => t.id === taskId);
+      if (!tk) return;
+      state.editingRecordId = taskId;
+      document.getElementById('record-modal').classList.remove('hidden');
+      switchModalMode('task');
+      document.getElementById('modal-title').textContent = 'Chỉnh sửa công việc';
+      document.getElementById('modal-date-input').value = tk.date;
+      document.getElementById('task-title-input').value = tk.title;
+      document.getElementById('task-time-input').value = tk.time || '08:00';
+      document.getElementById('task-priority-input').value = tk.priority || 'medium';
+      document.getElementById('task-note-input').value = tk.note || '';
+      selectTaskCat(tk.category || 'Lễ / Rằm');
+      updateModalLunarPreview();
+    }
+
+    function openEditTransaction(txId) {
+      const tx = state.transactions.find(t => t.id === txId);
+      if (!tx) return;
+      state.editingRecordId = txId;
+      document.getElementById('record-modal').classList.remove('hidden');
+      switchModalMode(tx.type);
+      document.getElementById('modal-title').textContent = 'Chỉnh sửa giao dịch';
+      document.getElementById('modal-date-input').value = tx.date;
+      document.getElementById('tx-amount-input').value = tx.amount;
+      document.getElementById('tx-note-input').value = tx.note || '';
+      selectTxCat(tx.category);
+      updateModalLunarPreview();
+    }
+
+    function closeRecordModal() {
+      document.getElementById('record-modal').classList.add('hidden');
+      state.editingRecordId = null;
+    }
+
+    function switchModalMode(mode) {
+      state.modalMode = mode;
+      ['expense', 'income', 'task'].forEach(m => {
+        const btn = document.getElementById(`mmode-${m}`);
+        if (m === mode) {
+          btn.className = 'py-2 rounded-xl text-xs font-extrabold transition bg-white text-momo-600 shadow-xs';
+        } else {
+          btn.className = 'py-2 rounded-xl text-xs font-extrabold transition text-slate-600';
+        }
+      });
+
+      const txFields = document.getElementById('modal-tx-fields');
+      const taskFields = document.getElementById('modal-task-fields');
+
+      if (mode === 'task') {
+        txFields.classList.add('hidden');
+        taskFields.classList.remove('hidden');
+        if (!state.editingRecordId) document.getElementById('modal-title').textContent = 'Thêm công việc vào lịch';
+      } else {
+        txFields.classList.remove('hidden');
+        taskFields.classList.add('hidden');
+        if (!state.editingRecordId) {
+          document.getElementById('modal-title').textContent = mode === 'expense' ? 'Nhập giao dịch chi' : 'Nhập giao dịch thu';
+          state.selectedTxCategory = mode === 'expense' ? 'food' : 'salary';
+        }
+        renderModalCategoryGrid();
+      }
+    }
+
+    function updateModalLunarPreview() {
+      const iso = document.getElementById('modal-date-input').value || todayISO;
+      const lunar = getLunarInfoFromISO(iso);
+      const previewEl = document.getElementById('modal-lunar-preview');
+      if (lunar.isRam) {
+        previewEl.innerHTML = `<span class="text-red-600 font-extrabold">🌕 Ngày Rằm ${lunar.day}/${lunar.month} ÂL (${lunar.canChi.day})</span>`;
+      } else if (lunar.isMung1) {
+        previewEl.innerHTML = `<span class="text-amber-600 font-extrabold">🌑 Mùng 1/${lunar.month} ÂL (${lunar.canChi.day})</span>`;
+      } else {
+        previewEl.innerHTML = `Âm lịch: ${lunar.day}/${lunar.month} (${lunar.canChi.day})`;
+      }
+    }
+
+    function setTxAmount(val) {
+      document.getElementById('tx-amount-input').value = val;
+    }
+
+    function renderQuickAmountSuggestions() {
+      const raw = Number(document.getElementById('tx-amount-input').value);
+      const container = document.getElementById('quick-amount-chips');
+      if (!raw || raw > 10000) return;
+      const mults = [raw * 1000, raw * 10000, raw * 100000];
+      container.innerHTML = mults.map(v => `
+        <button type="button" onclick="setTxAmount(${v})" class="px-2.5 py-1 rounded-lg bg-pink-50 text-momo-600 text-[11px] font-bold whitespace-nowrap hover:bg-pink-100">
+          ${v.toLocaleString('vi-VN')}đ
+        </button>
+      `).join('');
+    }
+
+    function renderModalCategoryGrid() {
+      const list = state.modalMode === 'income' ? INCOME_CATEGORIES : EXPENSE_CATEGORIES;
+      const grid = document.getElementById('tx-category-grid');
+      grid.innerHTML = list.map(cat => {
+        const active = state.selectedTxCategory === cat.id;
+        return `
+          <button type="button" onclick="selectTxCat('${cat.id}')" class="p-2 rounded-xl border text-center flex flex-col items-center gap-1 transition ${
+            active ? 'border-momo-500 bg-momo-50 shadow-xs' : 'border-slate-200 bg-white hover:bg-slate-50'
+          }">
+            <span class="w-8 h-8 rounded-lg flex items-center justify-center text-xs" style="background:${cat.bg}; color:${cat.color}">
+              <i class="fa-solid ${cat.icon}"></i>
+            </span>
+            <span class="text-[10px] font-bold text-slate-700 truncate w-full">${cat.name}</span>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function selectTxCat(id) {
+      state.selectedTxCategory = id;
+      renderModalCategoryGrid();
+    }
+
+    function selectTaskCat(catName) {
+      state.selectedTaskCategory = catName;
+      document.querySelectorAll('.tcat-btn').forEach(btn => {
+        if (btn.getAttribute('data-tcat') === catName) {
+          btn.className = 'tcat-btn py-2 px-2 rounded-xl border text-xs font-bold border-momo-500 bg-momo-50 text-momo-600';
+        } else {
+          btn.className = 'tcat-btn py-2 px-2 rounded-xl border text-xs font-bold border-slate-200 bg-slate-50 text-slate-600';
+        }
+      });
+    }
+
+    function submitRecordModal() {
+      const dateVal = document.getElementById('modal-date-input').value || todayISO;
+
+      if (state.modalMode === 'task') {
+        const title = document.getElementById('task-title-input').value.trim();
+        if (!title) {
+          showToast('Vui lòng nhập tên công việc!');
+          return;
+        }
+        const time = document.getElementById('task-time-input').value || '08:00';
+        const priority = document.getElementById('task-priority-input').value;
+        const note = document.getElementById('task-note-input').value.trim();
+
+        if (state.editingRecordId) {
+          const idx = state.tasks.findIndex(t => t.id === state.editingRecordId);
+          if (idx !== -1) {
+            state.tasks[idx] = { ...state.tasks[idx], title, date: dateVal, time, priority, category: state.selectedTaskCategory, note };
+          }
+        } else {
+          state.tasks.unshift({
+            id: 'tk_' + Date.now(),
+            title,
+            date: dateVal,
+            time,
+            priority,
+            category: state.selectedTaskCategory,
+            note,
+            completed: false
+          });
+        }
+        state.selectedDate = dateVal;
+        closeRecordModal();
+        renderAll();
+        triggerCloudSyncAfterChange();
+        showToast('Đã lưu công việc vào lịch!');
+      } else {
+        const amount = Number(document.getElementById('tx-amount-input').value);
+        if (!amount || amount <= 0) {
+          showToast('Vui lòng nhập số tiền hợp lệ!');
+          return;
+        }
+        const note = document.getElementById('tx-note-input').value.trim();
+
+        if (state.editingRecordId) {
+          const idx = state.transactions.findIndex(t => t.id === state.editingRecordId);
+          if (idx !== -1) {
+            state.transactions[idx] = { ...state.transactions[idx], type: state.modalMode, amount, category: state.selectedTxCategory, date: dateVal, note };
+          }
+        } else {
+          state.transactions.unshift({
+            id: 'tx_' + Date.now(),
+            type: state.modalMode,
+            amount,
+            category: state.selectedTxCategory,
+            date: dateVal,
+            note
+          });
+        }
+        state.selectedDate = dateVal;
+        closeRecordModal();
+        renderAll();
+        triggerCloudSyncAfterChange();
+        showToast(state.modalMode === 'expense' ? 'Đã lưu khoản chi tiêu!' : 'Đã lưu khoản thu nhập!');
+      }
+    }
+
+    /********************************************************************
+     * 11. MODAL ĐỒNG BỘ, NGÂN SÁCH & FILE JSON
+     ********************************************************************/
+    function openSyncModal(defaultTab = 'firebase') {
+      document.getElementById('sync-modal').classList.remove('hidden');
+      switchSyncProviderTab(defaultTab);
+    }
+
+    function closeSyncModal() {
+      document.getElementById('sync-modal').classList.add('hidden');
+    }
+
+    function switchSyncProviderTab(tab) {
+      const fbBtn = document.getElementById('stab-firebase');
+      const ghBtn = document.getElementById('stab-github');
+      const fbPanel = document.getElementById('sync-panel-firebase');
+      const ghPanel = document.getElementById('sync-panel-github');
+
+      if (tab === 'firebase') {
+        fbBtn.className = 'py-2 rounded-xl text-xs font-extrabold transition bg-white text-momo-600 shadow-xs';
+        ghBtn.className = 'py-2 rounded-xl text-xs font-extrabold transition text-slate-600';
+        fbPanel.classList.remove('hidden');
+        ghPanel.classList.add('hidden');
+      } else {
+        ghBtn.className = 'py-2 rounded-xl text-xs font-extrabold transition bg-white text-momo-600 shadow-xs';
+        fbBtn.className = 'py-2 rounded-xl text-xs font-extrabold transition text-slate-600';
+        ghPanel.classList.remove('hidden');
+        fbPanel.classList.add('hidden');
+      }
+    }
+
+    function openBudgetEditModal() {
+      const modal = document.getElementById('utility-modal');
+      document.getElementById('utility-modal-title').textContent = 'Đặt hạn mức ngân sách tháng';
+      document.getElementById('utility-modal-body').innerHTML = `
+        <div class="space-y-3">
+          <label class="text-xs font-bold text-slate-600 block">Hạn mức chi tiêu tối đa / tháng (VNĐ)</label>
+          <input type="number" id="budget-input-val" value="${state.monthlyBudget}" class="w-full bg-slate-50 border-2 border-momo-300 rounded-xl px-3 py-2.5 text-base font-extrabold text-slate-800 focus:outline-none" />
+          <div class="flex gap-2">
+            <button onclick="document.getElementById('budget-input-val').value=8000000" class="flex-1 py-1.5 bg-pink-50 text-momo-600 rounded-lg text-xs font-bold">8 Triệu</button>
+            <button onclick="document.getElementById('budget-input-val').value=12000000" class="flex-1 py-1.5 bg-pink-50 text-momo-600 rounded-lg text-xs font-bold">12 Triệu</button>
+            <button onclick="document.getElementById('budget-input-val').value=20000000" class="flex-1 py-1.5 bg-pink-50 text-momo-600 rounded-lg text-xs font-bold">20 Triệu</button>
+          </div>
+          <button onclick="saveBudgetLimit()" class="w-full py-2.5 rounded-xl bg-momo-600 text-white font-bold text-xs">Lưu hạn mức</button>
+        </div>
+      `;
+      modal.classList.remove('hidden');
+    }
+
+    function saveBudgetLimit() {
+      const val = Number(document.getElementById('budget-input-val').value);
+      if (val > 0) {
+        state.monthlyBudget = val;
+        closeUtilityModal();
+        renderAll();
+        triggerCloudSyncAfterChange();
+        showToast('Đã cập nhật ngân sách tháng!');
+      }
+    }
+
+    function closeUtilityModal() {
+      document.getElementById('utility-modal').classList.add('hidden');
+    }
+
+    function exportDataJSON() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({
+        transactions: state.transactions,
+        tasks: state.tasks,
+        monthlyBudget: state.monthlyBudget,
+        exportedAt: new Date().toISOString()
+      }, null, 2));
+      const a = document.createElement('a');
+      a.setAttribute('href', dataStr);
+      a.setAttribute('download', `quan_ly_thu_chi_${todayISO}.json`);
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      showToast('Đã xuất file JSON dự phòng!');
+    }
+
+    function importDataJSON(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          if (Array.isArray(parsed.transactions)) state.transactions = parsed.transactions;
+          if (Array.isArray(parsed.tasks)) state.tasks = parsed.tasks;
+          if (parsed.monthlyBudget) state.monthlyBudget = Number(parsed.monthlyBudget);
+          renderAll();
+          triggerCloudSyncAfterChange();
+          showToast('Đã nhập dữ liệu JSON thành công!');
+        } catch (err) {
+          showToast('File JSON không hợp lệ!');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function resetSampleData() {
+      generateDefaultSampleData();
+      renderAll();
+      triggerCloudSyncAfterChange();
+      showToast('Đã khôi phục dữ liệu mẫu!');
+    }
+
+    function clearAllData() {
+      state.transactions = [];
+      state.tasks = [];
+      renderAll();
+      triggerCloudSyncAfterChange();
+      showToast('Đã xóa trắng toàn bộ dữ liệu');
+    }
+
+    function updateTopLunarPill() {
+      const l = getLunarInfoFromISO(todayISO);
+      const pill = document.getElementById('top-lunar-pill');
+      pill.textContent = `${l.day}/${l.month} ÂL${l.isRam ? ' (Ngày Rằm)' : l.isMung1 ? ' (Mùng 1)' : ' • Tìm Rằm'}`;
+    }
+
+    function renderAll() {
+      updateTopLunarPill();
+      renderOverview();
+      renderCalendar();
+      renderTasksTab();
+      renderUtilitiesTab();
+    }
+
+    // Expose handlers to global window for inline onclick attributes
+    Object.assign(window, {
+      switchTab,
+      toggleHideAmount,
+      jumpToNextRam,
+      changeOverviewMonth,
+      setOverviewType,
+      setChartMode,
+      changeCalendarMonth,
+      goToTodayCalendar,
+      jumpToCalendarDate,
+      selectCalendarDate,
+      setTaskFilter,
+      toggleTaskDone,
+      deleteTask,
+      deleteTransaction,
+      generateRamMung1Tasks,
+      openAddModal,
+      openEditTask,
+      openEditTransaction,
+      closeRecordModal,
+      switchModalMode,
+      updateModalLunarPreview,
+      setTxAmount,
+      renderQuickAmountSuggestions,
+      selectTxCat,
+      selectTaskCat,
+      submitRecordModal,
+      openSyncModal,
+      closeSyncModal,
+      switchSyncProviderTab,
+      connectFirebaseSyncKey,
+      pushToFirebaseCloud,
+      saveGithubSettingsFromUI,
+      pushToGithubGist,
+      pullFromGithubGist,
+      copyGistId,
+      openBudgetEditModal,
+      saveBudgetLimit,
+      closeUtilityModal,
+      exportDataJSON,
+      importDataJSON,
+      resetSampleData,
+      clearAllData,
+      scrollToElement
+    });
+
+    // Startup initialization
+    generateDefaultSampleData();
+    renderAll();
+    initFirebaseCloud();
+  </script>
+</body>
+</html>
