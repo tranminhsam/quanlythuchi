@@ -98,18 +98,11 @@
   <!-- Mobile App Container (No status bar, no top title header) -->
   <div id="app-container" class="w-full max-w-[440px] min-h-screen momo-bg-gradient md:shadow-2xl md:border-x-[4px] md:border-white flex flex-col relative pb-28">
 
-    <!-- Sticky Cloud Sync & Lunar Status Strip -->
+    <!-- Sticky Lunar Status Strip (No sync UI on screen) -->
     <div class="sticky top-0 z-30 bg-[#ffeef7]/95 backdrop-blur-md px-3.5 pt-2.5 pb-2 border-b border-pink-100/70 flex items-center justify-between gap-2 shrink-0">
-      <!-- Auto Cloud Sync Status Pill + Quick Sync Button -->
-      <div class="flex items-center gap-1 max-w-[65%]">
-        <button onclick="manualSyncNow()" class="flex items-center gap-1.5 bg-white hover:bg-pink-50/50 border border-pink-200/80 px-2.5 py-1 rounded-full shadow-xs active:scale-95 transition min-w-0" title="Bấm để làm mới dữ liệu đám mây">
-          <span id="sync-status-dot" class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
-          <span id="sync-status-text" class="text-[11px] font-bold text-slate-700 truncate">Đã đồng bộ Cloud</span>
-          <i class="fa-solid fa-cloud text-[10px] text-momo-600 shrink-0"></i>
-        </button>
-        <button onclick="manualSyncNow()" id="btn-quick-sync-now" class="w-7 h-7 rounded-full bg-white hover:bg-pink-50 border border-pink-200/80 text-momo-600 flex items-center justify-center shadow-xs active:scale-90 transition shrink-0" title="Đồng bộ ngay lập tức">
-          <i id="quick-sync-icon" class="fa-solid fa-arrows-rotate text-[11px]"></i>
-        </button>
+      <div class="flex items-center gap-1.5 text-xs font-bold text-slate-700">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span>Quản Lý Thu Chi & Lịch Âm</span>
       </div>
 
       <!-- Quick Today Lunar & Next Rằm Pill -->
@@ -238,16 +231,16 @@
             </button>
           </div>
 
-          <!-- Status Banner (Like MoMo light-blue info strip) -->
-          <div onclick="manualSyncNow()" class="bg-[#f0f6ff] hover:bg-blue-50 border border-blue-100 rounded-xl px-3 py-2 flex items-center justify-between cursor-pointer transition">
+          <!-- Status Banner -->
+          <div class="bg-[#f0f6ff] border border-blue-100 rounded-xl px-3 py-2 flex items-center justify-between">
             <div class="flex items-center gap-2">
               <i class="fa-solid fa-chart-column text-blue-500 text-sm"></i>
               <span id="overview-net-summary" class="text-xs text-slate-700 font-medium">Số dư tháng: <strong class="text-slate-900">0đ</strong></span>
             </div>
-            <i class="fa-solid fa-arrows-rotate text-[10px] text-blue-500"></i>
+            <i class="fa-solid fa-shield-halved text-xs text-blue-500" title="Firebase Cloud Sync Active"></i>
           </div>
 
-          <!-- Call-to-action Box (Ghi chép mọi chi tiêu...) -->
+          <!-- Call-to-action Box -->
           <div class="bg-[#f7f9fc] rounded-2xl p-3.5 border border-slate-100 space-y-2.5">
             <p class="text-xs text-slate-600 leading-relaxed">
               Ghi chép mọi chi tiêu giúp bạn <strong class="text-slate-800">theo dõi chính xác tình hình tài chính</strong> của mình.
@@ -258,26 +251,19 @@
             </button>
           </div>
 
-          <!-- Chart Container (Donut Chart OR Bar Chart) -->
+          <!-- Chart Container -->
           <div id="chart-section" class="pt-1">
-            <!-- Donut Chart View (Phân bổ) -->
             <div id="donut-chart-wrapper" class="flex flex-col items-center">
-              <div id="donut-svg-container" class="w-full flex justify-center items-center py-1 relative min-h-[215px]">
-                <!-- Populated dynamically via SVG -->
-              </div>
-              <!-- Category Breakdown List -->
+              <div id="donut-svg-container" class="w-full flex justify-center items-center py-1 relative min-h-[215px]"></div>
               <div id="category-breakdown-list" class="w-full space-y-2 mt-2 pt-3 border-t border-slate-100"></div>
             </div>
 
-            <!-- Bar Chart View (Biến động) -->
             <div id="bar-chart-wrapper" class="hidden space-y-3">
               <div class="flex items-center justify-between text-xs text-slate-500 px-1">
                 <span>Biến động theo ngày trong tháng</span>
                 <span id="bar-chart-subtitle" class="font-bold text-momo-600">Chi tiêu</span>
               </div>
-              <div id="bar-chart-container" class="h-44 flex items-end gap-1.5 pt-6 pb-2 px-2 bg-slate-50 rounded-xl border border-slate-100 overflow-x-auto">
-                <!-- Populated dynamically -->
-              </div>
+              <div id="bar-chart-container" class="h-44 flex items-end gap-1.5 pt-6 pb-2 px-2 bg-slate-50 rounded-xl border border-slate-100 overflow-x-auto"></div>
             </div>
           </div>
         </div>
@@ -339,7 +325,6 @@
 
         <!-- Calendar Card -->
         <div class="bg-white rounded-2xl p-3 card-shadow space-y-3">
-          <!-- Calendar Month Navigation -->
           <div class="flex items-center justify-between px-1">
             <button onclick="changeCalendarMonth(-1)" class="w-8 h-8 rounded-xl bg-slate-50 hover:bg-pink-50 text-slate-700 flex items-center justify-center active:scale-90 transition border border-slate-200/60">
               <i class="fa-solid fa-chevron-left text-xs"></i>
@@ -353,7 +338,6 @@
             </button>
           </div>
 
-          <!-- Legend for Calendar -->
           <div class="flex flex-wrap items-center justify-center gap-2.5 text-[10px] font-semibold text-slate-500 bg-slate-50 py-1.5 px-2 rounded-xl border border-slate-100">
             <span class="flex items-center gap-1 text-red-600 font-extrabold">
               <span class="w-2.5 h-2.5 rounded-xs bg-red-100 border border-red-500 inline-block"></span>
@@ -373,7 +357,6 @@
             </span>
           </div>
 
-          <!-- Weekday Headers (T2 - CN) -->
           <div class="grid grid-cols-7 gap-1 text-center text-[11px] font-bold text-slate-400">
             <div>T2</div>
             <div>T3</div>
@@ -384,15 +367,11 @@
             <div class="text-red-500">CN</div>
           </div>
 
-          <!-- Calendar Days Grid -->
-          <div id="calendar-grid" class="grid grid-cols-7 gap-1">
-            <!-- Populated via JS -->
-          </div>
+          <div id="calendar-grid" class="grid grid-cols-7 gap-1"></div>
         </div>
 
-        <!-- Selected Day Detail Card (Can Chi + Rằm/Mùng 1 + Công việc + Giao dịch) -->
+        <!-- Selected Day Detail Card -->
         <div id="selected-day-panel" class="bg-white rounded-2xl p-4 card-shadow space-y-4 border border-pink-100">
-          <!-- Selected Day Header -->
           <div class="flex items-start justify-between border-b border-slate-100 pb-3 gap-2">
             <div class="space-y-1">
               <div class="flex items-center gap-2 flex-wrap">
@@ -410,7 +389,6 @@
             </div>
           </div>
 
-          <!-- 2 Quick Action Buttons for Selected Date -->
           <div class="grid grid-cols-2 gap-2">
             <button onclick="openAddModal('expense', state.selectedDate)" class="py-2 px-3 rounded-xl bg-momo-50 hover:bg-momo-100 text-momo-600 border border-momo-200 text-xs font-extrabold flex items-center justify-center gap-1.5 active:scale-95 transition">
               <i class="fa-solid fa-plus-circle"></i>
@@ -422,7 +400,6 @@
             </button>
           </div>
 
-          <!-- Tasks on Selected Day -->
           <div class="space-y-2">
             <h4 class="text-xs font-extrabold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
               <i class="fa-solid fa-list-check text-blue-500"></i>
@@ -431,7 +408,6 @@
             <div id="sel-day-tasks-list" class="space-y-2"></div>
           </div>
 
-          <!-- Transactions on Selected Day -->
           <div class="space-y-2 pt-2 border-t border-slate-100">
             <h4 class="text-xs font-extrabold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
               <i class="fa-solid fa-wallet text-momo-500"></i>
@@ -446,7 +422,6 @@
       <!-- ==================== TAB 3: CÔNG VIỆC GẮN LỊCH (TASKS) ==================== -->
       <section id="tab-tasks" class="hidden space-y-3.5">
         
-        <!-- Summary Header Card -->
         <div class="bg-white rounded-2xl p-3.5 card-shadow space-y-3">
           <div class="flex items-center justify-between gap-2">
             <div>
@@ -464,7 +439,6 @@
             </div>
           </div>
 
-          <!-- Progress Counter Grid -->
           <div class="grid grid-cols-3 gap-2 pt-1">
             <div class="bg-slate-50 rounded-xl p-2.5 border border-slate-100 text-center">
               <div id="task-stat-pending" class="text-base font-extrabold text-blue-600">0</div>
@@ -480,7 +454,6 @@
             </div>
           </div>
 
-          <!-- Filter Pills -->
           <div class="flex items-center gap-1.5 overflow-x-auto pb-1">
             <button onclick="setTaskFilter('all')" id="tfilter-all" class="px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap bg-momo-600 text-white transition">Tất cả</button>
             <button onclick="setTaskFilter('today')" id="tfilter-today" class="px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap bg-slate-100 text-slate-600 hover:bg-slate-200 transition">Hôm nay</button>
@@ -490,56 +463,13 @@
           </div>
         </div>
 
-        <!-- Tasks List Container -->
         <div id="tasks-full-list" class="space-y-2.5"></div>
 
       </section>
 
-      <!-- ==================== TAB 4: TIỆN ÍCH & ĐỒNG BỘ (UTILITIES) ==================== -->
+      <!-- ==================== TAB 4: TIỆN ÍCH (UTILITIES) ==================== -->
       <section id="tab-utilities" class="hidden space-y-3.5">
         
-        <!-- Automatic Hardcoded Cloud & GitHub Domain Status Card -->
-        <div class="bg-white rounded-2xl p-4 card-shadow space-y-3 border border-pink-100">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2.5">
-              <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-momo-600 to-pink-500 text-white flex items-center justify-center text-base shadow-xs">
-                <i class="fa-solid fa-cloud-bolt"></i>
-              </div>
-              <div>
-                <h2 class="text-sm font-extrabold text-slate-800">Đồng bộ Firebase & GitHub</h2>
-                <p class="text-[11px] text-emerald-600 font-bold">Đã tích hợp trực tiếp trong mã nguồn</p>
-              </div>
-            </div>
-            <button onclick="manualSyncNow()" class="px-3 py-1.5 rounded-xl bg-momo-600 hover:bg-momo-700 text-white text-xs font-bold shadow-xs active:scale-95 transition flex items-center gap-1">
-              <i class="fa-solid fa-arrows-rotate text-[11px]"></i>
-              <span>Đồng bộ</span>
-            </button>
-          </div>
-
-          <div class="grid grid-cols-2 gap-2 pt-1">
-            <div class="p-2.5 rounded-xl bg-amber-50/70 border border-amber-200 text-left">
-              <div class="flex items-center justify-between text-xs font-extrabold text-amber-800">
-                <span><i class="fa-solid fa-fire text-amber-500 mr-1"></i>Firebase DB</span>
-                <span id="fb-badge-mini" class="text-[9px] px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700 font-bold">Tự động</span>
-              </div>
-              <p class="text-[10px] text-slate-500 mt-1 truncate" id="fb-key-mini">Kênh: cố định trong code</p>
-            </div>
-
-            <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-left">
-              <div class="flex items-center justify-between text-xs font-extrabold text-slate-800">
-                <span><i class="fa-brands fa-github mr-1"></i>GitHub Domain</span>
-                <span id="gh-badge-mini" class="text-[9px] px-1.5 py-0.5 rounded bg-blue-100 text-blue-700 font-bold">Active</span>
-              </div>
-              <p class="text-[10px] text-slate-500 mt-1 truncate" id="gh-domain-mini">quanlythuchi.github.io</p>
-            </div>
-          </div>
-
-          <div class="flex items-center justify-between text-[10px] text-slate-400 pt-1 border-t border-slate-100">
-            <span id="code-sync-channel-label">ID: quan-ly-thu-chi-github-main-v1</span>
-            <span id="last-sync-time-label" class="font-semibold text-slate-500"> Tự động lưu 100%</span>
-          </div>
-        </div>
-
         <!-- Monthly Budget Card -->
         <div id="budget-card-section" class="bg-white rounded-2xl p-4 card-shadow space-y-3.5">
           <div class="flex items-center justify-between">
@@ -612,18 +542,15 @@
 
     </main>
 
-    <!-- ==================== FIXED BOTTOM NAVIGATION BAR (5 ITEMS MOMO STYLE) ==================== -->
+    <!-- ==================== FIXED BOTTOM NAVIGATION BAR ==================== -->
     <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[440px] bg-white/95 backdrop-blur-md nav-shadow border-t border-pink-100 px-2 pt-1.5 pb-[max(0.65rem,env(safe-area-inset-bottom))] z-40">
       <div class="grid grid-cols-5 items-end">
-        
-        <!-- 1. Tổng quan -->
         <button onclick="switchTab('overview')" id="nav-overview" class="flex flex-col items-center justify-center py-1 text-momo-600 transition relative">
           <div id="nav-ind-overview" class="w-8 h-0.5 bg-momo-600 rounded-full absolute -top-1.5"></div>
           <i class="fa-solid fa-receipt text-lg mb-1"></i>
           <span class="text-[10px] font-bold">Tổng quan</span>
         </button>
 
-        <!-- 2. Lịch -->
         <button onclick="switchTab('calendar')" id="nav-calendar" class="flex flex-col items-center justify-center py-1 text-slate-500 hover:text-momo-600 transition relative">
           <div id="nav-ind-calendar" class="hidden w-8 h-0.5 bg-momo-600 rounded-full absolute -top-1.5"></div>
           <div class="relative">
@@ -633,7 +560,6 @@
           <span class="text-[10px] font-semibold">Lịch</span>
         </button>
 
-        <!-- 3. Center Floating Button: Ghi chép GD -->
         <div class="flex flex-col items-center justify-end relative -top-3">
           <button onclick="openAddModal('expense')" class="w-12 h-12 rounded-full bg-gradient-to-tr from-momo-600 to-momo-400 text-white shadow-lg shadow-momo-500/40 border-4 border-white flex items-center justify-center active:scale-90 transition">
             <i class="fa-solid fa-file-circle-plus text-lg"></i>
@@ -643,7 +569,6 @@
           </span>
         </div>
 
-        <!-- 4. Công việc -->
         <button onclick="switchTab('tasks')" id="nav-tasks" class="flex flex-col items-center justify-center py-1 text-slate-500 hover:text-momo-600 transition relative">
           <div id="nav-ind-tasks" class="hidden w-8 h-0.5 bg-momo-600 rounded-full absolute -top-1.5"></div>
           <div class="relative">
@@ -653,20 +578,17 @@
           <span class="text-[10px] font-semibold">Công việc</span>
         </button>
 
-        <!-- 5. Tiện ích -->
         <button onclick="switchTab('utilities')" id="nav-utilities" class="flex flex-col items-center justify-center py-1 text-slate-500 hover:text-momo-600 transition relative">
           <div id="nav-ind-utilities" class="hidden w-8 h-0.5 bg-momo-600 rounded-full absolute -top-1.5"></div>
           <i class="fa-solid fa-table-cells-large text-lg mb-1"></i>
           <span class="text-[10px] font-semibold">Tiện ích</span>
         </button>
-
       </div>
     </nav>
 
-    <!-- ==================== MODAL 1: GHI CHÉP GD / CÔNG VIỆC (ADD & EDIT) ==================== -->
+    <!-- MODAL 1: GHI CHÉP GD / CÔNG VIỆC -->
     <div id="record-modal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-end justify-center">
       <div class="bg-white w-full max-w-[440px] rounded-t-3xl p-4 pb-6 space-y-3.5 animate-slide-up max-h-[92vh] overflow-y-auto">
-        
         <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
           <h3 id="modal-title" class="text-base font-extrabold text-slate-800">Ghi chép mới</h3>
           <button onclick="closeRecordModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-slate-200">
@@ -674,20 +596,12 @@
           </button>
         </div>
 
-        <!-- Mode Switcher: Chi tiêu | Thu nhập | Công việc -->
         <div id="modal-mode-tabs" class="grid grid-cols-3 gap-1.5 bg-slate-100 p-1 rounded-2xl">
-          <button type="button" onclick="switchModalMode('expense')" id="mmode-expense" class="py-2 rounded-xl text-xs font-extrabold transition bg-white text-momo-600 shadow-xs">
-            Chi tiêu
-          </button>
-          <button type="button" onclick="switchModalMode('income')" id="mmode-income" class="py-2 rounded-xl text-xs font-extrabold transition text-slate-600">
-            Thu nhập
-          </button>
-          <button type="button" onclick="switchModalMode('task')" id="mmode-task" class="py-2 rounded-xl text-xs font-extrabold transition text-slate-600">
-            Công việc
-          </button>
+          <button type="button" onclick="switchModalMode('expense')" id="mmode-expense" class="py-2 rounded-xl text-xs font-extrabold transition bg-white text-momo-600 shadow-xs">Chi tiêu</button>
+          <button type="button" onclick="switchModalMode('income')" id="mmode-income" class="py-2 rounded-xl text-xs font-extrabold transition text-slate-600">Thu nhập</button>
+          <button type="button" onclick="switchModalMode('task')" id="mmode-task" class="py-2 rounded-xl text-xs font-extrabold transition text-slate-600">Công việc</button>
         </div>
 
-        <!-- Date Input + Live Lunar Preview -->
         <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200/70 space-y-1.5">
           <div class="flex items-center justify-between">
             <label class="text-xs font-bold text-slate-600">Ngày thực hiện</label>
@@ -696,7 +610,6 @@
           <input type="date" id="modal-date-input" onchange="updateModalLunarPreview()" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-800 focus:outline-none focus:border-momo-500" />
         </div>
 
-        <!-- FORM PART A: TRANSACTION (EXPENSE / INCOME) -->
         <div id="modal-tx-fields" class="space-y-3.5">
           <div>
             <label class="text-xs font-bold text-slate-600 block mb-1">Số tiền (VNĐ)</label>
@@ -712,25 +625,21 @@
               <button type="button" onclick="setTxAmount(500000)" class="px-2.5 py-1 rounded-lg bg-pink-50 text-momo-600 text-[11px] font-bold whitespace-nowrap">500.000đ</button>
             </div>
           </div>
-
           <div>
             <label class="text-xs font-bold text-slate-600 block mb-1.5">Danh mục</label>
             <div id="tx-category-grid" class="grid grid-cols-4 gap-2"></div>
           </div>
-
           <div>
             <label class="text-xs font-bold text-slate-600 block mb-1">Ghi chú giao dịch</label>
             <input type="text" id="tx-note-input" placeholder="VD: Ăn trưa, mua hoa quả cúng Rằm..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-800 focus:outline-none focus:border-momo-500" />
           </div>
         </div>
 
-        <!-- FORM PART B: TASK (CÔNG VIỆC LỊCH TRÌNH) -->
         <div id="modal-task-fields" class="hidden space-y-3.5">
           <div>
             <label class="text-xs font-bold text-slate-600 block mb-1">Tên công việc / Lịch trình</label>
-            <input type="text" id="task-title-input" placeholder="VD: Mua hoa quả cúng Rằm, Họp dự án..." class="w-full bg-slate-50 border-2 border-blue-200 focus:border-blue-500 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-800 focus:outline-none" />
+            <input type="text" id="task-title-input" placeholder="VD: Mua hoa quả cúng Rằm..." class="w-full bg-slate-50 border-2 border-blue-200 focus:border-blue-500 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-800 focus:outline-none" />
           </div>
-
           <div class="grid grid-cols-2 gap-2.5">
             <div>
               <label class="text-xs font-bold text-slate-600 block mb-1">Giờ nhắc</label>
@@ -745,7 +654,6 @@
               </select>
             </div>
           </div>
-
           <div>
             <label class="text-xs font-bold text-slate-600 block mb-1">Nhóm công việc</label>
             <div class="grid grid-cols-3 gap-2">
@@ -757,21 +665,19 @@
               <button type="button" onclick="selectTaskCat('Sức khỏe')" data-tcat="Sức khỏe" class="tcat-btn py-2 px-2 rounded-xl border text-xs font-bold border-slate-200 bg-slate-50 text-slate-600">❤️ Sức khỏe</button>
             </div>
           </div>
-
           <div>
             <label class="text-xs font-bold text-slate-600 block mb-1">Ghi chú chi tiết</label>
-            <input type="text" id="task-note-input" placeholder="Ghi chú thêm cho lịch trình..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-800 focus:outline-none" />
+            <input type="text" id="task-note-input" placeholder="Ghi chú thêm..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-800 focus:outline-none" />
           </div>
         </div>
 
         <button type="button" onclick="submitRecordModal()" class="w-full py-3 rounded-2xl bg-gradient-to-r from-momo-600 to-momo-500 hover:from-momo-700 hover:to-momo-600 text-white font-extrabold text-sm shadow-lg shadow-momo-500/30 active:scale-[0.99] transition">
           Lưu thông tin
         </button>
-
       </div>
     </div>
 
-    <!-- ==================== MODAL 2: ĐẶT HẠN MỨC NGÂN SÁCH ==================== -->
+    <!-- MODAL 2: ĐẶT NGÂN SÁCH -->
     <div id="utility-modal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
       <div class="bg-white w-full max-w-[380px] rounded-3xl p-5 space-y-4 shadow-2xl">
         <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
@@ -792,52 +698,31 @@
 
   </div>
 
-  <!-- ==================== JAVASCRIPT & FIREBASE MODULE ==================== -->
+  <!-- FIREBASE & APP SCRIPT -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
     import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
     /********************************************************************
-     * 0. CẤU HÌNH ĐỒNG BỘ CỐ ĐỊNH TRONG CODE (FIREBASE & GITHUB DOMAIN)
-     * - Không cần cấu hình trên giao diện ứng dụng.
-     * - Tự động nhận diện tên miền GitHub Pages (VD: username.github.io)
-     *   và đồng bộ thẳng lên Firebase Firestore theo kênh cố định.
+     * CẤU HÌNH FIREBASE VÀ ĐỒNG BỘ ĐÁM MÂY TỰ ĐỘNG
+     * Bạn có thể điền trực tiếp thông số Firebase Project của bạn vào đây.
      ********************************************************************/
-    const HARDCODED_CLOUD_CONFIG = {
-      // Tên miền GitHub Pages của ứng dụng (Tự nhận diện hostname hoặc dùng tên miền mặc định)
-      githubDomain: (typeof window !== 'undefined' && window.location && window.location.hostname)
-        ? window.location.hostname
-        : 'quanlythuchi.github.io',
-
-      // Khoá kênh đồng bộ cố định xuyên suốt cho mọi thiết bị truy cập ứng dụng
-      syncChannelId: 'quan-ly-thu-chi-github-main-v1',
-
-      // Cấu hình Firebase nhúng trực tiếp trong code (Khi host trên tên miền .github.io riêng,
-      // bạn có thể điền thông số Firebase Project của mình vào đây; nếu để trống hệ thống sẽ
-      // tự động dùng __firebase_config mặc định của môi trường Cloud)
-      firebaseConfig: {
-        apiKey: "AIzaSyDdEaJvVRRzfcM_IkTjdP0Livz52IQqrMs",
-  	authDomain: "life-money-f6a11.firebaseapp.com",
-  	databaseURL: "https://life-money-f6a11-default-rtdb.asia-southeast1.firebasedatabase.app",
-  	projectId: "life-money-f6a11",
-  	storageBucket: "life-money-f6a11.firebasestorage.app",
-  	messagingSenderId: "284442463922",
-  	appId: "1:284442463922:web:4a0ac661bcdf6f652d83ab",
-  	measurementId: "G-1WQ6WPG39C"
-      },
-
-      // Đồng bộ song song qua GitHub Gist API hoặc kho dữ liệu tĩnh trên GitHub (Tùy chọn trong code)
-      githubGist: {
-        enabled: false,
-        token: "", // Điền trực tiếp ghp_... vào code nếu muốn đồng bộ thêm qua Gist
-        gistId: "", // Điền trực tiếp Gist ID vào code
-        fileName: "momo_expense_lunar_sync.json"
-      }
+    const FIREBASE_CUSTOM_CONFIG = {
+      apiKey: "AIzaSyDdEaJvVRRzfcM_IkTjdP0Livz52IQqrMs",
+ 	 authDomain: "life-money-f6a11.firebaseapp.com",
+ 	 databaseURL: "https://life-money-f6a11-default-rtdb.asia-southeast1.firebasedatabase.app",
+ 	 projectId: "life-money-f6a11",
+ 	 storageBucket: "life-money-f6a11.firebasestorage.app",
+ 	 messagingSenderId: "284442463922",
+  	appId: "1:284442463922:web:e6933c424828c9a12d83ab",
+  	measurementId: "G-KDLG43KJ0G"
     };
 
+    const SYNC_CHANNEL_ID = "quan-ly-thu-chi-github-main-v1";
+
     /********************************************************************
-     * 1. THUẬT TOÁN LỊCH ÂM VIỆT NAM (HỒ NGỌC ĐỨC - UTC+7)
+     * THUẬT TOÁN LỊCH ÂM VIỆT NAM (HỒ NGỌC ĐỨC - UTC+7)
      ********************************************************************/
     const PI = Math.PI;
     function INT(d) { return Math.floor(d); }
@@ -991,7 +876,7 @@
     }
 
     /********************************************************************
-     * 2. DANH MỤC & TRẠNG THÁI ỨNG DỤNG (STATE)
+     * DANH MỤC & TRẠNG THÁI ỨNG DỤNG (STATE)
      ********************************************************************/
     const EXPENSE_CATEGORIES = [
       { id: 'food', name: 'Ăn uống', icon: 'fa-utensils', color: '#f0328f', bg: '#fff0f7' },
@@ -1026,8 +911,7 @@
 
     const todayObj = new Date();
     const todayISO = formatISO(todayObj);
-    const LOCAL_STORAGE_KEY = 'momo_lunar_expense_app_v4_hardcoded';
-    const DEFAULT_SYNC_KEY = HARDCODED_CLOUD_CONFIG.syncChannelId;
+    const LOCAL_STORAGE_KEY = 'momo_lunar_expense_app_hardcoded_v5';
 
     const state = {
       activeTab: 'overview',
@@ -1047,63 +931,38 @@
       monthlyBudget: 12000000,
       transactions: [],
       tasks: [],
-      // Khoá đồng bộ cố định lấy trực tiếp từ HARDCODED_CLOUD_CONFIG trong code
-      syncKey: HARDCODED_CLOUD_CONFIG.syncChannelId,
       lastUpdated: 0
     };
 
     window.state = state;
 
-    function buildPersistentSnapshot() {
-      return {
+    function saveStateToLocalStorage() {
+      const payload = {
         transactions: state.transactions,
         tasks: state.tasks,
         monthlyBudget: state.monthlyBudget,
         hideAmounts: state.hideAmounts,
-        syncKey: HARDCODED_CLOUD_CONFIG.syncChannelId,
-        lastUpdated: state.lastUpdated || 0
+        lastUpdated: state.lastUpdated
       };
-    }
-
-    function saveStateToLocalStorage() {
-      const jsonStr = JSON.stringify(buildPersistentSnapshot());
       try {
-        localStorage.setItem(LOCAL_STORAGE_KEY, jsonStr);
-      } catch (e) {
-        console.warn('LocalStorage save warning:', e);
-      }
-      try {
-        window.name = 'MOMO_SYNC_CACHE::' + jsonStr;
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(payload));
       } catch (e) {}
     }
 
     function loadStateFromLocalStorage() {
-      let parsed = null;
       try {
-        const raw =
-          localStorage.getItem(LOCAL_STORAGE_KEY) ||
-          localStorage.getItem('momo_lunar_expense_app_v3') ||
-          localStorage.getItem('momo_lunar_expense_app_v2');
-        if (raw) parsed = JSON.parse(raw);
+        const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed.transactions)) state.transactions = parsed.transactions;
+          if (Array.isArray(parsed.tasks)) state.tasks = parsed.tasks;
+          if (parsed.monthlyBudget) state.monthlyBudget = Number(parsed.monthlyBudget);
+          if (typeof parsed.hideAmounts === 'boolean') state.hideAmounts = parsed.hideAmounts;
+          if (parsed.lastUpdated) state.lastUpdated = Number(parsed.lastUpdated);
+          return true;
+        }
       } catch (e) {}
-
-      if (!parsed) {
-        try {
-          if (typeof window.name === 'string' && window.name.startsWith('MOMO_SYNC_CACHE::')) {
-            parsed = JSON.parse(window.name.replace('MOMO_SYNC_CACHE::', ''));
-          }
-        } catch (e) {}
-      }
-
-      if (!parsed || typeof parsed !== 'object') return false;
-
-      if (Array.isArray(parsed.transactions)) state.transactions = parsed.transactions;
-      if (Array.isArray(parsed.tasks)) state.tasks = parsed.tasks;
-      if (parsed.monthlyBudget) state.monthlyBudget = Number(parsed.monthlyBudget);
-      if (typeof parsed.hideAmounts === 'boolean') state.hideAmounts = parsed.hideAmounts;
-      state.syncKey = HARDCODED_CLOUD_CONFIG.syncChannelId;
-      if (parsed.lastUpdated) state.lastUpdated = Number(parsed.lastUpdated);
-      return true;
+      return false;
     }
 
     function findLunarDaysInSolarMonth(year, month) {
@@ -1119,7 +978,7 @@
       return { ramDate, mung1Date };
     }
 
-    function generateDefaultSampleData(isManualReset = false) {
+    function generateDefaultSampleData() {
       const y = todayObj.getFullYear();
       const m = todayObj.getMonth() + 1;
       const mStr = String(m).padStart(2, '0');
@@ -1180,83 +1039,39 @@
           completed: true
         }
       ];
-      state.lastUpdated = isManualReset ? Date.now() : 0;
+      state.lastUpdated = Date.now();
+      saveStateToLocalStorage();
     }
 
     /********************************************************************
-     * 3. HỆ THỐNG ĐỒNG BỘ TỰ ĐỘNG QUA FIREBASE & TÊN MIỀN GITHUB TRONG CODE
+     * FIREBASE CLOUD REAL-TIME SYNC
      ********************************************************************/
     const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-momo-lunar-app';
     let db = null;
     let auth = null;
     let currentUser = null;
-    let unsubscribeChannelSnapshot = null;
-    let isApplyingRemoteUpdate = false;
-
-    function updateLastSyncTimeLabel() {
-      const el = document.getElementById('last-sync-time-label');
-      if (!el) return;
-      if (!state.lastUpdated) {
-        el.textContent = 'Đồng bộ tự động 100%';
-        return;
-      }
-      const d = new Date(state.lastUpdated);
-      const hh = String(d.getHours()).padStart(2, '0');
-      const mm = String(d.getMinutes()).padStart(2, '0');
-      const ss = String(d.getSeconds()).padStart(2, '0');
-      el.textContent = `Cập nhật: ${hh}:${mm}:${ss}`;
-    }
-
-    function syncSettingsToUI() {
-      const fbKeyMini = document.getElementById('fb-key-mini');
-      const ghDomainMini = document.getElementById('gh-domain-mini');
-      const codeChannelLabel = document.getElementById('code-sync-channel-label');
-
-      if (fbKeyMini) {
-        fbKeyMini.textContent = `Kênh: ${HARDCODED_CLOUD_CONFIG.syncChannelId}`;
-      }
-      if (ghDomainMini) {
-        ghDomainMini.textContent = HARDCODED_CLOUD_CONFIG.githubDomain;
-      }
-      if (codeChannelLabel) {
-        codeChannelLabel.textContent = `Channel: ${HARDCODED_CLOUD_CONFIG.syncChannelId}`;
-      }
-      updateLastSyncTimeLabel();
-    }
+    let unsubscribeChannel = null;
+    let isApplyingRemote = false;
 
     function resolveActiveFirebaseConfig() {
-      // Ưu tiên cấu hình môi trường nếu đang chạy trong Cloud Sandbox, hoặc lấy từ HARDCODED_CLOUD_CONFIG.firebaseConfig
       if (typeof __firebase_config !== 'undefined' && __firebase_config) {
-        try {
-          return JSON.parse(__firebase_config);
-        } catch (e) {}
+        try { return JSON.parse(__firebase_config); } catch (e) {}
       }
-      if (HARDCODED_CLOUD_CONFIG.firebaseConfig && HARDCODED_CLOUD_CONFIG.firebaseConfig.apiKey) {
-        return HARDCODED_CLOUD_CONFIG.firebaseConfig;
+      if (FIREBASE_CUSTOM_CONFIG.apiKey) {
+        return FIREBASE_CUSTOM_CONFIG;
       }
       return null;
     }
 
     async function initFirebaseCloud() {
-      syncSettingsToUI();
-
-      // Nếu trong code có bật GitHub Gist cứng thì tự động đồng bộ từ Gist
-      if (HARDCODED_CLOUD_CONFIG.githubGist.enabled && HARDCODED_CLOUD_CONFIG.githubGist.token) {
-        pullFromHardcodedGithubGist(true);
-      }
-
       try {
-        const activeConfig = resolveActiveFirebaseConfig();
-        if (!activeConfig) {
-          updateSyncUIStatus(`Đã lưu (${HARDCODED_CLOUD_CONFIG.githubDomain})`, 'emerald');
-          return;
-        }
+        const config = resolveActiveFirebaseConfig();
+        if (!config) return;
 
-        const app = initializeApp(activeConfig);
+        const app = initializeApp(config);
         db = getFirestore(app);
         auth = getAuth(app);
 
-        // RULE 3: Auth Before Queries
         if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
           await signInWithCustomToken(auth, __initial_auth_token);
         } else {
@@ -1266,247 +1081,94 @@
         onAuthStateChanged(auth, async (user) => {
           currentUser = user;
           if (user) {
-            // Tự động kết nối thẳng vào kênh cố định trong code mà không cần bất kỳ thao tác cấu hình nào
-            subscribeToHardcodedChannel();
+            subscribeToCloudChannel();
           }
         });
       } catch (err) {
-        console.error('Firebase init warning:', err);
-        updateSyncUIStatus(`Đồng bộ (${HARDCODED_CLOUD_CONFIG.githubDomain})`, 'emerald');
+        console.warn('Firebase init warning:', err);
       }
     }
 
-    // Lắng nghe thời gian thực trên kênh cố định trong code (RULE 1 compliant)
-    function subscribeToHardcodedChannel() {
+    function subscribeToCloudChannel() {
       if (!db || !currentUser) return;
-
-      if (unsubscribeChannelSnapshot) {
-        unsubscribeChannelSnapshot();
-        unsubscribeChannelSnapshot = null;
+      if (unsubscribeChannel) {
+        unsubscribeChannel();
+        unsubscribeChannel = null;
       }
 
-      const channelId = HARDCODED_CLOUD_CONFIG.syncChannelId;
-      const channelDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'sync_channels', channelId);
-      let isFirstSnapshot = true;
+      const channelDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'sync_channels', SYNC_CHANNEL_ID);
+      let isFirst = true;
 
-      unsubscribeChannelSnapshot = onSnapshot(
-        channelDocRef,
-        (snap) => {
-          updateSyncUIStatus('Đã đồng bộ Firebase & GitHub', 'emerald');
-          const fbBadge = document.getElementById('fb-badge-mini');
-          if (fbBadge) {
-            fbBadge.textContent = 'Trực tuyến';
-            fbBadge.className = 'text-[9px] px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700 font-bold';
+      unsubscribeChannel = onSnapshot(channelDocRef, (snap) => {
+        if (snap.exists()) {
+          const data = snap.data();
+          const remoteTime = Number(data.lastUpdated || 0);
+          if (!isFirst && remoteTime > 0 && state.lastUpdated > 0 && remoteTime < state.lastUpdated) {
+            isFirst = false;
+            return;
+          }
+          if (state.lastUpdated > 0 && remoteTime > 0 && state.lastUpdated > remoteTime) {
+            isFirst = false;
+            pushToCloud();
+            return;
           }
 
-          if (snap.exists()) {
-            applyRemotePayload(snap.data(), isFirstSnapshot);
-            isFirstSnapshot = false;
-          } else {
-            isFirstSnapshot = false;
-            // Nếu kênh cố định trên Cloud chưa có dữ liệu, tự động đẩy dữ liệu hiện tại lên
-            pushToFirebaseCloud(false);
+          isApplyingRemote = true;
+          try {
+            if (typeof data.transactionsJson === 'string') state.transactions = JSON.parse(data.transactionsJson);
+            else if (Array.isArray(data.transactions)) state.transactions = data.transactions;
+
+            if (typeof data.tasksJson === 'string') state.tasks = JSON.parse(data.tasksJson);
+            else if (Array.isArray(data.tasks)) state.tasks = data.tasks;
+
+            if (data.monthlyBudget) state.monthlyBudget = Number(data.monthlyBudget);
+            if (typeof data.hideAmounts === 'boolean') state.hideAmounts = data.hideAmounts;
+            if (remoteTime > 0) state.lastUpdated = remoteTime;
+
+            saveStateToLocalStorage();
+            renderAll();
+          } catch (e) {
+            console.error(e);
+          } finally {
+            isApplyingRemote = false;
           }
-        },
-        (err) => {
-          console.error('Sync channel error:', err);
-          updateSyncUIStatus('Đang kết nối lại Cloud...', 'amber');
+        } else {
+          pushToCloud();
         }
-      );
+        isFirst = false;
+      }, (err) => {
+        console.warn('Cloud sync error:', err);
+      });
     }
 
-    function applyRemotePayload(data, isFirstSnapshot = false) {
-      if (!data) return;
-
-      const remoteTime = Number(data.lastUpdated || 0);
-      if (!isFirstSnapshot && remoteTime > 0 && state.lastUpdated > 0 && remoteTime < state.lastUpdated) {
-        return;
-      }
-      if (state.lastUpdated > 0 && remoteTime > 0 && state.lastUpdated > remoteTime) {
-        pushToFirebaseCloud(false);
-        return;
-      }
-
-      isApplyingRemoteUpdate = true;
-      try {
-        let hasDataPayload = false;
-        if (typeof data.transactionsJson === 'string') {
-          state.transactions = JSON.parse(data.transactionsJson);
-          hasDataPayload = true;
-        } else if (Array.isArray(data.transactions)) {
-          state.transactions = data.transactions;
-          hasDataPayload = true;
-        }
-        if (typeof data.tasksJson === 'string') {
-          state.tasks = JSON.parse(data.tasksJson);
-          hasDataPayload = true;
-        } else if (Array.isArray(data.tasks)) {
-          state.tasks = data.tasks;
-          hasDataPayload = true;
-        }
-        if (data.monthlyBudget) state.monthlyBudget = Number(data.monthlyBudget);
-        if (typeof data.hideAmounts === 'boolean') state.hideAmounts = data.hideAmounts;
-
-        if (hasDataPayload && remoteTime > 0) {
-          state.lastUpdated = remoteTime;
-        }
-        saveStateToLocalStorage();
-        syncSettingsToUI();
-        renderAll();
-      } catch (e) {
-        console.error('Parse remote payload error:', e);
-      } finally {
-        isApplyingRemoteUpdate = false;
-      }
-    }
-
-    async function pushToFirebaseCloud(manualNotify = false) {
+    async function pushToCloud() {
       saveStateToLocalStorage();
-      if (isApplyingRemoteUpdate || !db || !currentUser) return;
+      if (isApplyingRemote || !db || !currentUser) return;
       try {
         if (!state.lastUpdated) state.lastUpdated = Date.now();
-        const channelId = HARDCODED_CLOUD_CONFIG.syncChannelId;
-        const fullPayload = {
+        const payload = {
           transactionsJson: JSON.stringify(state.transactions),
           tasksJson: JSON.stringify(state.tasks),
           monthlyBudget: state.monthlyBudget,
           hideAmounts: Boolean(state.hideAmounts),
-          githubDomain: HARDCODED_CLOUD_CONFIG.githubDomain,
-          syncKey: channelId,
           lastUpdated: state.lastUpdated,
           updatedBy: currentUser.uid
         };
-
-        // Lưu trực tiếp vào kênh cố định trên Firebase
-        const channelDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'sync_channels', channelId);
-        await setDoc(channelDocRef, fullPayload, { merge: true });
-
-        // Lưu bản sao vào hồ sơ người dùng
-        const userDocRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'app_state', 'main');
-        await setDoc(userDocRef, fullPayload, { merge: true });
-
-        syncSettingsToUI();
-        if (manualNotify) showToast('Đã đồng bộ dữ liệu lên Firebase Cloud!');
+        const channelDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'sync_channels', SYNC_CHANNEL_ID);
+        await setDoc(channelDocRef, payload, { merge: true });
       } catch (err) {
-        console.error('Push Firebase error:', err);
+        console.warn('Push cloud warning:', err);
       }
     }
 
-    async function pullFromFirebaseCloud(manualNotify = false) {
-      if (!db || !currentUser) return;
-      try {
-        const channelId = HARDCODED_CLOUD_CONFIG.syncChannelId;
-        const channelDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'sync_channels', channelId);
-        const snap = await getDoc(channelDocRef);
-        if (snap.exists()) {
-          applyRemotePayload(snap.data(), true);
-          if (manualNotify) showToast('Đã đồng bộ dữ liệu mới nhất!');
-        } else {
-          await pushToFirebaseCloud(false);
-        }
-      } catch (e) {
-        console.error('Pull Firebase error:', e);
-      }
-    }
-
-    async function pushToHardcodedGithubGist() {
-      const gh = HARDCODED_CLOUD_CONFIG.githubGist;
-      if (!gh.enabled || !gh.token || !gh.gistId) return;
-      try {
-        const contentObj = {
-          transactions: state.transactions,
-          tasks: state.tasks,
-          monthlyBudget: state.monthlyBudget,
-          hideAmounts: state.hideAmounts,
-          githubDomain: HARDCODED_CLOUD_CONFIG.githubDomain,
-          lastUpdated: state.lastUpdated
-        };
-        await fetch(`https://api.github.com/gists/${gh.gistId}`, {
-          method: 'PATCH',
-          headers: {
-            'Authorization': `token ${gh.token}`,
-            'Accept': 'application/vnd.github+json',
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            description: 'MoMo Quan Ly Thu Chi & Lich Am Duong Sync Data',
-            files: {
-              [gh.fileName]: { content: JSON.stringify(contentObj, null, 2) }
-            }
-          })
-        });
-      } catch (e) {
-        console.warn('Hardcoded GitHub Gist push warning:', e);
-      }
-    }
-
-    async function pullFromHardcodedGithubGist(silent = true) {
-      const gh = HARDCODED_CLOUD_CONFIG.githubGist;
-      if (!gh.enabled || !gh.token || !gh.gistId) return;
-      try {
-        const res = await fetch(`https://api.github.com/gists/${gh.gistId}`, {
-          headers: {
-            'Authorization': `token ${gh.token}`,
-            'Accept': 'application/vnd.github+json'
-          }
-        });
-        if (!res.ok) return;
-        const data = await res.json();
-        const fileObj = data.files && (data.files[gh.fileName] || Object.values(data.files)[0]);
-        if (!fileObj || !fileObj.content) return;
-        const parsed = JSON.parse(fileObj.content);
-        applyRemotePayload(parsed, true);
-        if (!silent) showToast('Đã đồng bộ từ GitHub!');
-      } catch (e) {
-        console.warn('Hardcoded GitHub Gist pull warning:', e);
-      }
-    }
-
-    async function manualSyncNow() {
-      const icon = document.getElementById('quick-sync-icon');
-      if (icon) icon.classList.add('fa-spin');
-      try {
-        if (HARDCODED_CLOUD_CONFIG.githubGist.enabled) {
-          await pullFromHardcodedGithubGist(true);
-          await pushToHardcodedGithubGist();
-        }
-        if (db && currentUser) {
-          await pullFromFirebaseCloud(false);
-          await pushToFirebaseCloud(false);
-        }
-        syncSettingsToUI();
-        showToast('Đã đồng bộ dữ liệu đám mây mới nhất!');
-      } finally {
-        setTimeout(() => {
-          if (icon) icon.classList.remove('fa-spin');
-        }, 500);
-      }
-    }
-
-    function updateSyncUIStatus(text, color = 'emerald') {
-      const dot = document.getElementById('sync-status-dot');
-      const label = document.getElementById('sync-status-text');
-      if (label) label.textContent = text;
-      const colorMap = {
-        emerald: 'w-2 h-2 rounded-full bg-emerald-500 shrink-0',
-        amber: 'w-2 h-2 rounded-full bg-amber-400 shrink-0',
-        red: 'w-2 h-2 rounded-full bg-red-500 shrink-0'
-      };
-      if (dot) dot.className = colorMap[color] || colorMap.emerald;
-    }
-
-    function triggerCloudSyncAfterChange() {
+    function triggerCloudSync() {
       state.lastUpdated = Date.now();
       saveStateToLocalStorage();
-      syncSettingsToUI();
-      pushToFirebaseCloud(false);
-      if (HARDCODED_CLOUD_CONFIG.githubGist.enabled) {
-        pushToHardcodedGithubGist();
-      }
+      pushToCloud();
     }
 
     /********************************************************************
-     * 4. HÀM TIỆN ÍCH HIỂN THỊ (FORMATTERS & HELPERS)
+     * FORMATTERS & HELPERS
      ********************************************************************/
     function formatMoney(amount, forceShow = false) {
       if (state.hideAmounts && !forceShow) return '******';
@@ -1532,9 +1194,7 @@
       document.getElementById('toast-msg').textContent = msg;
       box.classList.remove('hidden');
       clearTimeout(window.__toastTimer);
-      window.__toastTimer = setTimeout(() => {
-        box.classList.add('hidden');
-      }, 2400);
+      window.__toastTimer = setTimeout(() => { box.classList.add('hidden'); }, 2400);
     }
 
     function scrollToElement(id) {
@@ -1543,7 +1203,7 @@
     }
 
     /********************************************************************
-     * 5. ĐIỀU HƯỚNG TAB & TOP STRIP
+     * TABS & NAVIGATION
      ********************************************************************/
     function switchTab(tabName) {
       state.activeTab = tabName;
@@ -1570,7 +1230,7 @@
     function toggleHideAmount() {
       state.hideAmounts = !state.hideAmounts;
       renderAll();
-      triggerCloudSyncAfterChange();
+      triggerCloudSync();
     }
 
     function jumpToNextRam() {
@@ -1592,7 +1252,7 @@
     }
 
     /********************************************************************
-     * 6. RENDER TAB 1: TỔNG QUAN (OVERVIEW)
+     * OVERVIEW TAB
      ********************************************************************/
     function changeOverviewMonth(delta) {
       let m = state.overviewMonth + delta;
@@ -1648,7 +1308,6 @@
         `Âm lịch: ${firstDayLunar.day}/${firstDayLunar.month} → ${lastDayLunar.day}/${lastDayLunar.month} ÂL` +
         (ramDate ? ` • <span class="text-red-600 font-bold">Rằm: ${formatDisplayDate(ramDate).slice(0,5)}</span>` : '');
 
-      // Current month transactions
       const prefix = `${state.overviewYear}-${String(state.overviewMonth).padStart(2, '0')}`;
       const monthTx = state.transactions.filter(t => t.date.startsWith(prefix));
       const expenses = monthTx.filter(t => t.type === 'expense');
@@ -1658,38 +1317,8 @@
       const totalInc = incomes.reduce((s, t) => s + Number(t.amount), 0);
       const net = totalInc - totalExp;
 
-      // Previous month comparison
-      let prevM = state.overviewMonth - 1;
-      let prevY = state.overviewYear;
-      if (prevM < 1) { prevM = 12; prevY--; }
-      const prevPrefix = `${prevY}-${String(prevM).padStart(2, '0')}`;
-      const prevTx = state.transactions.filter(t => t.date.startsWith(prevPrefix));
-      const prevExp = prevTx.filter(t => t.type === 'expense').reduce((s, t) => s + Number(t.amount), 0);
-      const prevInc = prevTx.filter(t => t.type === 'income').reduce((s, t) => s + Number(t.amount), 0);
-
       document.getElementById('overview-expense-amount').textContent = formatMoney(totalExp);
       document.getElementById('overview-income-amount').textContent = formatMoney(totalInc);
-
-      const expBadge = document.getElementById('expense-diff-badge');
-      if (prevExp > 0) {
-        const diffPct = Math.round(((totalExp - prevExp) / prevExp) * 100);
-        expBadge.textContent = `${diffPct >= 0 ? '+' : ''}${diffPct}%`;
-        expBadge.className = `text-[10px] font-bold px-1.5 py-0.5 rounded-full ${diffPct > 0 ? 'bg-red-100 text-red-600' : 'bg-emerald-100 text-emerald-600'}`;
-      } else {
-        expBadge.textContent = `${expenses.length} GD`;
-        expBadge.className = 'text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-500';
-      }
-
-      const incBadge = document.getElementById('income-diff-badge');
-      if (prevInc > 0) {
-        const diffPct = Math.round(((totalInc - prevInc) / prevInc) * 100);
-        incBadge.textContent = `${diffPct >= 0 ? '+' : ''}${diffPct}%`;
-        incBadge.className = `text-[10px] font-bold px-1.5 py-0.5 rounded-full ${diffPct >= 0 ? 'bg-emerald-100 text-emerald-600' : 'bg-amber-100 text-amber-600'}`;
-      } else {
-        incBadge.textContent = `${incomes.length} GD`;
-        incBadge.className = 'text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-500';
-      }
-
       document.getElementById('overview-net-summary').innerHTML =
         `Số dư tháng này: <strong class="${net >= 0 ? 'text-emerald-600' : 'text-red-600'}">${net >= 0 ? '+' : ''}${formatMoney(net)}</strong>`;
 
@@ -1719,9 +1348,7 @@
       const breakdownEl = document.getElementById('category-breakdown-list');
 
       const grouped = {};
-      txList.forEach(t => {
-        grouped[t.category] = (grouped[t.category] || 0) + Number(t.amount);
-      });
+      txList.forEach(t => { grouped[t.category] = (grouped[t.category] || 0) + Number(t.amount); });
 
       const items = Object.keys(grouped).map(catId => {
         const meta = getCategoryMeta(catId, type);
@@ -1735,17 +1362,7 @@
           <svg viewBox="0 0 320 210" class="w-full max-w-[310px] h-auto">
             <circle cx="160" cy="105" r="72" fill="none" stroke="#f1f5f9" stroke-width="2" />
             <circle cx="160" cy="105" r="52" fill="none" stroke="#e2e8f0" stroke-width="24" stroke-dasharray="95 8" />
-            <line x1="95" y1="68" x2="55" y2="55" stroke="#cbd5e1" stroke-dasharray="3 3" />
-            <rect x="18" y="46" width="10" height="10" rx="2" fill="#cbd5e1" />
-            <text x="33" y="55" font-size="11" fill="#94a3b8" font-weight="600">X%</text>
-            <line x1="225" y1="68" x2="265" y2="55" stroke="#cbd5e1" stroke-dasharray="3 3" />
-            <rect x="268" y="46" width="10" height="10" rx="2" fill="#cbd5e1" />
-            <text x="283" y="55" font-size="11" fill="#94a3b8" font-weight="600">X%</text>
-            <line x1="175" y1="162" x2="255" y2="175" stroke="#cbd5e1" stroke-dasharray="3 3" />
-            <rect x="268" y="168" width="10" height="10" rx="2" fill="#cbd5e1" />
-            <text x="283" y="177" font-size="11" fill="#94a3b8" font-weight="600">X%</text>
-          </svg>
-        `;
+          </svg>`;
         breakdownEl.innerHTML = `<p class="text-center text-xs text-slate-400 py-2">Chưa có khoản ${type === 'expense' ? 'chi tiêu' : 'thu nhập'} nào trong tháng này.</p>`;
         return;
       }
@@ -1936,7 +1553,7 @@
     }
 
     /********************************************************************
-     * 7. RENDER TAB 2: LỊCH ÂM DƯƠNG VIỆT NAM (TÔ ĐỎ NGÀY RẰM)
+     * CALENDAR TAB
      ********************************************************************/
     function changeCalendarMonth(delta) {
       let m = state.calMonth + delta;
@@ -2038,10 +1655,8 @@
           topRightBadge = `<span class="text-[8px] font-extrabold px-1 rounded ${isSelected ? 'bg-white text-amber-600' : 'bg-amber-100 text-amber-700 border border-amber-300'} leading-tight">M1</span>`;
         }
 
-        // Compact money summary in cell
         let compactMoneyHTML = '';
         if (dayTx) {
-          const netDay = dayTx.inc - dayTx.exp;
           if (dayTx.exp > 0) {
             compactMoneyHTML = `<div class="text-[8px] font-bold truncate leading-none ${isSelected ? 'text-pink-100' : 'text-momo-600'}">-${formatShortMoney(dayTx.exp)}</div>`;
           } else if (dayTx.inc > 0) {
@@ -2060,12 +1675,10 @@
               <span class="text-xs font-extrabold leading-none ${lunar.isRam && !isSelected ? 'text-red-600' : ''}">${d}</span>
               ${topRightBadge}
             </div>
-
             <div class="flex flex-col items-center justify-center my-auto">
               ${compactMoneyHTML}
               <div class="flex items-center gap-0.5 mt-0.5">${dotsHTML}</div>
             </div>
-
             <div class="flex items-end justify-between w-full">
               <span class="text-[8px] font-bold ${isSelected ? 'text-white/90' : 'text-blue-600'}">
                 ${dayTasks.length > 0 ? `${dayTasks.length} việc` : ''}
@@ -2113,11 +1726,7 @@
 
       const taskContainer = document.getElementById('sel-day-tasks-list');
       if (dayTasks.length === 0) {
-        taskContainer.innerHTML = `
-          <div class="text-xs text-slate-400 bg-slate-50 rounded-xl p-2.5 text-center">
-            Chưa có công việc nào trong ngày này.
-          </div>
-        `;
+        taskContainer.innerHTML = `<div class="text-xs text-slate-400 bg-slate-50 rounded-xl p-2.5 text-center">Chưa có công việc nào trong ngày này.</div>`;
       } else {
         taskContainer.innerHTML = dayTasks.map(tk => `
           <div class="flex items-center justify-between p-2.5 rounded-xl border ${tk.completed ? 'bg-slate-50 border-slate-100 opacity-65' : lunar.isRam ? 'bg-red-50/60 border-red-200' : 'bg-blue-50/30 border-blue-100'}">
@@ -2131,12 +1740,8 @@
               </div>
             </div>
             <div class="flex items-center gap-1 shrink-0">
-              <button onclick="openEditTask('${tk.id}')" class="text-slate-400 hover:text-blue-600 text-xs px-1">
-                <i class="fa-solid fa-pen"></i>
-              </button>
-              <button onclick="deleteTask('${tk.id}')" class="text-slate-300 hover:text-red-500 text-xs px-1">
-                <i class="fa-solid fa-trash-can"></i>
-              </button>
+              <button onclick="openEditTask('${tk.id}')" class="text-slate-400 hover:text-blue-600 text-xs px-1"><i class="fa-solid fa-pen"></i></button>
+              <button onclick="deleteTask('${tk.id}')" class="text-slate-300 hover:text-red-500 text-xs px-1"><i class="fa-solid fa-trash-can"></i></button>
             </div>
           </div>
         `).join('');
@@ -2164,9 +1769,7 @@
                 <span class="text-xs font-extrabold ${isExp ? 'text-momo-600' : 'text-emerald-600'}">
                   ${isExp ? '-' : '+'}${formatMoney(tx.amount)}
                 </span>
-                <button onclick="deleteTransaction('${tx.id}')" class="text-slate-300 hover:text-red-500 text-xs px-1">
-                  <i class="fa-solid fa-trash-can"></i>
-                </button>
+                <button onclick="deleteTransaction('${tx.id}')" class="text-slate-300 hover:text-red-500 text-xs px-1"><i class="fa-solid fa-trash-can"></i></button>
               </div>
             </div>
           `;
@@ -2175,7 +1778,7 @@
     }
 
     /********************************************************************
-     * 8. RENDER TAB 3: CÔNG VIỆC GẮN LỊCH (TASKS)
+     * TASKS TAB
      ********************************************************************/
     function setTaskFilter(filter) {
       state.taskFilter = filter;
@@ -2197,7 +1800,7 @@
       if (tk) {
         tk.completed = !tk.completed;
         renderAll();
-        triggerCloudSyncAfterChange();
+        triggerCloudSync();
         showToast(tk.completed ? 'Đã hoàn thành công việc!' : 'Đã mở lại công việc');
       }
     }
@@ -2205,14 +1808,14 @@
     function deleteTask(id) {
       state.tasks = state.tasks.filter(t => t.id !== id);
       renderAll();
-      triggerCloudSyncAfterChange();
+      triggerCloudSync();
       showToast('Đã xóa công việc');
     }
 
     function deleteTransaction(id) {
       state.transactions = state.transactions.filter(t => t.id !== id);
       renderAll();
-      triggerCloudSyncAfterChange();
+      triggerCloudSync();
       showToast('Đã xóa giao dịch');
     }
 
@@ -2244,7 +1847,7 @@
         cursor.setDate(cursor.getDate() + 1);
       }
       renderAll();
-      triggerCloudSyncAfterChange();
+      triggerCloudSync();
       showToast(addedCount > 0 ? `Đã tạo ${addedCount} lịch nhắc Rằm & Mùng 1 sắp tới!` : 'Lịch nhắc Rằm & Mùng 1 sắp tới đã có sẵn!');
     }
 
@@ -2314,12 +1917,8 @@
                 </div>
               </div>
               <div class="flex items-center gap-1 shrink-0">
-                <button onclick="openEditTask('${tk.id}')" class="text-slate-400 hover:text-blue-600 text-xs p-1" title="Sửa">
-                  <i class="fa-solid fa-pen"></i>
-                </button>
-                <button onclick="deleteTask('${tk.id}')" class="text-slate-300 hover:text-red-500 text-xs p-1" title="Xóa">
-                  <i class="fa-solid fa-trash-can"></i>
-                </button>
+                <button onclick="openEditTask('${tk.id}')" class="text-slate-400 hover:text-blue-600 text-xs p-1"><i class="fa-solid fa-pen"></i></button>
+                <button onclick="deleteTask('${tk.id}')" class="text-slate-300 hover:text-red-500 text-xs p-1"><i class="fa-solid fa-trash-can"></i></button>
               </div>
             </div>
 
@@ -2329,7 +1928,6 @@
                 <span>${formatDisplayDate(tk.date)}</span>
                 <span>• ${lunar.day}/${lunar.month} ÂL</span>
               </button>
-
               <div class="flex items-center gap-1.5">
                 <span class="text-[10px] font-semibold text-slate-500"><i class="fa-regular fa-clock mr-0.5"></i>${tk.time || '08:00'}</span>
                 <span class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 text-[9px] font-bold">${tk.category}</span>
@@ -2342,7 +1940,7 @@
     }
 
     /********************************************************************
-     * 9. RENDER TAB 4: TIỆN ÍCH, NGÂN SÁCH & LỊCH RẰM SẮP TỚI
+     * UTILITIES TAB
      ********************************************************************/
     function renderUtilitiesTab() {
       const nowPrefix = `${todayObj.getFullYear()}-${String(todayObj.getMonth() + 1).padStart(2, '0')}`;
@@ -2408,19 +2006,15 @@
             </div>
           </div>
           <div class="flex items-center gap-1.5">
-            <button onclick="openAddModal('task', '${item.iso}')" class="px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-[11px] font-bold text-slate-700 hover:bg-slate-100">
-              + Việc
-            </button>
-            <button onclick="jumpToCalendarDate('${item.iso}')" class="px-2.5 py-1 rounded-lg ${item.lunar.isRam ? 'bg-red-600 text-white' : 'bg-amber-500 text-white'} text-[11px] font-bold">
-              Lịch
-            </button>
+            <button onclick="openAddModal('task', '${item.iso}')" class="px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-[11px] font-bold text-slate-700 hover:bg-slate-100">+ Việc</button>
+            <button onclick="jumpToCalendarDate('${item.iso}')" class="px-2.5 py-1 rounded-lg ${item.lunar.isRam ? 'bg-red-600 text-white' : 'bg-amber-500 text-white'} text-[11px] font-bold">Lịch</button>
           </div>
         </div>
       `).join('');
     }
 
     /********************************************************************
-     * 10. MODAL THÊM / SỬA GIAO DỊCH & CÔNG VIỆC
+     * MODALS & FORMS
      ********************************************************************/
     function openAddModal(mode = 'expense', customDate = null) {
       state.editingRecordId = null;
@@ -2568,10 +2162,7 @@
 
       if (state.modalMode === 'task') {
         const title = document.getElementById('task-title-input').value.trim();
-        if (!title) {
-          showToast('Vui lòng nhập tên công việc!');
-          return;
-        }
+        if (!title) { showToast('Vui lòng nhập tên công việc!'); return; }
         const time = document.getElementById('task-time-input').value || '08:00';
         const priority = document.getElementById('task-priority-input').value;
         const note = document.getElementById('task-note-input').value.trim();
@@ -2596,14 +2187,11 @@
         state.selectedDate = dateVal;
         closeRecordModal();
         renderAll();
-        triggerCloudSyncAfterChange();
+        triggerCloudSync();
         showToast('Đã lưu công việc vào lịch!');
       } else {
         const amount = Number(document.getElementById('tx-amount-input').value);
-        if (!amount || amount <= 0) {
-          showToast('Vui lòng nhập số tiền hợp lệ!');
-          return;
-        }
+        if (!amount || amount <= 0) { showToast('Vui lòng nhập số tiền hợp lệ!'); return; }
         const note = document.getElementById('tx-note-input').value.trim();
 
         if (state.editingRecordId) {
@@ -2624,14 +2212,11 @@
         state.selectedDate = dateVal;
         closeRecordModal();
         renderAll();
-        triggerCloudSyncAfterChange();
+        triggerCloudSync();
         showToast(state.modalMode === 'expense' ? 'Đã lưu khoản chi tiêu!' : 'Đã lưu khoản thu nhập!');
       }
     }
 
-    /********************************************************************
-     * 11. MODAL NGÂN SÁCH & FILE JSON
-     ********************************************************************/
     function openBudgetEditModal() {
       const modal = document.getElementById('utility-modal');
       document.getElementById('utility-modal-title').textContent = 'Đặt hạn mức ngân sách tháng';
@@ -2656,7 +2241,7 @@
         state.monthlyBudget = val;
         closeUtilityModal();
         renderAll();
-        triggerCloudSyncAfterChange();
+        triggerCloudSync();
         showToast('Đã cập nhật ngân sách tháng!');
       }
     }
@@ -2692,7 +2277,7 @@
           if (Array.isArray(parsed.tasks)) state.tasks = parsed.tasks;
           if (parsed.monthlyBudget) state.monthlyBudget = Number(parsed.monthlyBudget);
           renderAll();
-          triggerCloudSyncAfterChange();
+          triggerCloudSync();
           showToast('Đã nhập dữ liệu JSON thành công!');
         } catch (err) {
           showToast('File JSON không hợp lệ!');
@@ -2702,10 +2287,10 @@
     }
 
     function resetSampleData() {
-      generateDefaultSampleData(true);
+      generateDefaultSampleData();
       renderAll();
-      triggerCloudSyncAfterChange();
-      showToast('Đã khôi phục dữ liệu mẫu (Giữ nguyên cấu hình đồng bộ)!');
+      triggerCloudSync();
+      showToast('Đã khôi phục dữ liệu mẫu!');
     }
 
     function clearAllData() {
@@ -2713,8 +2298,8 @@
       state.tasks = [];
       state.lastUpdated = Date.now();
       renderAll();
-      triggerCloudSyncAfterChange();
-      showToast('Đã xóa trắng giao dịch & việc (Giữ nguyên GitHub Token)');
+      triggerCloudSync();
+      showToast('Đã xóa trắng dữ liệu');
     }
 
     function updateTopLunarPill() {
@@ -2731,7 +2316,6 @@
       renderUtilitiesTab();
     }
 
-    // Expose handlers to global window for inline onclick attributes
     Object.assign(window, {
       switchTab,
       toggleHideAmount,
@@ -2759,7 +2343,6 @@
       selectTxCat,
       selectTaskCat,
       submitRecordModal,
-      manualSyncNow,
       openBudgetEditModal,
       saveBudgetLimit,
       closeUtilityModal,
@@ -2770,24 +2353,11 @@
       scrollToElement
     });
 
-    // Tự động đồng bộ lại khi người dùng chuyển tab trình duyệt hoặc mở lại màn hình điện thoại
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible') {
-        if (HARDCODED_CLOUD_CONFIG.githubGist.enabled) {
-          pullFromHardcodedGithubGist(true);
-        }
-        if (db && currentUser) {
-          pullFromFirebaseCloud(false);
-        }
-      }
-    });
-
-    // Khởi tạo: ưu tiên khôi phục từ LocalStorage / window.name trước, sau đó tự động nối vào kênh Cloud cố định trong code
-    const restoredFromLocal = loadStateFromLocalStorage();
-    if (!restoredFromLocal) {
-      generateDefaultSampleData(false);
+    // Initialize App
+    const hasLocal = loadStateFromLocalStorage();
+    if (!hasLocal) {
+      generateDefaultSampleData();
     }
-    syncSettingsToUI();
     renderAll();
     initFirebaseCloud();
   </script>
