@@ -101,7 +101,7 @@
     <!-- Sticky Lunar Status Strip (No sync UI on screen) -->
     <div class="sticky top-0 z-30 bg-[#ffeef7]/95 backdrop-blur-md px-3.5 pt-2.5 pb-2 border-b border-pink-100/70 flex items-center justify-between gap-2 shrink-0">
       <div class="flex items-center gap-1.5 text-xs font-bold text-slate-700">
-        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span id="firebase-status-dot" class="w-2 h-2 rounded-full bg-amber-400 animate-pulse" title="Trạng thái kết nối Firebase"></span>
         <span>Quản Lý Thu Chi & Lịch Âm</span>
       </div>
 
@@ -701,25 +701,26 @@
   <!-- FIREBASE & APP SCRIPT -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
     import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
     /********************************************************************
-     * CẤU HÌNH FIREBASE VÀ ĐỒNG BỘ ĐÁM MÂY TỰ ĐỘNG
-     * Bạn có thể điền trực tiếp thông số Firebase Project của bạn vào đây.
+     * CẤU HÌNH FIREBASE ĐỒNG BỘ ĐA THIẾT BỊ (CHỈ DÙNG FIREBASE)
+     * Điền trực tiếp thông số Firebase Project của bạn vào bên dưới.
      ********************************************************************/
     const FIREBASE_CUSTOM_CONFIG = {
       apiKey: "AIzaSyDdEaJvVRRzfcM_IkTjdP0Livz52IQqrMs",
- 	 authDomain: "life-money-f6a11.firebaseapp.com",
- 	 databaseURL: "https://life-money-f6a11-default-rtdb.asia-southeast1.firebasedatabase.app",
+  	authDomain: "life-money-f6a11.firebaseapp.com",
+  	databaseURL: "https://life-money-f6a11-default-rtdb.asia-southeast1.firebasedatabase.app",
  	 projectId: "life-money-f6a11",
- 	 storageBucket: "life-money-f6a11.firebasestorage.app",
- 	 messagingSenderId: "284442463922",
+  	storageBucket: "life-money-f6a11.firebasestorage.app",
+  	messagingSenderId: "284442463922",
   	appId: "1:284442463922:web:e6933c424828c9a12d83ab",
   	measurementId: "G-KDLG43KJ0G"
     };
 
-    const SYNC_CHANNEL_ID = "quan-ly-thu-chi-github-main-v1";
+    // Mã kênh cố định giúp mọi thiết bị cùng đọc/ghi vào đúng 1 nguồn dữ liệu trên Firestore
+    const SYNC_CHANNEL_ID = "quan-ly-thu-chi-firebase-sync-v1";
 
     /********************************************************************
      * THUẬT TOÁN LỊCH ÂM VIỆT NAM (HỒ NGỌC ĐỨC - UTC+7)
@@ -911,7 +912,7 @@
 
     const todayObj = new Date();
     const todayISO = formatISO(todayObj);
-    const LOCAL_STORAGE_KEY = 'momo_lunar_expense_app_hardcoded_v5';
+    const LOCAL_STORAGE_KEY = 'momo_lunar_expense_firebase_v6';
 
     const state = {
       activeTab: 'overview',
@@ -958,7 +959,7 @@
           if (Array.isArray(parsed.tasks)) state.tasks = parsed.tasks;
           if (parsed.monthlyBudget) state.monthlyBudget = Number(parsed.monthlyBudget);
           if (typeof parsed.hideAmounts === 'boolean') state.hideAmounts = parsed.hideAmounts;
-          if (parsed.lastUpdated) state.lastUpdated = Number(parsed.lastUpdated);
+          if (typeof parsed.lastUpdated === 'number') state.lastUpdated = parsed.lastUpdated;
           return true;
         }
       } catch (e) {}
@@ -978,7 +979,7 @@
       return { ramDate, mung1Date };
     }
 
-    function generateDefaultSampleData() {
+    function generateDefaultSampleData(isManualReset = false) {
       const y = todayObj.getFullYear();
       const m = todayObj.getMonth() + 1;
       const mStr = String(m).padStart(2, '0');
@@ -1039,26 +1040,60 @@
           completed: true
         }
       ];
-      state.lastUpdated = Date.now();
+      // Quan trọng: Khi khởi tạo lần đầu trên thiết bị mới, để lastUpdated = 0
+      // để dữ liệu trên Firebase luôn được ưu tiên tải về mà không bị dữ liệu mẫu ghi đè.
+      state.lastUpdated = isManualReset ? Date.now() : 0;
       saveStateToLocalStorage();
     }
 
     /********************************************************************
-     * FIREBASE CLOUD REAL-TIME SYNC
+     * FIREBASE CLOUD REAL-TIME SYNC (ĐỒNG BỘ QUA LẠI GIỮA CÁC THIẾT BỊ)
      ********************************************************************/
-    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-momo-lunar-app';
+    function isCustomFirebaseConfigured() {
+      return Boolean(
+        FIREBASE_CUSTOM_CONFIG &&
+        typeof FIREBASE_CUSTOM_CONFIG.apiKey === 'string' &&
+        FIREBASE_CUSTOM_CONFIG.apiKey.trim() !== '' &&
+        typeof FIREBASE_CUSTOM_CONFIG.projectId === 'string' &&
+        FIREBASE_CUSTOM_CONFIG.projectId.trim() !== ''
+      );
+    }
+
+    const envAppId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+    // Nếu bạn đã điền FIREBASE_CUSTOM_CONFIG, mọi thiết bị sẽ dùng chung 1 đường dẫn cố định theo projectId
+    const appId = isCustomFirebaseConfigured()
+      ? FIREBASE_CUSTOM_CONFIG.projectId.trim()
+      : envAppId;
+
     let db = null;
     let auth = null;
     let currentUser = null;
     let unsubscribeChannel = null;
     let isApplyingRemote = false;
 
+    function updateStatusDot(status) {
+      const dot = document.getElementById('firebase-status-dot');
+      if (!dot) return;
+      if (status === 'connected') {
+        dot.className = 'w-2 h-2 rounded-full bg-emerald-500 animate-pulse';
+        dot.title = 'Đã kết nối đồng bộ Firebase';
+      } else if (status === 'error') {
+        dot.className = 'w-2 h-2 rounded-full bg-red-500';
+        dot.title = 'Lỗi kết nối Firebase (Kiểm tra lại cấu hình hoặc Firestore Rules)';
+      } else {
+        dot.className = 'w-2 h-2 rounded-full bg-amber-400 animate-pulse';
+        dot.title = 'Đang kết nối Firebase...';
+      }
+    }
+
     function resolveActiveFirebaseConfig() {
+      // Ưu tiên số 1: Cấu hình FIREBASE_CUSTOM_CONFIG bạn điền trực tiếp trong code
+      if (isCustomFirebaseConfigured()) {
+        return FIREBASE_CUSTOM_CONFIG;
+      }
+      // Dự phòng: Cấu hình môi trường nếu bạn chưa điền FIREBASE_CUSTOM_CONFIG
       if (typeof __firebase_config !== 'undefined' && __firebase_config) {
         try { return JSON.parse(__firebase_config); } catch (e) {}
-      }
-      if (FIREBASE_CUSTOM_CONFIG.apiKey) {
-        return FIREBASE_CUSTOM_CONFIG;
       }
       return null;
     }
@@ -1066,26 +1101,67 @@
     async function initFirebaseCloud() {
       try {
         const config = resolveActiveFirebaseConfig();
-        if (!config) return;
+        if (!config) {
+          updateStatusDot('error');
+          return;
+        }
 
+        updateStatusDot('connecting');
         const app = initializeApp(config);
         db = getFirestore(app);
         auth = getAuth(app);
 
-        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-          await signInWithCustomToken(auth, __initial_auth_token);
-        } else {
-          await signInAnonymously(auth);
+        try {
+          if (!isCustomFirebaseConfigured() && typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+            const cred = await signInWithCustomToken(auth, __initial_auth_token);
+            currentUser = cred.user;
+          } else {
+            const cred = await signInAnonymously(auth);
+            currentUser = cred.user;
+          }
+        } catch (authErr) {
+          // Trường hợp Firebase Project riêng của bạn dùng Firestore Test Mode nhưng chưa bật Anonymous Auth
+          console.warn('Lưu ý Firebase Auth (vẫn tiếp tục kết nối Firestore):', authErr.message);
+          currentUser = auth.currentUser || { uid: 'firebase_client_sync' };
         }
 
-        onAuthStateChanged(auth, async (user) => {
-          currentUser = user;
-          if (user) {
-            subscribeToCloudChannel();
-          }
-        });
+        if (!currentUser) return;
+        subscribeToCloudChannel();
       } catch (err) {
-        console.warn('Firebase init warning:', err);
+        console.error('Lỗi khởi tạo Firebase:', err);
+        updateStatusDot('error');
+      }
+    }
+
+    function applyCloudDataToState(data, remoteTime) {
+      isApplyingRemote = true;
+      try {
+        if (typeof data.transactionsJson === 'string') {
+          state.transactions = JSON.parse(data.transactionsJson);
+        } else if (Array.isArray(data.transactions)) {
+          state.transactions = data.transactions;
+        }
+
+        if (typeof data.tasksJson === 'string') {
+          state.tasks = JSON.parse(data.tasksJson);
+        } else if (Array.isArray(data.tasks)) {
+          state.tasks = data.tasks;
+        }
+
+        if (data.monthlyBudget) {
+          state.monthlyBudget = Number(data.monthlyBudget);
+        }
+        if (typeof data.hideAmounts === 'boolean') {
+          state.hideAmounts = data.hideAmounts;
+        }
+        state.lastUpdated = remoteTime > 0 ? remoteTime : Date.now();
+
+        saveStateToLocalStorage();
+        renderAll();
+      } catch (e) {
+        console.error('Lỗi đọc dữ liệu Firebase:', e);
+      } finally {
+        isApplyingRemote = false;
       }
     }
 
@@ -1097,48 +1173,44 @@
       }
 
       const channelDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'sync_channels', SYNC_CHANNEL_ID);
-      let isFirst = true;
+      let isFirstSnapshot = true;
 
-      unsubscribeChannel = onSnapshot(channelDocRef, (snap) => {
-        if (snap.exists()) {
-          const data = snap.data();
-          const remoteTime = Number(data.lastUpdated || 0);
-          if (!isFirst && remoteTime > 0 && state.lastUpdated > 0 && remoteTime < state.lastUpdated) {
-            isFirst = false;
-            return;
-          }
-          if (state.lastUpdated > 0 && remoteTime > 0 && state.lastUpdated > remoteTime) {
-            isFirst = false;
+      unsubscribeChannel = onSnapshot(
+        channelDocRef,
+        (snap) => {
+          updateStatusDot('connected');
+          if (snap.exists()) {
+            const data = snap.data();
+            const remoteTime = Number(data.lastUpdated || 0);
+
+            if (isFirstSnapshot) {
+              isFirstSnapshot = false;
+              // Nếu thiết bị hiện tại đang là dữ liệu mẫu (lastUpdated === 0) hoặc dữ liệu trên mây mới hơn -> tải về ngay
+              if (state.lastUpdated === 0 || remoteTime >= state.lastUpdated) {
+                applyCloudDataToState(data, remoteTime);
+              } else {
+                // Nếu thiết bị vừa có thay đổi offline mới hơn trên mây -> đẩy lên mây
+                pushToCloud();
+              }
+              return;
+            }
+
+            // Các lần cập nhật real-time tiếp theo từ thiết bị khác
+            if (remoteTime > state.lastUpdated) {
+              applyCloudDataToState(data, remoteTime);
+            }
+          } else {
+            // Chưa có dữ liệu trên Firebase -> Khởi tạo bản ghi đầu tiên lên Firebase
+            isFirstSnapshot = false;
+            if (!state.lastUpdated) state.lastUpdated = Date.now();
             pushToCloud();
-            return;
           }
-
-          isApplyingRemote = true;
-          try {
-            if (typeof data.transactionsJson === 'string') state.transactions = JSON.parse(data.transactionsJson);
-            else if (Array.isArray(data.transactions)) state.transactions = data.transactions;
-
-            if (typeof data.tasksJson === 'string') state.tasks = JSON.parse(data.tasksJson);
-            else if (Array.isArray(data.tasks)) state.tasks = data.tasks;
-
-            if (data.monthlyBudget) state.monthlyBudget = Number(data.monthlyBudget);
-            if (typeof data.hideAmounts === 'boolean') state.hideAmounts = data.hideAmounts;
-            if (remoteTime > 0) state.lastUpdated = remoteTime;
-
-            saveStateToLocalStorage();
-            renderAll();
-          } catch (e) {
-            console.error(e);
-          } finally {
-            isApplyingRemote = false;
-          }
-        } else {
-          pushToCloud();
+        },
+        (err) => {
+          console.error('Lỗi đồng bộ Firestore (Kiểm tra lại Rules trong Firestore Database):', err);
+          updateStatusDot('error');
         }
-        isFirst = false;
-      }, (err) => {
-        console.warn('Cloud sync error:', err);
-      });
+      );
     }
 
     async function pushToCloud() {
@@ -1149,15 +1221,17 @@
         const payload = {
           transactionsJson: JSON.stringify(state.transactions),
           tasksJson: JSON.stringify(state.tasks),
-          monthlyBudget: state.monthlyBudget,
+          monthlyBudget: Number(state.monthlyBudget) || 12000000,
           hideAmounts: Boolean(state.hideAmounts),
           lastUpdated: state.lastUpdated,
-          updatedBy: currentUser.uid
+          updatedBy: currentUser.uid || 'firebase_user'
         };
         const channelDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'sync_channels', SYNC_CHANNEL_ID);
         await setDoc(channelDocRef, payload, { merge: true });
+        updateStatusDot('connected');
       } catch (err) {
-        console.warn('Push cloud warning:', err);
+        console.error('Lỗi ghi dữ liệu lên Firebase:', err);
+        updateStatusDot('error');
       }
     }
 
@@ -1166,6 +1240,13 @@
       saveStateToLocalStorage();
       pushToCloud();
     }
+
+    // Tự động đồng bộ lại khi thiết bị có mạng trở lại
+    window.addEventListener('online', () => {
+      if (db && currentUser && state.lastUpdated > 0) {
+        pushToCloud();
+      }
+    });
 
     /********************************************************************
      * FORMATTERS & HELPERS
@@ -2287,7 +2368,7 @@
     }
 
     function resetSampleData() {
-      generateDefaultSampleData();
+      generateDefaultSampleData(true);
       renderAll();
       triggerCloudSync();
       showToast('Đã khôi phục dữ liệu mẫu!');
@@ -2356,7 +2437,7 @@
     // Initialize App
     const hasLocal = loadStateFromLocalStorage();
     if (!hasLocal) {
-      generateDefaultSampleData();
+      generateDefaultSampleData(false);
     }
     renderAll();
     initFirebaseCloud();
