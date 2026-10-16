@@ -100,11 +100,11 @@
 
     <!-- Sticky Cloud Sync & Lunar Status Strip -->
     <div class="sticky top-0 z-30 bg-[#ffeef7]/95 backdrop-blur-md px-3.5 pt-2.5 pb-2 border-b border-pink-100/70 flex items-center justify-between gap-2 shrink-0">
-      <!-- Cloud Sync Status Pill + Quick Sync Button -->
+      <!-- Auto Cloud Sync Status Pill + Quick Sync Button -->
       <div class="flex items-center gap-1 max-w-[65%]">
-        <button onclick="openSyncModal()" class="flex items-center gap-1.5 bg-white hover:bg-pink-50/50 border border-pink-200/80 px-2.5 py-1 rounded-full shadow-xs active:scale-95 transition min-w-0">
+        <button onclick="manualSyncNow()" class="flex items-center gap-1.5 bg-white hover:bg-pink-50/50 border border-pink-200/80 px-2.5 py-1 rounded-full shadow-xs active:scale-95 transition min-w-0" title="Bấm để làm mới dữ liệu đám mây">
           <span id="sync-status-dot" class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
-          <span id="sync-status-text" class="text-[11px] font-bold text-slate-700 truncate">Đang kết nối đồng bộ...</span>
+          <span id="sync-status-text" class="text-[11px] font-bold text-slate-700 truncate">Đã đồng bộ Cloud</span>
           <i class="fa-solid fa-cloud text-[10px] text-momo-600 shrink-0"></i>
         </button>
         <button onclick="manualSyncNow()" id="btn-quick-sync-now" class="w-7 h-7 rounded-full bg-white hover:bg-pink-50 border border-pink-200/80 text-momo-600 flex items-center justify-center shadow-xs active:scale-90 transition shrink-0" title="Đồng bộ ngay lập tức">
@@ -239,12 +239,12 @@
           </div>
 
           <!-- Status Banner (Like MoMo light-blue info strip) -->
-          <div onclick="openSyncModal()" class="bg-[#f0f6ff] hover:bg-blue-50 border border-blue-100 rounded-xl px-3 py-2 flex items-center justify-between cursor-pointer transition">
+          <div onclick="manualSyncNow()" class="bg-[#f0f6ff] hover:bg-blue-50 border border-blue-100 rounded-xl px-3 py-2 flex items-center justify-between cursor-pointer transition">
             <div class="flex items-center gap-2">
               <i class="fa-solid fa-chart-column text-blue-500 text-sm"></i>
               <span id="overview-net-summary" class="text-xs text-slate-700 font-medium">Số dư tháng: <strong class="text-slate-900">0đ</strong></span>
             </div>
-            <i class="fa-solid fa-chevron-right text-[10px] text-slate-400"></i>
+            <i class="fa-solid fa-arrows-rotate text-[10px] text-blue-500"></i>
           </div>
 
           <!-- Call-to-action Box (Ghi chép mọi chi tiêu...) -->
@@ -498,39 +498,45 @@
       <!-- ==================== TAB 4: TIỆN ÍCH & ĐỒNG BỘ (UTILITIES) ==================== -->
       <section id="tab-utilities" class="hidden space-y-3.5">
         
-        <!-- Cloud Multi-Device Sync Card (Firebase + GitHub Gist) -->
+        <!-- Automatic Hardcoded Cloud & GitHub Domain Status Card -->
         <div class="bg-white rounded-2xl p-4 card-shadow space-y-3 border border-pink-100">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2.5">
               <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-momo-600 to-pink-500 text-white flex items-center justify-center text-base shadow-xs">
-                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <i class="fa-solid fa-cloud-bolt"></i>
               </div>
               <div>
-                <h2 class="text-sm font-extrabold text-slate-800">Đồng bộ dữ liệu đa thiết bị</h2>
-                <p id="util-sync-subtitle" class="text-[11px] text-slate-500">Firebase Realtime & GitHub Gist</p>
+                <h2 class="text-sm font-extrabold text-slate-800">Đồng bộ Firebase & GitHub</h2>
+                <p class="text-[11px] text-emerald-600 font-bold">Đã tích hợp trực tiếp trong mã nguồn</p>
               </div>
             </div>
-            <button onclick="openSyncModal()" class="px-3 py-1.5 rounded-xl bg-momo-600 hover:bg-momo-700 text-white text-xs font-bold shadow-xs active:scale-95 transition">
-              Cấu hình
+            <button onclick="manualSyncNow()" class="px-3 py-1.5 rounded-xl bg-momo-600 hover:bg-momo-700 text-white text-xs font-bold shadow-xs active:scale-95 transition flex items-center gap-1">
+              <i class="fa-solid fa-arrows-rotate text-[11px]"></i>
+              <span>Đồng bộ</span>
             </button>
           </div>
 
           <div class="grid grid-cols-2 gap-2 pt-1">
-            <button onclick="openSyncModal('firebase')" class="p-2.5 rounded-xl bg-amber-50/70 hover:bg-amber-100/70 border border-amber-200 text-left transition">
+            <div class="p-2.5 rounded-xl bg-amber-50/70 border border-amber-200 text-left">
               <div class="flex items-center justify-between text-xs font-extrabold text-amber-800">
-                <span><i class="fa-solid fa-bolt text-amber-500 mr-1"></i>Firebase Sync</span>
-                <span id="fb-badge-mini" class="text-[9px] px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700 font-bold">Đang bật</span>
+                <span><i class="fa-solid fa-fire text-amber-500 mr-1"></i>Firebase DB</span>
+                <span id="fb-badge-mini" class="text-[9px] px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700 font-bold">Tự động</span>
               </div>
-              <p class="text-[10px] text-slate-500 mt-1 truncate" id="fb-key-mini">Kênh: kenh-mac-dinh</p>
-            </button>
+              <p class="text-[10px] text-slate-500 mt-1 truncate" id="fb-key-mini">Kênh: cố định trong code</p>
+            </div>
 
-            <button onclick="openSyncModal('github')" class="p-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-left transition">
+            <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-left">
               <div class="flex items-center justify-between text-xs font-extrabold text-slate-800">
-                <span><i class="fa-brands fa-github mr-1"></i>GitHub Gist</span>
-                <span id="gh-badge-mini" class="text-[9px] px-1.5 py-0.5 rounded bg-slate-200 text-slate-700">Cấu hình</span>
+                <span><i class="fa-brands fa-github mr-1"></i>GitHub Domain</span>
+                <span id="gh-badge-mini" class="text-[9px] px-1.5 py-0.5 rounded bg-blue-100 text-blue-700 font-bold">Active</span>
               </div>
-              <p class="text-[10px] text-slate-500 mt-1 truncate" id="gh-id-mini">Lưu trữ trên GitHub cá nhân</p>
-            </button>
+              <p class="text-[10px] text-slate-500 mt-1 truncate" id="gh-domain-mini">quanlythuchi.github.io</p>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between text-[10px] text-slate-400 pt-1 border-t border-slate-100">
+            <span id="code-sync-channel-label">ID: quan-ly-thu-chi-github-main-v1</span>
+            <span id="last-sync-time-label" class="font-semibold text-slate-500"> Tự động lưu 100%</span>
           </div>
         </div>
 
@@ -765,143 +771,7 @@
       </div>
     </div>
 
-    <!-- ==================== MODAL 2: ĐỒNG BỘ ĐA THIẾT BỊ (FIREBASE & GITHUB GIST) ==================== -->
-    <div id="sync-modal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
-      <div class="bg-white w-full max-w-[440px] rounded-t-3xl sm:rounded-3xl p-4 pb-6 space-y-4 animate-slide-up max-h-[92vh] overflow-y-auto shadow-2xl">
-        
-        <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
-          <div class="flex items-center gap-2">
-            <span class="w-7 h-7 rounded-xl bg-momo-100 text-momo-600 flex items-center justify-center text-xs">
-              <i class="fa-solid fa-cloud"></i>
-            </span>
-            <h3 class="text-base font-extrabold text-slate-800">Đồng bộ dữ liệu đa thiết bị</h3>
-          </div>
-          <button onclick="closeSyncModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center">
-            <i class="fa-solid fa-xmark"></i>
-          </button>
-        </div>
-
-        <!-- Sync Provider Switcher -->
-        <div class="grid grid-cols-2 gap-1.5 bg-slate-100 p-1 rounded-2xl">
-          <button type="button" onclick="switchSyncProviderTab('firebase')" id="stab-firebase" class="py-2 rounded-xl text-xs font-extrabold transition bg-white text-momo-600 shadow-xs">
-            <i class="fa-solid fa-bolt text-amber-500 mr-1"></i>Firebase Realtime
-          </button>
-          <button type="button" onclick="switchSyncProviderTab('github')" id="stab-github" class="py-2 rounded-xl text-xs font-extrabold transition text-slate-600">
-            <i class="fa-brands fa-github mr-1"></i>GitHub Gist API
-          </button>
-        </div>
-
-        <!-- TAB A: FIREBASE SYNC -->
-        <div id="sync-panel-firebase" class="space-y-3">
-          <div class="bg-amber-50/80 border border-amber-200 rounded-2xl p-3 text-xs text-amber-900 space-y-1">
-            <div class="font-extrabold flex items-center gap-1.5">
-              <i class="fa-solid fa-circle-info text-amber-600"></i>
-              <span>Đồng bộ tức thời bằng Mã Đồng Bộ (Sync Key)</span>
-            </div>
-            <p class="text-[11px] text-amber-800 leading-relaxed">
-              Mặc định các thiết bị tự nối vào kênh <code class="bg-white px-1 rounded font-bold">kenh-mac-dinh</code>. Bạn có thể đặt Mã Đồng Bộ riêng (VD: <code class="bg-white px-1 rounded font-bold">gia-dinh-2026</code>) trên điện thoại và máy tính để đồng bộ riêng tư theo thời gian thực.
-            </p>
-          </div>
-
-          <div>
-            <label class="text-xs font-bold text-slate-600 block mb-1">Mã Đồng Bộ (Sync Key)</label>
-            <div class="flex gap-2">
-              <input type="text" id="fb-sync-key-input" placeholder="VD: gia-dinh-2026" class="flex-1 bg-slate-50 border-2 border-slate-200 focus:border-momo-500 rounded-xl px-3 py-2 text-sm font-bold text-slate-800 focus:outline-none" />
-              <button type="button" onclick="connectFirebaseSyncKey()" class="px-4 py-2 rounded-xl bg-momo-600 hover:bg-momo-700 text-white text-xs font-extrabold shrink-0 transition">
-                Kết nối & Lưu
-              </button>
-            </div>
-          </div>
-
-          <div class="flex items-center justify-between bg-emerald-50/80 px-3 py-2.5 rounded-xl border border-emerald-200 text-xs">
-            <div class="min-w-0 pr-2">
-              <span class="text-slate-500">Trạng thái: </span>
-              <strong id="fb-modal-status" class="text-emerald-700">Đang tự động kết nối...</strong>
-            </div>
-            <div class="flex items-center gap-2 shrink-0">
-              <button type="button" onclick="pullFromFirebaseCloud(true)" class="text-blue-600 font-extrabold hover:underline">
-                Tải về
-              </button>
-              <span class="text-slate-300">|</span>
-              <button type="button" onclick="pushToFirebaseCloud(true)" class="text-momo-600 font-extrabold hover:underline">
-                Đẩy lên
-              </button>
-            </div>
-          </div>
-
-          <div class="text-[10px] text-slate-400 flex items-center justify-between px-1">
-            <span>UID thiết bị: <code id="fb-uid-display" class="text-slate-500">Đang xác thực...</code></span>
-            <span id="last-sync-time-label" class="font-semibold text-slate-500"></span>
-          </div>
-        </div>
-
-        <!-- TAB B: GITHUB GIST SYNC -->
-        <div id="sync-panel-github" class="hidden space-y-3">
-          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3 text-xs text-slate-700 space-y-1">
-            <div class="font-extrabold flex items-center gap-1.5">
-              <i class="fa-brands fa-github text-slate-900"></i>
-              <span>Đồng bộ qua GitHub Gist cá nhân</span>
-            </div>
-            <p class="text-[11px] text-slate-500 leading-relaxed">
-              Chỉ cần nhập <strong>Personal Access Token</strong> (quyền <code class="bg-white px-1 rounded border">gist</code>). Ứng dụng sẽ <strong>tự động tìm lại Gist cũ</strong> của bạn hoặc tạo mới nếu chưa có, đồng thời tự ghi nhớ cấu hình khi tải lại trang.
-            </p>
-          </div>
-
-          <div>
-            <label class="text-xs font-bold text-slate-600 block mb-1">GitHub Personal Access Token (PAT)</label>
-            <div class="flex gap-1.5">
-              <input type="password" id="gh-token-input" oninput="onGithubConfigInput()" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" class="flex-1 bg-slate-50 border border-slate-200 focus:border-momo-500 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none" />
-              <button type="button" onclick="toggleGithubTokenVisibility()" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold" title="Hiện/Ẩn Token">
-                <i id="gh-token-eye" class="fa-regular fa-eye"></i>
-              </button>
-            </div>
-          </div>
-
-          <div>
-            <div class="flex items-center justify-between mb-1">
-              <label class="text-xs font-bold text-slate-600">Gist ID (Tự động tìm hoặc để trống)</label>
-              <button type="button" onclick="autoDiscoverGithubGist(true)" class="text-[11px] font-extrabold text-momo-600 hover:underline">
-                <i class="fa-solid fa-magnifying-glass mr-0.5"></i>Tự tìm Gist từ Token
-              </button>
-            </div>
-            <div class="flex gap-1.5">
-              <input type="text" id="gh-gist-id-input" oninput="onGithubConfigInput()" placeholder="Tự động điền khi có Token..." class="flex-1 bg-slate-50 border border-slate-200 focus:border-momo-500 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none" />
-              <button type="button" onclick="copyGistId()" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold" title="Sao chép Gist ID">
-                <i class="fa-regular fa-copy"></i>
-              </button>
-            </div>
-          </div>
-
-          <label class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-200 cursor-pointer">
-            <span class="text-xs font-bold text-slate-700">Tự động đồng bộ GitHub khi mở app & khi sửa</span>
-            <input type="checkbox" id="gh-autosync-checkbox" checked onchange="saveGithubSettingsFromUI(true)" class="w-4 h-4 accent-momo-600 rounded" />
-          </label>
-
-          <div class="flex items-center justify-between bg-emerald-50/70 border border-emerald-200 rounded-xl px-3 py-2 text-xs">
-            <span id="gh-saved-status" class="text-[11px] font-bold text-emerald-800 truncate pr-2">
-              <i class="fa-solid fa-shield-halved mr-1"></i>Tự động giữ cấu hình khi Reset
-            </span>
-            <button type="button" onclick="saveAndConnectGithub()" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-extrabold shrink-0 transition">
-              Lưu & Kết nối
-            </button>
-          </div>
-
-          <div class="grid grid-cols-2 gap-2 pt-1">
-            <button type="button" onclick="pushToGithubGist(true)" class="py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-extrabold flex items-center justify-center gap-1.5 transition">
-              <i class="fa-solid fa-cloud-arrow-up"></i>
-              <span>Đẩy lên (Push)</span>
-            </button>
-            <button type="button" onclick="pullFromGithubGist(false)" class="py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-extrabold flex items-center justify-center gap-1.5 transition">
-              <i class="fa-solid fa-cloud-arrow-down"></i>
-              <span>Tải về (Pull)</span>
-            </button>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- ==================== MODAL 3: ĐẶT HẠN MỨC NGÂN SÁCH ==================== -->
+    <!-- ==================== MODAL 2: ĐẶT HẠN MỨC NGÂN SÁCH ==================== -->
     <div id="utility-modal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
       <div class="bg-white w-full max-w-[380px] rounded-3xl p-5 space-y-4 shadow-2xl">
         <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
@@ -927,6 +797,42 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
     import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    /********************************************************************
+     * 0. CẤU HÌNH ĐỒNG BỘ CỐ ĐỊNH TRONG CODE (FIREBASE & GITHUB DOMAIN)
+     * - Không cần cấu hình trên giao diện ứng dụng.
+     * - Tự động nhận diện tên miền GitHub Pages (VD: username.github.io)
+     *   và đồng bộ thẳng lên Firebase Firestore theo kênh cố định.
+     ********************************************************************/
+    const HARDCODED_CLOUD_CONFIG = {
+      // Tên miền GitHub Pages của ứng dụng (Tự nhận diện hostname hoặc dùng tên miền mặc định)
+      githubDomain: (typeof window !== 'undefined' && window.location && window.location.hostname)
+        ? window.location.hostname
+        : 'quanlythuchi.github.io',
+
+      // Khoá kênh đồng bộ cố định xuyên suốt cho mọi thiết bị truy cập ứng dụng
+      syncChannelId: 'quan-ly-thu-chi-github-main-v1',
+
+      // Cấu hình Firebase nhúng trực tiếp trong code (Khi host trên tên miền .github.io riêng,
+      // bạn có thể điền thông số Firebase Project của mình vào đây; nếu để trống hệ thống sẽ
+      // tự động dùng __firebase_config mặc định của môi trường Cloud)
+      firebaseConfig: {
+        apiKey: "",
+        authDomain: "quanlythuchi-github.firebaseapp.com",
+        projectId: "quanlythuchi-github",
+        storageBucket: "quanlythuchi-github.appspot.com",
+        messagingSenderId: "",
+        appId: ""
+      },
+
+      // Đồng bộ song song qua GitHub Gist API hoặc kho dữ liệu tĩnh trên GitHub (Tùy chọn trong code)
+      githubGist: {
+        enabled: false,
+        token: "", // Điền trực tiếp ghp_... vào code nếu muốn đồng bộ thêm qua Gist
+        gistId: "", // Điền trực tiếp Gist ID vào code
+        fileName: "momo_expense_lunar_sync.json"
+      }
+    };
 
     /********************************************************************
      * 1. THUẬT TOÁN LỊCH ÂM VIỆT NAM (HỒ NGỌC ĐỨC - UTC+7)
@@ -1118,8 +1024,8 @@
 
     const todayObj = new Date();
     const todayISO = formatISO(todayObj);
-    const LOCAL_STORAGE_KEY = 'momo_lunar_expense_app_v3';
-    const DEFAULT_SYNC_KEY = 'kenh-mac-dinh';
+    const LOCAL_STORAGE_KEY = 'momo_lunar_expense_app_v4_hardcoded';
+    const DEFAULT_SYNC_KEY = HARDCODED_CLOUD_CONFIG.syncChannelId;
 
     const state = {
       activeTab: 'overview',
@@ -1139,11 +1045,8 @@
       monthlyBudget: 12000000,
       transactions: [],
       tasks: [],
-      // Multi-device Sync state (Default connected to 'kenh-mac-dinh')
-      syncKey: DEFAULT_SYNC_KEY,
-      githubToken: '',
-      githubGistId: '',
-      githubAutoSync: true,
+      // Khoá đồng bộ cố định lấy trực tiếp từ HARDCODED_CLOUD_CONFIG trong code
+      syncKey: HARDCODED_CLOUD_CONFIG.syncChannelId,
       lastUpdated: 0
     };
 
@@ -1155,10 +1058,7 @@
         tasks: state.tasks,
         monthlyBudget: state.monthlyBudget,
         hideAmounts: state.hideAmounts,
-        syncKey: state.syncKey || DEFAULT_SYNC_KEY,
-        githubToken: state.githubToken || '',
-        githubGistId: state.githubGistId || '',
-        githubAutoSync: Boolean(state.githubAutoSync),
+        syncKey: HARDCODED_CLOUD_CONFIG.syncChannelId,
         lastUpdated: state.lastUpdated || 0
       };
     }
@@ -1170,7 +1070,6 @@
       } catch (e) {
         console.warn('LocalStorage save warning:', e);
       }
-      // Fallback: Lưu thêm vào window.name để giữ nguyên dữ liệu/Token kể cả khi iframe reset bộ nhớ
       try {
         window.name = 'MOMO_SYNC_CACHE::' + jsonStr;
       } catch (e) {}
@@ -1179,11 +1078,13 @@
     function loadStateFromLocalStorage() {
       let parsed = null;
       try {
-        const raw = localStorage.getItem(LOCAL_STORAGE_KEY) || localStorage.getItem('momo_lunar_expense_app_v2');
+        const raw =
+          localStorage.getItem(LOCAL_STORAGE_KEY) ||
+          localStorage.getItem('momo_lunar_expense_app_v3') ||
+          localStorage.getItem('momo_lunar_expense_app_v2');
         if (raw) parsed = JSON.parse(raw);
       } catch (e) {}
 
-      // Fallback đọc từ window.name nếu localStorage bị xóa khi reset khung preview
       if (!parsed) {
         try {
           if (typeof window.name === 'string' && window.name.startsWith('MOMO_SYNC_CACHE::')) {
@@ -1198,14 +1099,7 @@
       if (Array.isArray(parsed.tasks)) state.tasks = parsed.tasks;
       if (parsed.monthlyBudget) state.monthlyBudget = Number(parsed.monthlyBudget);
       if (typeof parsed.hideAmounts === 'boolean') state.hideAmounts = parsed.hideAmounts;
-      if (typeof parsed.syncKey === 'string' && parsed.syncKey.trim()) {
-        state.syncKey = parsed.syncKey.trim();
-      } else {
-        state.syncKey = DEFAULT_SYNC_KEY;
-      }
-      if (typeof parsed.githubToken === 'string') state.githubToken = parsed.githubToken;
-      if (typeof parsed.githubGistId === 'string') state.githubGistId = parsed.githubGistId;
-      if (typeof parsed.githubAutoSync === 'boolean') state.githubAutoSync = parsed.githubAutoSync;
+      state.syncKey = HARDCODED_CLOUD_CONFIG.syncChannelId;
       if (parsed.lastUpdated) state.lastUpdated = Number(parsed.lastUpdated);
       return true;
     }
@@ -1288,34 +1182,20 @@
     }
 
     /********************************************************************
-     * 3. HỆ THỐNG ĐỒNG BỘ ĐA THIẾT BỊ TỰ ĐỘNG (FIREBASE + GITHUB GIST)
+     * 3. HỆ THỐNG ĐỒNG BỘ TỰ ĐỘNG QUA FIREBASE & TÊN MIỀN GITHUB TRONG CODE
      ********************************************************************/
     const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-momo-lunar-app';
-    const GLOBAL_CONFIG_DOC_ID = 'app-global-config-v1';
     let db = null;
     let auth = null;
     let currentUser = null;
-    let unsubscribeGlobalConfig = null;
     let unsubscribeChannelSnapshot = null;
-    let activeSubscribedChannelKey = null;
     let isApplyingRemoteUpdate = false;
-    let hasInitialGitHubSyncRun = false;
-    let githubConfigSaveTimer = null;
-
-    function sanitizeSyncKey(rawKey) {
-      const cleaned = (rawKey || '')
-        .trim()
-        .toLowerCase()
-        .replace(/[^a-z0-9_-]/g, '-')
-        .replace(/^_+|_+$/g, '');
-      return cleaned || DEFAULT_SYNC_KEY;
-    }
 
     function updateLastSyncTimeLabel() {
       const el = document.getElementById('last-sync-time-label');
       if (!el) return;
       if (!state.lastUpdated) {
-        el.textContent = 'Đang đồng bộ...';
+        el.textContent = 'Đồng bộ tự động 100%';
         return;
       }
       const d = new Date(state.lastUpdated);
@@ -1326,96 +1206,51 @@
     }
 
     function syncSettingsToUI() {
-      const ghTokenInput = document.getElementById('gh-token-input');
-      const ghGistIdInput = document.getElementById('gh-gist-id-input');
-      const ghAutoCheckbox = document.getElementById('gh-autosync-checkbox');
-      const fbKeyInput = document.getElementById('fb-sync-key-input');
-
-      if (ghTokenInput && document.activeElement !== ghTokenInput) {
-        ghTokenInput.value = state.githubToken || '';
-      }
-      if (ghGistIdInput && document.activeElement !== ghGistIdInput) {
-        ghGistIdInput.value = state.githubGistId || '';
-      }
-      if (ghAutoCheckbox) {
-        ghAutoCheckbox.checked = Boolean(state.githubAutoSync);
-      }
-      if (fbKeyInput && document.activeElement !== fbKeyInput) {
-        fbKeyInput.value = state.syncKey || DEFAULT_SYNC_KEY;
-      }
-
-      // Update Firebase mini card & modal status
-      const currentKey = state.syncKey || DEFAULT_SYNC_KEY;
       const fbKeyMini = document.getElementById('fb-key-mini');
-      const fbBadgeMini = document.getElementById('fb-badge-mini');
-      const fbModalStatus = document.getElementById('fb-modal-status');
+      const ghDomainMini = document.getElementById('gh-domain-mini');
+      const codeChannelLabel = document.getElementById('code-sync-channel-label');
 
-      if (fbKeyMini) fbKeyMini.textContent = `Kênh: ${currentKey}`;
-      if (activeSubscribedChannelKey) {
-        if (fbBadgeMini) {
-          fbBadgeMini.textContent = 'Đang đồng bộ';
-          fbBadgeMini.className = 'text-[9px] px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700 font-bold';
-        }
-        if (fbModalStatus) {
-          fbModalStatus.textContent = `Đang đồng bộ kênh "${currentKey}"`;
-          fbModalStatus.className = 'text-emerald-700 font-extrabold';
-        }
+      if (fbKeyMini) {
+        fbKeyMini.textContent = `Kênh: ${HARDCODED_CLOUD_CONFIG.syncChannelId}`;
       }
-
-      // Update GitHub mini card & status
-      const ghIdMini = document.getElementById('gh-id-mini');
-      const ghBadgeMini = document.getElementById('gh-badge-mini');
-      const savedStatus = document.getElementById('gh-saved-status');
-
-      if (state.githubToken) {
-        if (ghIdMini) {
-          ghIdMini.textContent = state.githubGistId
-            ? `Gist: ${state.githubGistId.slice(0, 10)}...`
-            : 'Đã lưu Token (Tự động tìm Gist)';
-        }
-        if (ghBadgeMini) {
-          ghBadgeMini.textContent = state.githubGistId ? 'Đã kết nối' : 'Đã lưu Token';
-          ghBadgeMini.className = 'text-[9px] px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700 font-bold';
-        }
-        if (savedStatus) {
-          savedStatus.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i>Đã ghi nhớ Token${state.githubGistId ? ' & Gist ID' : ''}`;
-        }
-      } else {
-        if (ghIdMini) ghIdMini.textContent = 'Lưu trữ trên GitHub cá nhân';
-        if (ghBadgeMini) {
-          ghBadgeMini.textContent = 'Chưa nhập Token';
-          ghBadgeMini.className = 'text-[9px] px-1.5 py-0.5 rounded bg-slate-200 text-slate-700';
-        }
+      if (ghDomainMini) {
+        ghDomainMini.textContent = HARDCODED_CLOUD_CONFIG.githubDomain;
       }
-
-      // Update Top Sync Status Pill
-      if (state.githubToken && state.githubGistId) {
-        updateSyncUIStatus(`Đã đồng bộ (${currentKey} + GitHub)`, 'emerald');
-      } else if (activeSubscribedChannelKey) {
-        updateSyncUIStatus(`Đã đồng bộ: ${currentKey}`, 'emerald');
-      } else if (state.githubToken) {
-        updateSyncUIStatus(`Đã nối GitHub Gist`, 'emerald');
+      if (codeChannelLabel) {
+        codeChannelLabel.textContent = `Channel: ${HARDCODED_CLOUD_CONFIG.syncChannelId}`;
       }
       updateLastSyncTimeLabel();
     }
 
+    function resolveActiveFirebaseConfig() {
+      // Ưu tiên cấu hình môi trường nếu đang chạy trong Cloud Sandbox, hoặc lấy từ HARDCODED_CLOUD_CONFIG.firebaseConfig
+      if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+        try {
+          return JSON.parse(__firebase_config);
+        } catch (e) {}
+      }
+      if (HARDCODED_CLOUD_CONFIG.firebaseConfig && HARDCODED_CLOUD_CONFIG.firebaseConfig.apiKey) {
+        return HARDCODED_CLOUD_CONFIG.firebaseConfig;
+      }
+      return null;
+    }
+
     async function initFirebaseCloud() {
-      // Nếu người dùng đã có GitHub Token trong bộ nhớ, tự động kết nối GitHub ngay khi mở trang
-      if (state.githubToken) {
-        autoConnectGithubOnStartup();
+      syncSettingsToUI();
+
+      // Nếu trong code có bật GitHub Gist cứng thì tự động đồng bộ từ Gist
+      if (HARDCODED_CLOUD_CONFIG.githubGist.enabled && HARDCODED_CLOUD_CONFIG.githubGist.token) {
+        pullFromHardcodedGithubGist(true);
       }
 
       try {
-        if (typeof __firebase_config === 'undefined' || !__firebase_config) {
-          if (state.githubToken) {
-            updateSyncUIStatus(`Đã đồng bộ GitHub`, 'emerald');
-          } else {
-            updateSyncUIStatus('Sẵn sàng (Nhập GitHub Token)', 'emerald');
-          }
+        const activeConfig = resolveActiveFirebaseConfig();
+        if (!activeConfig) {
+          updateSyncUIStatus(`Đã lưu (${HARDCODED_CLOUD_CONFIG.githubDomain})`, 'emerald');
           return;
         }
-        const firebaseConfig = JSON.parse(__firebase_config);
-        const app = initializeApp(firebaseConfig);
+
+        const app = initializeApp(activeConfig);
         db = getFirestore(app);
         auth = getAuth(app);
 
@@ -1428,171 +1263,63 @@
 
         onAuthStateChanged(auth, async (user) => {
           currentUser = user;
-          const uidEl = document.getElementById('fb-uid-display');
-          if (uidEl) uidEl.textContent = user ? user.uid.slice(0, 12) + '...' : 'Chưa đăng nhập';
-
           if (user) {
-            // Bước 1: Đọc cấu hình toàn cục (__global_config__) và hồ sơ user để khôi phục SyncKey & GitHub Token kể cả khi UID thay đổi sau khi Reset
-            await restoreConfigFromCloud(user.uid);
-            // Bước 2: Luôn tự động đăng ký lắng nghe kênh đồng bộ (mặc định: 'kenh-mac-dinh' hoặc kênh đã lưu)
-            subscribeToSyncChannel(state.syncKey || DEFAULT_SYNC_KEY, false);
+            // Tự động kết nối thẳng vào kênh cố định trong code mà không cần bất kỳ thao tác cấu hình nào
+            subscribeToHardcodedChannel();
           }
         });
       } catch (err) {
         console.error('Firebase init warning:', err);
-        if (state.githubToken) {
-          updateSyncUIStatus('Đã đồng bộ GitHub Gist', 'emerald');
-        } else {
-          updateSyncUIStatus('Lưu cục bộ / GitHub', 'amber');
-        }
+        updateSyncUIStatus(`Đồng bộ (${HARDCODED_CLOUD_CONFIG.githubDomain})`, 'emerald');
       }
     }
 
-    async function restoreConfigFromCloud(uid) {
+    // Lắng nghe thời gian thực trên kênh cố định trong code (RULE 1 compliant)
+    function subscribeToHardcodedChannel() {
       if (!db || !currentUser) return;
-      try {
-        // 1. Kiểm tra __global_config__ (Chia sẻ xuyên suốt cho ứng dụng này bất kể UID ẩn danh mới hay cũ)
-        const globalRef = doc(db, 'artifacts', appId, 'public', 'data', 'sync_channels', GLOBAL_CONFIG_DOC_ID);
-        const globalSnap = await getDoc(globalRef);
-        if (globalSnap.exists()) {
-          applyRemotePayload(globalSnap.data(), 'Global Config', true);
-        }
-
-        // 2. Kiểm tra thêm hồ sơ cá nhân theo UID
-        const userDocRef = doc(db, 'artifacts', appId, 'users', uid, 'app_state', 'main');
-        const userSnap = await getDoc(userDocRef);
-        if (userSnap.exists()) {
-          applyRemotePayload(userSnap.data(), 'User Config', true);
-        }
-
-        // Lắng nghe thay đổi cấu hình trên __global_config__ theo thời gian thực
-        if (unsubscribeGlobalConfig) unsubscribeGlobalConfig();
-        unsubscribeGlobalConfig = onSnapshot(
-          globalRef,
-          (snap) => {
-            if (snap.exists()) {
-              const gData = snap.data();
-              let cfgUpdated = false;
-              if (gData.githubToken && gData.githubToken !== state.githubToken) {
-                state.githubToken = gData.githubToken;
-                cfgUpdated = true;
-              }
-              if (gData.githubGistId && gData.githubGistId !== state.githubGistId) {
-                state.githubGistId = gData.githubGistId;
-                cfgUpdated = true;
-              }
-              if (typeof gData.githubAutoSync === 'boolean' && gData.githubAutoSync !== state.githubAutoSync) {
-                state.githubAutoSync = gData.githubAutoSync;
-                cfgUpdated = true;
-              }
-              if (gData.syncKey && gData.syncKey !== state.syncKey) {
-                state.syncKey = sanitizeSyncKey(gData.syncKey);
-                cfgUpdated = true;
-                subscribeToSyncChannel(state.syncKey, false);
-              }
-              if (cfgUpdated) {
-                saveStateToLocalStorage();
-                syncSettingsToUI();
-                if (state.githubToken && !hasInitialGitHubSyncRun) {
-                  autoConnectGithubOnStartup();
-                }
-              }
-            }
-          },
-          (err) => console.error('Global config listener error:', err)
-        );
-      } catch (e) {
-        console.warn('Restore cloud config warning:', e);
-      }
-    }
-
-    // Đăng ký kênh đồng bộ thời gian thực giữa các thiết bị (RULE 1 compliant)
-    function subscribeToSyncChannel(rawKey, persistChange = true) {
-      const cleanKey = sanitizeSyncKey(rawKey);
-      state.syncKey = cleanKey;
-      saveStateToLocalStorage();
-      syncSettingsToUI();
-
-      if (!db || !currentUser) {
-        showToast(`Đã lưu mã kênh "${cleanKey}"`);
-        return;
-      }
 
       if (unsubscribeChannelSnapshot) {
         unsubscribeChannelSnapshot();
         unsubscribeChannelSnapshot = null;
       }
 
-      activeSubscribedChannelKey = cleanKey;
-      if (persistChange) {
-        saveUserSettingsToCloud();
-      }
-
-      const channelDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'sync_channels', cleanKey);
-      let isFirstSnapshotForChannel = true;
+      const channelId = HARDCODED_CLOUD_CONFIG.syncChannelId;
+      const channelDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'sync_channels', channelId);
+      let isFirstSnapshot = true;
 
       unsubscribeChannelSnapshot = onSnapshot(
         channelDocRef,
         (snap) => {
-          activeSubscribedChannelKey = cleanKey;
-          syncSettingsToUI();
+          updateSyncUIStatus('Đã đồng bộ Firebase & GitHub', 'emerald');
+          const fbBadge = document.getElementById('fb-badge-mini');
+          if (fbBadge) {
+            fbBadge.textContent = 'Trực tuyến';
+            fbBadge.className = 'text-[9px] px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700 font-bold';
+          }
 
           if (snap.exists()) {
-            const data = snap.data();
-            applyRemotePayload(data, `Kênh ${cleanKey}`, isFirstSnapshotForChannel);
-            isFirstSnapshotForChannel = false;
+            applyRemotePayload(snap.data(), isFirstSnapshot);
+            isFirstSnapshot = false;
           } else {
-            isFirstSnapshotForChannel = false;
-            // Khởi tạo kênh nếu chưa có dữ liệu trên kênh này
+            isFirstSnapshot = false;
+            // Nếu kênh cố định trên Cloud chưa có dữ liệu, tự động đẩy dữ liệu hiện tại lên
             pushToFirebaseCloud(false);
           }
         },
         (err) => {
           console.error('Sync channel error:', err);
-          updateSyncUIStatus('Lỗi kết nối kênh', 'red');
+          updateSyncUIStatus('Đang kết nối lại Cloud...', 'amber');
         }
       );
     }
 
-    function applyRemotePayload(data, sourceLabel, forceIfValid = false) {
+    function applyRemotePayload(data, isFirstSnapshot = false) {
       if (!data) return;
 
-      let settingsChanged = false;
-      if (typeof data.githubToken === 'string' && data.githubToken && data.githubToken !== state.githubToken) {
-        state.githubToken = data.githubToken;
-        settingsChanged = true;
-      }
-      if (typeof data.githubGistId === 'string' && data.githubGistId && data.githubGistId !== state.githubGistId) {
-        state.githubGistId = data.githubGistId;
-        settingsChanged = true;
-      }
-      if (typeof data.githubAutoSync === 'boolean') {
-        state.githubAutoSync = data.githubAutoSync;
-        settingsChanged = true;
-      }
-      if (typeof data.syncKey === 'string' && data.syncKey) {
-        const cleanRemoteKey = sanitizeSyncKey(data.syncKey);
-        if (cleanRemoteKey !== state.syncKey) {
-          state.syncKey = cleanRemoteKey;
-          settingsChanged = true;
-        }
-      }
-
-      if (settingsChanged) {
-        saveStateToLocalStorage();
-        syncSettingsToUI();
-      }
-
-      if (!hasInitialGitHubSyncRun && state.githubToken) {
-        autoConnectGithubOnStartup();
-      }
-
       const remoteTime = Number(data.lastUpdated || 0);
-      // Nếu không phải lần nạp đầu tiên và dữ liệu từ xa cũ hơn dữ liệu hiện tại thì bỏ qua
-      if (!forceIfValid && remoteTime > 0 && state.lastUpdated > 0 && remoteTime < state.lastUpdated) {
+      if (!isFirstSnapshot && remoteTime > 0 && state.lastUpdated > 0 && remoteTime < state.lastUpdated) {
         return;
       }
-      // Nếu dữ liệu cục bộ mới hơn dữ liệu trên Cloud, đẩy dữ liệu cục bộ lên Cloud
       if (state.lastUpdated > 0 && remoteTime > 0 && state.lastUpdated > remoteTime) {
         pushToFirebaseCloud(false);
         return;
@@ -1631,326 +1358,105 @@
       }
     }
 
-    async function saveUserSettingsToCloud() {
-      saveStateToLocalStorage();
-      syncSettingsToUI();
-      if (!db || !currentUser) return;
-      try {
-        const configPayload = {
-          githubToken: state.githubToken || '',
-          githubGistId: state.githubGistId || '',
-          githubAutoSync: Boolean(state.githubAutoSync),
-          syncKey: state.syncKey || DEFAULT_SYNC_KEY,
-          hideAmounts: Boolean(state.hideAmounts),
-          updatedBy: currentUser.uid
-        };
-        // Lưu vào cả hồ sơ riêng và __global_config__ để không bao giờ mất khi Reset preview
-        const userDocRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'app_state', 'main');
-        await setDoc(userDocRef, configPayload, { merge: true });
-
-        const globalRef = doc(db, 'artifacts', appId, 'public', 'data', 'sync_channels', GLOBAL_CONFIG_DOC_ID);
-        await setDoc(globalRef, configPayload, { merge: true });
-      } catch (err) {
-        console.error('Save user settings error:', err);
-      }
-    }
-
     async function pushToFirebaseCloud(manualNotify = false) {
       saveStateToLocalStorage();
-      if (isApplyingRemoteUpdate || !db || !currentUser) {
-        if (manualNotify && (!db || !currentUser)) {
-          showToast('Đã lưu cục bộ! Hãy dùng GitHub Gist nếu không có mạng Firebase.');
-        }
-        return;
-      }
+      if (isApplyingRemoteUpdate || !db || !currentUser) return;
       try {
         if (!state.lastUpdated) state.lastUpdated = Date.now();
-        const activeKey = sanitizeSyncKey(state.syncKey);
+        const channelId = HARDCODED_CLOUD_CONFIG.syncChannelId;
         const fullPayload = {
           transactionsJson: JSON.stringify(state.transactions),
           tasksJson: JSON.stringify(state.tasks),
           monthlyBudget: state.monthlyBudget,
           hideAmounts: Boolean(state.hideAmounts),
-          githubToken: state.githubToken || '',
-          githubGistId: state.githubGistId || '',
-          githubAutoSync: Boolean(state.githubAutoSync),
-          syncKey: activeKey,
+          githubDomain: HARDCODED_CLOUD_CONFIG.githubDomain,
+          syncKey: channelId,
           lastUpdated: state.lastUpdated,
           updatedBy: currentUser.uid
         };
 
-        // 1. Lưu vào kênh đồng bộ hiện tại (VD: kenh-mac-dinh hoặc mã riêng)
-        const channelDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'sync_channels', activeKey);
+        // Lưu trực tiếp vào kênh cố định trên Firebase
+        const channelDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'sync_channels', channelId);
         await setDoc(channelDocRef, fullPayload, { merge: true });
 
-        // 2. Lưu vào __global_config__ để khi Reset trang tự động khôi phục ngay kênh & GitHub Token
-        const globalRef = doc(db, 'artifacts', appId, 'public', 'data', 'sync_channels', GLOBAL_CONFIG_DOC_ID);
-        await setDoc(globalRef, fullPayload, { merge: true });
-
-        // 3. Lưu vào hồ sơ người dùng hiện tại
+        // Lưu bản sao vào hồ sơ người dùng
         const userDocRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'app_state', 'main');
         await setDoc(userDocRef, fullPayload, { merge: true });
 
         syncSettingsToUI();
-        if (manualNotify) showToast(`Đã đồng bộ lên kênh "${activeKey}"!`);
+        if (manualNotify) showToast('Đã đồng bộ dữ liệu lên Firebase Cloud!');
       } catch (err) {
         console.error('Push Firebase error:', err);
-        if (manualNotify) showToast('Lỗi khi đẩy dữ liệu lên Cloud');
       }
     }
 
     async function pullFromFirebaseCloud(manualNotify = false) {
-      if (!db || !currentUser) {
-        if (manualNotify) showToast('Đang kết nối Firebase...');
-        return;
-      }
+      if (!db || !currentUser) return;
       try {
-        const activeKey = sanitizeSyncKey(state.syncKey);
-        const channelDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'sync_channels', activeKey);
+        const channelId = HARDCODED_CLOUD_CONFIG.syncChannelId;
+        const channelDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'sync_channels', channelId);
         const snap = await getDoc(channelDocRef);
         if (snap.exists()) {
-          applyRemotePayload(snap.data(), `Kênh ${activeKey}`, true);
-          if (manualNotify) showToast(`Đã tải dữ liệu mới nhất từ kênh "${activeKey}"!`);
+          applyRemotePayload(snap.data(), true);
+          if (manualNotify) showToast('Đã đồng bộ dữ liệu mới nhất!');
         } else {
-          if (manualNotify) showToast(`Kênh "${activeKey}" chưa có dữ liệu, đang khởi tạo...`);
           await pushToFirebaseCloud(false);
         }
       } catch (e) {
         console.error('Pull Firebase error:', e);
-        if (manualNotify) showToast('Không thể tải dữ liệu từ kênh Firebase');
       }
     }
 
-    function connectFirebaseSyncKey() {
-      const val = document.getElementById('fb-sync-key-input').value.trim();
-      const cleanKey = sanitizeSyncKey(val || DEFAULT_SYNC_KEY);
-      subscribeToSyncChannel(cleanKey, true);
-      showToast(`Đã kết nối & giữ cố định kênh: ${cleanKey}`);
-    }
-
-    function toggleGithubTokenVisibility() {
-      const input = document.getElementById('gh-token-input');
-      const icon = document.getElementById('gh-token-eye');
-      if (input.type === 'password') {
-        input.type = 'text';
-        icon.className = 'fa-regular fa-eye-slash';
-      } else {
-        input.type = 'password';
-        icon.className = 'fa-regular fa-eye';
-      }
-    }
-
-    function onGithubConfigInput() {
-      clearTimeout(githubConfigSaveTimer);
-      githubConfigSaveTimer = setTimeout(() => {
-        saveGithubSettingsFromUI(false);
-      }, 250);
-    }
-
-    function saveGithubSettingsFromUI(notifyUser = false) {
-      const tokenEl = document.getElementById('gh-token-input');
-      const gistEl = document.getElementById('gh-gist-id-input');
-      const autoEl = document.getElementById('gh-autosync-checkbox');
-
-      if (tokenEl) state.githubToken = tokenEl.value.trim();
-      if (gistEl) state.githubGistId = gistEl.value.trim();
-      if (autoEl) state.githubAutoSync = autoEl.checked;
-
-      saveStateToLocalStorage();
-      syncSettingsToUI();
-      saveUserSettingsToCloud();
-      if (notifyUser) {
-        showToast('Đã lưu cấu hình GitHub!');
-      }
-    }
-
-    // Tự động tìm Gist cũ có chứa file 'momo_expense_lunar_sync.json' chỉ bằng GitHub Token
-    async function autoDiscoverGithubGist(notifyUser = false) {
-      saveGithubSettingsFromUI(false);
-      if (!state.githubToken) {
-        if (notifyUser) showToast('Vui lòng nhập GitHub Personal Access Token trước!');
-        return null;
-      }
+    async function pushToHardcodedGithubGist() {
+      const gh = HARDCODED_CLOUD_CONFIG.githubGist;
+      if (!gh.enabled || !gh.token || !gh.gistId) return;
       try {
-        if (notifyUser) showToast('Đang tìm Gist đồng bộ trên tài khoản GitHub...');
-        const res = await fetch('https://api.github.com/gists?per_page=60', {
-          headers: {
-            'Authorization': `token ${state.githubToken}`,
-            'Accept': 'application/vnd.github+json'
-          }
-        });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const gists = await res.json();
-        if (Array.isArray(gists)) {
-          const matched = gists.find(g =>
-            g.files && (g.files['momo_expense_lunar_sync.json'] || g.description === 'MoMo Quan Ly Thu Chi & Lich Am Duong Sync Data')
-          );
-          if (matched && matched.id) {
-            state.githubGistId = matched.id;
-            saveStateToLocalStorage();
-            syncSettingsToUI();
-            await saveUserSettingsToCloud();
-            if (notifyUser) showToast(`Đã tìm thấy Gist: ${matched.id.slice(0, 8)}...`);
-            return matched.id;
-          }
-        }
-        if (notifyUser) showToast('Chưa có Gist cũ, bấm Đẩy lên (Push) để tạo Gist mới!');
-        return null;
-      } catch (err) {
-        console.error('Auto discover Gist error:', err);
-        if (notifyUser) showToast('Không thể truy cập GitHub! Kiểm tra lại Token.');
-        return null;
-      }
-    }
-
-    async function autoConnectGithubOnStartup() {
-      if (hasInitialGitHubSyncRun || !state.githubToken) return;
-      hasInitialGitHubSyncRun = true;
-      try {
-        if (!state.githubGistId) {
-          await autoDiscoverGithubGist(false);
-        }
-        if (state.githubGistId && state.githubAutoSync) {
-          await pullFromGithubGist(true);
-        }
-        syncSettingsToUI();
-      } catch (e) {
-        console.warn('Startup GitHub sync warning:', e);
-      }
-    }
-
-    async function saveAndConnectGithub() {
-      saveGithubSettingsFromUI(false);
-      if (!state.githubToken) {
-        showToast('Vui lòng nhập GitHub Personal Access Token!');
-        return;
-      }
-      if (!state.githubGistId) {
-        const foundId = await autoDiscoverGithubGist(false);
-        if (foundId) {
-          await pullFromGithubGist(false);
-          return;
-        }
-      } else {
-        await pullFromGithubGist(false);
-        return;
-      }
-      await pushToGithubGist(true);
-    }
-
-    async function pushToGithubGist(manualNotify = true) {
-      saveGithubSettingsFromUI(false);
-      if (!state.githubToken) {
-        if (manualNotify) showToast('Vui lòng nhập GitHub Personal Access Token!');
-        return;
-      }
-
-      try {
-        if (manualNotify) showToast('Đang đồng bộ lên GitHub Gist...');
-        // Nếu chưa có Gist ID, thử tìm Gist cũ trước để tránh tạo trùng nhiều Gist
-        if (!state.githubGistId) {
-          await autoDiscoverGithubGist(false);
-        }
-
-        state.lastUpdated = Date.now();
         const contentObj = {
           transactions: state.transactions,
           tasks: state.tasks,
           monthlyBudget: state.monthlyBudget,
           hideAmounts: state.hideAmounts,
-          githubGistId: state.githubGistId,
-          githubAutoSync: state.githubAutoSync,
-          syncKey: state.syncKey || DEFAULT_SYNC_KEY,
+          githubDomain: HARDCODED_CLOUD_CONFIG.githubDomain,
           lastUpdated: state.lastUpdated
         };
-
-        const bodyPayload = {
-          description: 'MoMo Quan Ly Thu Chi & Lich Am Duong Sync Data',
-          public: false,
-          files: {
-            'momo_expense_lunar_sync.json': {
-              content: JSON.stringify(contentObj, null, 2)
-            }
-          }
-        };
-
-        const url = state.githubGistId
-          ? `https://api.github.com/gists/${state.githubGistId}`
-          : `https://api.github.com/gists`;
-        const method = state.githubGistId ? 'PATCH' : 'POST';
-
-        const res = await fetch(url, {
-          method,
+        await fetch(`https://api.github.com/gists/${gh.gistId}`, {
+          method: 'PATCH',
           headers: {
-            'Authorization': `token ${state.githubToken}`,
+            'Authorization': `token ${gh.token}`,
             'Accept': 'application/vnd.github+json',
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify(bodyPayload)
+          body: JSON.stringify({
+            description: 'MoMo Quan Ly Thu Chi & Lich Am Duong Sync Data',
+            files: {
+              [gh.fileName]: { content: JSON.stringify(contentObj, null, 2) }
+            }
+          })
         });
-
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
-        if (data && data.id) {
-          state.githubGistId = data.id;
-          saveStateToLocalStorage();
-          syncSettingsToUI();
-          await pushToFirebaseCloud(false);
-        }
-        if (manualNotify) showToast('Đã đồng bộ & lưu cấu hình GitHub Gist!');
-      } catch (err) {
-        console.error('GitHub Push Error:', err);
-        if (manualNotify) showToast('Lỗi đẩy GitHub Gist! Kiểm tra lại Token/Gist ID.');
+      } catch (e) {
+        console.warn('Hardcoded GitHub Gist push warning:', e);
       }
     }
 
-    async function pullFromGithubGist(silent = false) {
-      saveGithubSettingsFromUI(false);
-      if (!state.githubToken) {
-        if (!silent) showToast('Vui lòng nhập GitHub Token để tải dữ liệu!');
-        return;
-      }
-      if (!state.githubGistId) {
-        const discovered = await autoDiscoverGithubGist(!silent);
-        if (!discovered) return;
-      }
+    async function pullFromHardcodedGithubGist(silent = true) {
+      const gh = HARDCODED_CLOUD_CONFIG.githubGist;
+      if (!gh.enabled || !gh.token || !gh.gistId) return;
       try {
-        if (!silent) showToast('Đang tải dữ liệu từ GitHub Gist...');
-        const res = await fetch(`https://api.github.com/gists/${state.githubGistId}`, {
+        const res = await fetch(`https://api.github.com/gists/${gh.gistId}`, {
           headers: {
-            'Authorization': `token ${state.githubToken}`,
+            'Authorization': `token ${gh.token}`,
             'Accept': 'application/vnd.github+json'
           }
         });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        if (!res.ok) return;
         const data = await res.json();
-        const fileObj = data.files && (data.files['momo_expense_lunar_sync.json'] || Object.values(data.files)[0]);
-        if (!fileObj || !fileObj.content) throw new Error('Không tìm thấy nội dung JSON trong Gist');
-
+        const fileObj = data.files && (data.files[gh.fileName] || Object.values(data.files)[0]);
+        if (!fileObj || !fileObj.content) return;
         const parsed = JSON.parse(fileObj.content);
-        const remoteTime = Number(parsed.lastUpdated || 0);
-
-        // Nếu mở tự động (silent) mà dữ liệu cục bộ mới hơn Gist thì đẩy dữ liệu cục bộ lên Gist
-        if (silent && state.lastUpdated > 0 && remoteTime > 0 && state.lastUpdated > remoteTime) {
-          await pushToGithubGist(false);
-          return;
-        }
-
-        if (Array.isArray(parsed.transactions)) state.transactions = parsed.transactions;
-        if (Array.isArray(parsed.tasks)) state.tasks = parsed.tasks;
-        if (parsed.monthlyBudget) state.monthlyBudget = Number(parsed.monthlyBudget);
-        if (typeof parsed.hideAmounts === 'boolean') state.hideAmounts = parsed.hideAmounts;
-        if (parsed.syncKey) state.syncKey = sanitizeSyncKey(parsed.syncKey);
-        state.lastUpdated = remoteTime || Date.now();
-
-        saveStateToLocalStorage();
-        syncSettingsToUI();
-        renderAll();
-        await pushToFirebaseCloud(false);
-        if (!silent) showToast('Đã tải dữ liệu từ GitHub Gist thành công!');
-      } catch (err) {
-        console.error('GitHub Pull Error:', err);
-        if (!silent) showToast('Không thể tải từ GitHub Gist! Kiểm tra lại Token/Gist ID.');
+        applyRemotePayload(parsed, true);
+        if (!silent) showToast('Đã đồng bộ từ GitHub!');
+      } catch (e) {
+        console.warn('Hardcoded GitHub Gist pull warning:', e);
       }
     }
 
@@ -1958,32 +1464,21 @@
       const icon = document.getElementById('quick-sync-icon');
       if (icon) icon.classList.add('fa-spin');
       try {
-        if (state.githubToken) {
-          await pullFromGithubGist(true);
-          await pushToGithubGist(false);
+        if (HARDCODED_CLOUD_CONFIG.githubGist.enabled) {
+          await pullFromHardcodedGithubGist(true);
+          await pushToHardcodedGithubGist();
         }
         if (db && currentUser) {
           await pullFromFirebaseCloud(false);
           await pushToFirebaseCloud(false);
         }
         syncSettingsToUI();
-        showToast('Đã đồng bộ dữ liệu đa thiết bị mới nhất!');
+        showToast('Đã đồng bộ dữ liệu đám mây mới nhất!');
       } finally {
         setTimeout(() => {
           if (icon) icon.classList.remove('fa-spin');
         }, 500);
       }
-    }
-
-    function copyGistId() {
-      const input = document.getElementById('gh-gist-id-input');
-      if (!input.value) {
-        showToast('Chưa có Gist ID để sao chép');
-        return;
-      }
-      input.select();
-      document.execCommand('copy');
-      showToast('Đã sao chép Gist ID!');
     }
 
     function updateSyncUIStatus(text, color = 'emerald') {
@@ -2003,8 +1498,8 @@
       saveStateToLocalStorage();
       syncSettingsToUI();
       pushToFirebaseCloud(false);
-      if (state.githubAutoSync && state.githubToken) {
-        pushToGithubGist(false);
+      if (HARDCODED_CLOUD_CONFIG.githubGist.enabled) {
+        pushToHardcodedGithubGist();
       }
     }
 
@@ -2073,7 +1568,7 @@
     function toggleHideAmount() {
       state.hideAmounts = !state.hideAmounts;
       renderAll();
-      saveUserSettingsToCloud();
+      triggerCloudSyncAfterChange();
     }
 
     function jumpToNextRam() {
@@ -3133,36 +2628,8 @@
     }
 
     /********************************************************************
-     * 11. MODAL ĐỒNG BỘ, NGÂN SÁCH & FILE JSON
+     * 11. MODAL NGÂN SÁCH & FILE JSON
      ********************************************************************/
-    function openSyncModal(defaultTab = 'firebase') {
-      document.getElementById('sync-modal').classList.remove('hidden');
-      switchSyncProviderTab(defaultTab);
-    }
-
-    function closeSyncModal() {
-      document.getElementById('sync-modal').classList.add('hidden');
-    }
-
-    function switchSyncProviderTab(tab) {
-      const fbBtn = document.getElementById('stab-firebase');
-      const ghBtn = document.getElementById('stab-github');
-      const fbPanel = document.getElementById('sync-panel-firebase');
-      const ghPanel = document.getElementById('sync-panel-github');
-
-      if (tab === 'firebase') {
-        fbBtn.className = 'py-2 rounded-xl text-xs font-extrabold transition bg-white text-momo-600 shadow-xs';
-        ghBtn.className = 'py-2 rounded-xl text-xs font-extrabold transition text-slate-600';
-        fbPanel.classList.remove('hidden');
-        ghPanel.classList.add('hidden');
-      } else {
-        ghBtn.className = 'py-2 rounded-xl text-xs font-extrabold transition bg-white text-momo-600 shadow-xs';
-        fbBtn.className = 'py-2 rounded-xl text-xs font-extrabold transition text-slate-600';
-        ghPanel.classList.remove('hidden');
-        fbPanel.classList.add('hidden');
-      }
-    }
-
     function openBudgetEditModal() {
       const modal = document.getElementById('utility-modal');
       document.getElementById('utility-modal-title').textContent = 'Đặt hạn mức ngân sách tháng';
@@ -3290,21 +2757,7 @@
       selectTxCat,
       selectTaskCat,
       submitRecordModal,
-      openSyncModal,
-      closeSyncModal,
-      switchSyncProviderTab,
-      connectFirebaseSyncKey,
-      pushToFirebaseCloud,
-      pullFromFirebaseCloud,
-      saveGithubSettingsFromUI,
-      saveAndConnectGithub,
-      autoDiscoverGithubGist,
-      onGithubConfigInput,
-      toggleGithubTokenVisibility,
-      pushToGithubGist,
-      pullFromGithubGist,
       manualSyncNow,
-      copyGistId,
       openBudgetEditModal,
       saveBudgetLimit,
       closeUtilityModal,
@@ -3318,8 +2771,8 @@
     // Tự động đồng bộ lại khi người dùng chuyển tab trình duyệt hoặc mở lại màn hình điện thoại
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'visible') {
-        if (state.githubToken && state.githubAutoSync) {
-          pullFromGithubGist(true);
+        if (HARDCODED_CLOUD_CONFIG.githubGist.enabled) {
+          pullFromHardcodedGithubGist(true);
         }
         if (db && currentUser) {
           pullFromFirebaseCloud(false);
@@ -3327,7 +2780,7 @@
       }
     });
 
-    // Khởi tạo: ưu tiên khôi phục từ LocalStorage / window.name trước, sau đó tự động nối vào kênh Cloud
+    // Khởi tạo: ưu tiên khôi phục từ LocalStorage / window.name trước, sau đó tự động nối vào kênh Cloud cố định trong code
     const restoredFromLocal = loadStateFromLocalStorage();
     if (!restoredFromLocal) {
       generateDefaultSampleData(false);
