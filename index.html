@@ -625,13 +625,22 @@
               <button type="button" onclick="setTxAmount(500000)" class="px-2.5 py-1 rounded-lg bg-pink-50 text-momo-600 text-[11px] font-bold whitespace-nowrap">500.000đ</button>
             </div>
           </div>
-          <div>
-            <label class="text-xs font-bold text-slate-600 block mb-1.5">Danh mục</label>
-            <div id="tx-category-grid" class="grid grid-cols-4 gap-2"></div>
+          <div class="space-y-2.5">
+            <div>
+              <label class="text-xs font-bold text-slate-600 block mb-1.5">1. Chọn danh mục lớn</label>
+              <div id="tx-category-grid" class="grid grid-cols-4 gap-2"></div>
+            </div>
+            <div class="bg-slate-50 p-2.5 rounded-2xl border border-slate-200/80">
+              <div class="flex items-center justify-between mb-1.5">
+                <label class="text-[11px] font-extrabold text-slate-600">2. Danh mục nhỏ chi tiết</label>
+                <span id="selected-parent-cat-label" class="text-[11px] font-bold text-momo-600"></span>
+              </div>
+              <div id="tx-subcategory-grid" class="grid grid-cols-2 gap-1.5"></div>
+            </div>
           </div>
           <div>
-            <label class="text-xs font-bold text-slate-600 block mb-1">Ghi chú giao dịch</label>
-            <input type="text" id="tx-note-input" placeholder="VD: Ăn trưa, mua hoa quả cúng Rằm..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-800 focus:outline-none focus:border-momo-500" />
+            <label class="text-xs font-bold text-slate-600 block mb-1">Ghi chú giao dịch (Tùy chọn)</label>
+            <input type="text" id="tx-note-input" placeholder="VD: Đi chợ sáng, biếu bố mẹ, đóng tiền điện..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-800 focus:outline-none focus:border-momo-500" />
           </div>
         </div>
 
@@ -709,10 +718,10 @@
      * Điền trực tiếp thông số Firebase Project của bạn vào bên dưới.
      ********************************************************************/
     const FIREBASE_CUSTOM_CONFIG = {
-      apiKey: "AIzaSyDdEaJvVRRzfcM_IkTjdP0Livz52IQqrMs",
+     apiKey: "AIzaSyDdEaJvVRRzfcM_IkTjdP0Livz52IQqrMs",
   	authDomain: "life-money-f6a11.firebaseapp.com",
   	databaseURL: "https://life-money-f6a11-default-rtdb.asia-southeast1.firebasedatabase.app",
- 	 projectId: "life-money-f6a11",
+  	projectId: "life-money-f6a11",
   	storageBucket: "life-money-f6a11.firebasestorage.app",
   	messagingSenderId: "284442463922",
   	appId: "1:284442463922:web:e6933c424828c9a12d83ab",
@@ -880,21 +889,169 @@
      * DANH MỤC & TRẠNG THÁI ỨNG DỤNG (STATE)
      ********************************************************************/
     const EXPENSE_CATEGORIES = [
-      { id: 'food', name: 'Ăn uống', icon: 'fa-utensils', color: '#f0328f', bg: '#fff0f7' },
-      { id: 'shopping', name: 'Mua sắm', icon: 'fa-bag-shopping', color: '#8b5cf6', bg: '#f5f3ff' },
-      { id: 'transport', name: 'Di chuyển', icon: 'fa-motorcycle', color: '#06b6d4', bg: '#ecfeff' },
-      { id: 'bills', name: 'Hóa đơn', icon: 'fa-file-invoice-dollar', color: '#f59e0b', bg: '#fffbeb' },
-      { id: 'ram_le', name: 'Lễ Rằm/Cúng', icon: 'fa-yin-yang', color: '#ef4444', bg: '#fef2f2' },
-      { id: 'entertainment', name: 'Giải trí', icon: 'fa-film', color: '#10b981', bg: '#ecfdf5' },
-      { id: 'health', name: 'Sức khỏe', icon: 'fa-heart-pulse', color: '#ec4899', bg: '#fdf2f8' },
-      { id: 'other_exp', name: 'Khác', icon: 'fa-ellipsis', color: '#64748b', bg: '#f8fafc' }
+      {
+        id: 'food',
+        name: 'Ăn uống',
+        icon: 'fa-utensils',
+        color: '#f0328f',
+        bg: '#fff0f7',
+        subs: [
+          { id: 'food_market', name: 'Đi chợ / Siêu thị', icon: 'fa-basket-shopping' },
+          { id: 'food_restaurant', name: 'Nhà hàng / Quán ăn', icon: 'fa-utensils' },
+          { id: 'food_coffee', name: 'Cà phê / Trà sữa', icon: 'fa-mug-hot' },
+          { id: 'food_daily', name: 'Ăn sáng / Trưa / Tối', icon: 'fa-bowl-food' },
+          { id: 'food_snack', name: 'Ăn vặt / Đặt đồ ăn', icon: 'fa-burger' }
+        ]
+      },
+      {
+        id: 'family',
+        name: 'Nội Ngoại & GĐ',
+        icon: 'fa-people-roof',
+        color: '#e11d48',
+        bg: '#fff1f2',
+        subs: [
+          { id: 'fam_cash_paternal', name: 'Gửi tiền Ba Mẹ Nội', icon: 'fa-hand-holding-heart' },
+          { id: 'fam_cash_maternal', name: 'Gửi tiền Ba Mẹ Ngoại', icon: 'fa-hand-holding-dollar' },
+          { id: 'fam_shop_paternal', name: 'Mua sắm cho bên Nội', icon: 'fa-gifts' },
+          { id: 'fam_shop_maternal', name: 'Mua sắm cho bên Ngoại', icon: 'fa-gift' },
+          { id: 'fam_children', name: 'Con cái / Sữa bỉm / Học', icon: 'fa-baby' },
+          { id: 'fam_relatives', name: 'Biếu tặng họ hàng', icon: 'fa-heart' }
+        ]
+      },
+      {
+        id: 'shopping',
+        name: 'Mua sắm',
+        icon: 'fa-bag-shopping',
+        color: '#8b5cf6',
+        bg: '#f5f3ff',
+        subs: [
+          { id: 'shop_grocery', name: 'Tạp hóa / Đồ sinh hoạt', icon: 'fa-cart-shopping' },
+          { id: 'shop_cosmetics', name: 'Mỹ phẩm / Làm đẹp', icon: 'fa-wand-magic-sparkles' },
+          { id: 'shop_clothes', name: 'Quần áo / Giày dép', icon: 'fa-shirt' },
+          { id: 'shop_appliance', name: 'Đồ gia dụng / Điện tử', icon: 'fa-plug' },
+          { id: 'shop_online', name: 'Mua online (Shopee...)', icon: 'fa-box-open' }
+        ]
+      },
+      {
+        id: 'bills',
+        name: 'Hóa đơn',
+        icon: 'fa-file-invoice-dollar',
+        color: '#f59e0b',
+        bg: '#fffbeb',
+        subs: [
+          { id: 'bill_electric', name: 'Tiền điện', icon: 'fa-bolt' },
+          { id: 'bill_water', name: 'Tiền nước', icon: 'fa-droplet' },
+          { id: 'bill_elec_water', name: 'Tiền điện nước', icon: 'fa-house-flood-water' },
+          { id: 'bill_internet', name: 'Internet / Wifi / 4G', icon: 'fa-wifi' },
+          { id: 'bill_rent', name: 'Tiền nhà / Phí chung cư', icon: 'fa-building' },
+          { id: 'bill_gas', name: 'Gas / Rác / Điện thoại', icon: 'fa-fire-flame-simple' }
+        ]
+      },
+      {
+        id: 'entertainment',
+        name: 'Giải trí',
+        icon: 'fa-film',
+        color: '#10b981',
+        bg: '#ecfdf5',
+        subs: [
+          { id: 'ent_youtube', name: 'YouTube Premium', icon: 'fa-brands fa-youtube' },
+          { id: 'ent_netflix', name: 'Netflix / Phim ảnh', icon: 'fa-tv' },
+          { id: 'ent_spotify', name: 'Spotify / iCloud / App', icon: 'fa-music' },
+          { id: 'ent_travel', name: 'Du lịch / Dã ngoại', icon: 'fa-plane-departure' },
+          { id: 'ent_hangout', name: 'Xem phim / Tụ tập bạn', icon: 'fa-ticket' }
+        ]
+      },
+      {
+        id: 'transport',
+        name: 'Di chuyển',
+        icon: 'fa-motorcycle',
+        color: '#06b6d4',
+        bg: '#ecfeff',
+        subs: [
+          { id: 'trans_fuel', name: 'Đổ xăng / Sạc điện', icon: 'fa-gas-pump' },
+          { id: 'trans_parking', name: 'Gửi xe / Phí cầu đường', icon: 'fa-square-parking' },
+          { id: 'trans_taxi', name: 'Grab / Taxi / Xe khách', icon: 'fa-taxi' },
+          { id: 'trans_repair', name: 'Bảo dưỡng / Sửa xe', icon: 'fa-wrench' }
+        ]
+      },
+      {
+        id: 'ram_le',
+        name: 'Lễ Rằm/Hiếu hỉ',
+        icon: 'fa-yin-yang',
+        color: '#ef4444',
+        bg: '#fef2f2',
+        subs: [
+          { id: 'le_ram', name: 'Đồ cúng Rằm / Mùng 1', icon: 'fa-apple-whole' },
+          { id: 'le_pagoda', name: 'Đi chùa / Công đức', icon: 'fa-place-of-worship' },
+          { id: 'le_wedding', name: 'Mừng cưới / Đám tiệc', icon: 'fa-envelope-open-text' },
+          { id: 'le_tet', name: 'Sắm Lễ Tết / Giỗ chạp', icon: 'fa-fan' }
+        ]
+      },
+      {
+        id: 'health',
+        name: 'Sức khỏe & Khác',
+        icon: 'fa-heart-pulse',
+        color: '#3b82f6',
+        bg: '#eff6ff',
+        subs: [
+          { id: 'he_medicine', name: 'Thuốc men / Khám bệnh', icon: 'fa-kit-medical' },
+          { id: 'he_sport', name: 'Thể thao / Tập Gym', icon: 'fa-dumbbell' },
+          { id: 'he_study', name: 'Học tập / Sách vở', icon: 'fa-graduation-cap' },
+          { id: 'he_insurance', name: 'Bảo hiểm / Dự phòng', icon: 'fa-shield-heart' },
+          { id: 'other_exp_sub', name: 'Chi tiêu phát sinh khác', icon: 'fa-ellipsis' }
+        ]
+      }
     ];
 
     const INCOME_CATEGORIES = [
-      { id: 'salary', name: 'Tiền lương', icon: 'fa-money-bill-wave', color: '#10b981', bg: '#ecfdf5' },
-      { id: 'bonus', name: 'Thưởng', icon: 'fa-gift', color: '#f59e0b', bg: '#fffbeb' },
-      { id: 'invest', name: 'Đầu tư', icon: 'fa-chart-pie', color: '#3b82f6', bg: '#eff6ff' },
-      { id: 'other_inc', name: 'Thu khác', icon: 'fa-coins', color: '#8b5cf6', bg: '#f5f3ff' }
+      {
+        id: 'salary',
+        name: 'Tiền lương',
+        icon: 'fa-money-bill-wave',
+        color: '#10b981',
+        bg: '#ecfdf5',
+        subs: [
+          { id: 'inc_main_salary', name: 'Lương chính hàng tháng', icon: 'fa-briefcase' },
+          { id: 'inc_overtime', name: 'Phụ cấp / Làm thêm (OT)', icon: 'fa-clock' },
+          { id: 'inc_freelance', name: 'Việc làm thêm / Freelance', icon: 'fa-laptop-code' }
+        ]
+      },
+      {
+        id: 'bonus',
+        name: 'Thưởng & Lễ',
+        icon: 'fa-gift',
+        color: '#f59e0b',
+        bg: '#fffbeb',
+        subs: [
+          { id: 'inc_bonus_perf', name: 'Thưởng hiệu suất / Dự án', icon: 'fa-award' },
+          { id: 'inc_commission', name: 'Hoa hồng doanh số', icon: 'fa-percent' },
+          { id: 'inc_bonus_tet', name: 'Thưởng Lễ / Tết', icon: 'fa-envelope' }
+        ]
+      },
+      {
+        id: 'invest',
+        name: 'Đầu tư & KD',
+        icon: 'fa-chart-pie',
+        color: '#3b82f6',
+        bg: '#eff6ff',
+        subs: [
+          { id: 'inc_saving', name: 'Lãi tiết kiệm ngân hàng', icon: 'fa-piggy-bank' },
+          { id: 'inc_stock', name: 'Chứng khoán / Vàng', icon: 'fa-arrow-trend-up' },
+          { id: 'inc_business', name: 'Bán hàng / Cho thuê', icon: 'fa-store' }
+        ]
+      },
+      {
+        id: 'other_inc',
+        name: 'Thu khác',
+        icon: 'fa-coins',
+        color: '#8b5cf6',
+        bg: '#f5f3ff',
+        subs: [
+          { id: 'inc_gift', name: 'Được biếu / Tiền lì xì', icon: 'fa-hand-holding-dollar' },
+          { id: 'inc_refund', name: 'Hoàn tiền / Cashback', icon: 'fa-rotate-left' },
+          { id: 'inc_liquidate', name: 'Thanh lý đồ dùng', icon: 'fa-tags' }
+        ]
+      }
     ];
 
     function formatISO(dateObj) {
@@ -928,6 +1085,7 @@
       modalMode: 'expense',
       editingRecordId: null,
       selectedTxCategory: 'food',
+      selectedTxSubCategory: 'food_market',
       selectedTaskCategory: 'Lễ / Rằm',
       monthlyBudget: 12000000,
       transactions: [],
@@ -988,14 +1146,15 @@
 
       state.monthlyBudget = 12000000;
       state.transactions = [
-        { id: 't1', type: 'income', amount: 18500000, category: 'salary', date: safeDay(5), note: 'Lương tháng chuyển khoản' },
-        { id: 't2', type: 'income', amount: 2500000, category: 'bonus', date: safeDay(10), note: 'Thưởng hiệu suất công việc' },
-        { id: 't3', type: 'expense', amount: 1450000, category: 'food', date: todayISO, note: 'Đi siêu thị & ăn trưa' },
-        { id: 't4', type: 'expense', amount: 850000, category: 'bills', date: safeDay(8), note: 'Thanh toán tiền điện & Internet' },
-        { id: 't5', type: 'expense', amount: 620000, category: 'shopping', date: safeDay(12), note: 'Mua đồ dùng gia đình' },
-        { id: 't6', type: 'expense', amount: 320000, category: 'transport', date: safeDay(14), note: 'Đổ xăng & gửi xe tháng' },
-        { id: 't7', type: 'expense', amount: 480000, category: 'ram_le', date: ramDate || safeDay(15), note: 'Mua hoa tươi, trái cây cúng Rằm 15 ÂL' },
-        { id: 't8', type: 'expense', amount: 390000, category: 'entertainment', date: safeDay(18), note: 'Cà phê & xem phim cuối tuần' }
+        { id: 't1', type: 'income', amount: 18500000, category: 'salary', subCategory: 'inc_main_salary', date: safeDay(5), note: 'Lương tháng chuyển khoản' },
+        { id: 't2', type: 'income', amount: 2500000, category: 'bonus', subCategory: 'inc_bonus_perf', date: safeDay(10), note: 'Thưởng hiệu suất công việc' },
+        { id: 't3', type: 'expense', amount: 650000, category: 'food', subCategory: 'food_market', date: todayISO, note: 'Đi chợ mua thịt cá, rau củ' },
+        { id: 't4', type: 'expense', amount: 2000000, category: 'family', subCategory: 'fam_cash_paternal', date: safeDay(6), note: 'Gửi tiền biếu Ba Mẹ Nội hàng tháng' },
+        { id: 't5', type: 'expense', amount: 2000000, category: 'family', subCategory: 'fam_cash_maternal', date: safeDay(6), note: 'Gửi tiền biếu Ba Mẹ Ngoại hàng tháng' },
+        { id: 't6', type: 'expense', amount: 850000, category: 'bills', subCategory: 'bill_elec_water', date: safeDay(8), note: 'Thanh toán tiền điện nước tháng' },
+        { id: 't7', type: 'expense', amount: 420000, category: 'shopping', subCategory: 'shop_cosmetics', date: safeDay(12), note: 'Mua sữa rửa mặt & kem chống nắng' },
+        { id: 't8', type: 'expense', amount: 480000, category: 'ram_le', subCategory: 'le_ram', date: ramDate || safeDay(15), note: 'Mua hoa tươi, trái cây cúng Rằm 15 ÂL' },
+        { id: 't9', type: 'expense', amount: 260000, category: 'entertainment', subCategory: 'ent_netflix', date: safeDay(18), note: 'Gia hạn gói Netflix & YouTube Premium' }
       ];
 
       state.tasks = [
@@ -1249,10 +1408,10 @@
     });
 
     /********************************************************************
-     * FORMATTERS & HELPERS
+     * HÀM TIỆN ÍCH ĐỊNH DẠNG TIỀN TỆ, DANH MỤC & GIAO DIỆN
      ********************************************************************/
-    function formatMoney(amount, forceShow = false) {
-      if (state.hideAmounts && !forceShow) return '******';
+    function formatMoney(amount) {
+      if (state.hideAmounts) return '******';
       const num = Number(amount) || 0;
       return num.toLocaleString('vi-VN') + 'đ';
     }
@@ -1260,14 +1419,35 @@
     function formatShortMoney(amount) {
       if (state.hideAmounts) return '***';
       const n = Math.abs(Number(amount) || 0);
-      if (n >= 1000000) return (n / 1000000).toFixed(n % 1000000 === 0 ? 0 : 1) + 'tr';
-      if (n >= 1000) return Math.round(n / 1000) + 'k';
+      if (n >= 1000000) {
+        const tr = n / 1000000;
+        return (tr % 1 === 0 ? tr.toFixed(0) : tr.toFixed(1)) + 'tr';
+      }
+      if (n >= 1000) {
+        return Math.round(n / 1000) + 'k';
+      }
       return n + 'đ';
     }
 
-    function getCategoryMeta(catId, type = 'expense') {
+    function getCategoryMeta(catId, type = 'expense', subCatId = null) {
       const list = [...EXPENSE_CATEGORIES, ...INCOME_CATEGORIES];
-      return list.find(c => c.id === catId) || (type === 'income' ? INCOME_CATEGORIES[0] : EXPENSE_CATEGORIES[0]);
+      let parent = list.find(c => c.id === catId);
+      if (!parent) {
+        // Hỗ trợ tương thích ngược nếu catId là other_exp hoặc một subCatId
+        if (catId === 'other_exp') {
+          parent = EXPENSE_CATEGORIES.find(c => c.id === 'health') || EXPENSE_CATEGORIES[0];
+        } else {
+          parent = list.find(c => (c.subs || []).some(s => s.id === catId)) || (type === 'income' ? INCOME_CATEGORIES[0] : EXPENSE_CATEGORIES[0]);
+        }
+      }
+      const subs = parent.subs || [];
+      const subObj = subs.find(s => s.id === subCatId) || subs[0] || { id: parent.id, name: parent.name, icon: parent.icon };
+      return {
+        ...parent,
+        subId: subObj.id,
+        subName: subObj.name,
+        subIcon: subObj.icon || parent.icon
+      };
     }
 
     function showToast(msg) {
@@ -1429,13 +1609,25 @@
       const breakdownEl = document.getElementById('category-breakdown-list');
 
       const grouped = {};
-      txList.forEach(t => { grouped[t.category] = (grouped[t.category] || 0) + Number(t.amount); });
+      const subGrouped = {};
+      txList.forEach(t => {
+        const meta = getCategoryMeta(t.category, type, t.subCategory);
+        const pId = meta.id;
+        grouped[pId] = (grouped[pId] || 0) + Number(t.amount);
+        if (!subGrouped[pId]) subGrouped[pId] = {};
+        const sKey = meta.subId;
+        if (!subGrouped[pId][sKey]) {
+          subGrouped[pId][sKey] = { name: meta.subName, icon: meta.subIcon, amount: 0 };
+        }
+        subGrouped[pId][sKey].amount += Number(t.amount);
+      });
 
       const items = Object.keys(grouped).map(catId => {
         const meta = getCategoryMeta(catId, type);
         const amount = grouped[catId];
         const pct = totalAmount > 0 ? (amount / totalAmount) * 100 : 0;
-        return { ...meta, amount, pct };
+        const subItems = Object.values(subGrouped[catId] || {}).sort((a, b) => b.amount - a.amount);
+        return { ...meta, amount, pct, subItems };
       }).sort((a, b) => b.amount - a.amount);
 
       if (items.length === 0 || totalAmount === 0) {
@@ -1495,22 +1687,35 @@
       `;
 
       breakdownEl.innerHTML = items.map(item => `
-        <div class="flex items-center justify-between py-1.5 px-2 rounded-xl hover:bg-slate-50 transition">
-          <div class="flex items-center gap-2.5 min-w-0">
-            <span class="w-8 h-8 rounded-xl flex items-center justify-center text-xs shrink-0" style="background:${item.bg}; color:${item.color}">
-              <i class="fa-solid ${item.icon}"></i>
-            </span>
-            <div class="min-w-0">
-              <div class="text-xs font-bold text-slate-800 truncate">${item.name}</div>
-              <div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden mt-1">
-                <div class="h-full rounded-full" style="width:${item.pct.toFixed(0)}%; background:${item.color}"></div>
+        <div class="p-2.5 rounded-2xl bg-slate-50/70 border border-slate-100 space-y-2 transition">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <span class="w-8 h-8 rounded-xl flex items-center justify-center text-xs shrink-0" style="background:${item.bg}; color:${item.color}">
+                <i class="fa-solid ${item.icon}"></i>
+              </span>
+              <div class="min-w-0">
+                <div class="text-xs font-extrabold text-slate-800 truncate">${item.name}</div>
+                <div class="w-28 h-1.5 bg-slate-200/70 rounded-full overflow-hidden mt-1">
+                  <div class="h-full rounded-full" style="width:${item.pct.toFixed(0)}%; background:${item.color}"></div>
+                </div>
               </div>
             </div>
+            <div class="text-right shrink-0">
+              <div class="text-xs font-extrabold text-slate-800">${formatMoney(item.amount)}</div>
+              <div class="text-[10px] font-bold text-slate-400">${item.pct.toFixed(1)}%</div>
+            </div>
           </div>
-          <div class="text-right shrink-0">
-            <div class="text-xs font-extrabold text-slate-800">${formatMoney(item.amount)}</div>
-            <div class="text-[10px] font-bold text-slate-400">${item.pct.toFixed(1)}%</div>
-          </div>
+          ${item.subItems && item.subItems.length > 0 ? `
+            <div class="flex flex-wrap gap-1.5 pl-10 pt-0.5">
+              ${item.subItems.map(sub => `
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-white border border-slate-200/80 text-[10px] text-slate-600 font-semibold">
+                  <i class="${sub.icon.includes('fa-brands') ? sub.icon : 'fa-solid ' + sub.icon} text-[9px]" style="color:${item.color}"></i>
+                  <span>${sub.name}:</span>
+                  <strong class="text-slate-800">${formatMoney(sub.amount)}</strong>
+                </span>
+              `).join('')}
+            </div>
+          ` : ''}
         </div>
       `).join('');
     }
@@ -1600,23 +1805,24 @@
         return;
       }
 
-      container.innerHTML = sorted.slice(0, 8).map(tx => {
-        const meta = getCategoryMeta(tx.category, tx.type);
+      container.innerHTML = sorted.slice(0, 12).map(tx => {
+        const meta = getCategoryMeta(tx.category, tx.type, tx.subCategory);
         const lunar = getLunarInfoFromISO(tx.date);
         const isExp = tx.type === 'expense';
+        const iconClass = meta.subIcon.includes('fa-brands') ? meta.subIcon : `fa-solid ${meta.subIcon}`;
         return `
           <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50/80 hover:bg-slate-100/70 border border-slate-100 transition">
             <div onclick="openEditTransaction('${tx.id}')" class="flex items-center gap-2.5 min-w-0 cursor-pointer flex-1">
               <span class="w-9 h-9 rounded-xl flex items-center justify-center text-sm shrink-0" style="background:${meta.bg}; color:${meta.color}">
-                <i class="fa-solid ${meta.icon}"></i>
+                <i class="${iconClass}"></i>
               </span>
               <div class="min-w-0">
                 <div class="flex items-center gap-1.5">
-                  <span class="text-xs font-bold text-slate-800 truncate">${tx.note || meta.name}</span>
+                  <span class="text-xs font-bold text-slate-800 truncate">${tx.note || meta.subName}</span>
                   ${lunar.isRam ? '<span class="text-[9px] font-extrabold bg-red-600 text-white px-1.5 rounded-full shrink-0">Rằm 15 ÂL</span>' : ''}
                 </div>
-                <div class="text-[10px] text-slate-400 font-medium">
-                  ${meta.name} • ${formatDisplayDate(tx.date)} (${lunar.day}/${lunar.month} ÂL)
+                <div class="text-[10px] text-slate-500 font-medium truncate">
+                  <span class="font-bold" style="color:${meta.color}">${meta.name}</span> • ${meta.subName} • ${formatDisplayDate(tx.date)} (${lunar.day}/${lunar.month} ÂL)
                 </div>
               </div>
             </div>
@@ -1833,17 +2039,20 @@
         txContainer.innerHTML = `<div class="text-xs text-slate-400 bg-slate-50 rounded-xl p-2.5 text-center">Chưa có giao dịch thu chi trong ngày này.</div>`;
       } else {
         txContainer.innerHTML = dayTxs.map(tx => {
-          const meta = getCategoryMeta(tx.category, tx.type);
+          const meta = getCategoryMeta(tx.category, tx.type, tx.subCategory);
           const isExp = tx.type === 'expense';
+          const iconClass = meta.subIcon.includes('fa-brands') ? meta.subIcon : `fa-solid ${meta.subIcon}`;
           return `
             <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100">
               <div onclick="openEditTransaction('${tx.id}')" class="flex items-center gap-2.5 min-w-0 flex-1 cursor-pointer">
                 <span class="w-8 h-8 rounded-xl flex items-center justify-center text-xs shrink-0" style="background:${meta.bg}; color:${meta.color}">
-                  <i class="fa-solid ${meta.icon}"></i>
+                  <i class="${iconClass}"></i>
                 </span>
                 <div class="min-w-0">
-                  <div class="text-xs font-bold text-slate-800 truncate">${tx.note || meta.name}</div>
-                  <div class="text-[10px] text-slate-400">${meta.name}</div>
+                  <div class="text-xs font-bold text-slate-800 truncate">${tx.note || meta.subName}</div>
+                  <div class="text-[10px] text-slate-500 font-medium truncate">
+                    <span class="font-bold" style="color:${meta.color}">${meta.name}</span> • ${meta.subName}
+                  </div>
                 </div>
               </div>
               <div class="flex items-center gap-1.5 shrink-0">
@@ -2137,7 +2346,8 @@
       document.getElementById('modal-date-input').value = tx.date;
       document.getElementById('tx-amount-input').value = tx.amount;
       document.getElementById('tx-note-input').value = tx.note || '';
-      selectTxCat(tx.category);
+      const meta = getCategoryMeta(tx.category, tx.type, tx.subCategory);
+      selectTxCat(meta.id, meta.subId);
       updateModalLunarPreview();
     }
 
@@ -2169,7 +2379,9 @@
         taskFields.classList.add('hidden');
         if (!state.editingRecordId) {
           document.getElementById('modal-title').textContent = mode === 'expense' ? 'Nhập giao dịch chi' : 'Nhập giao dịch thu';
-          state.selectedTxCategory = mode === 'expense' ? 'food' : 'salary';
+          const defaultParent = mode === 'expense' ? EXPENSE_CATEGORIES[0] : INCOME_CATEGORIES[0];
+          state.selectedTxCategory = defaultParent.id;
+          state.selectedTxSubCategory = defaultParent.subs[0].id;
         }
         renderModalCategoryGrid();
       }
@@ -2207,11 +2419,25 @@
     function renderModalCategoryGrid() {
       const list = state.modalMode === 'income' ? INCOME_CATEGORIES : EXPENSE_CATEGORIES;
       const grid = document.getElementById('tx-category-grid');
+      const subGrid = document.getElementById('tx-subcategory-grid');
+      const parentLabel = document.getElementById('selected-parent-cat-label');
+
+      const currentParent = list.find(c => c.id === state.selectedTxCategory) || list[0];
+      state.selectedTxCategory = currentParent.id;
+
+      if (!currentParent.subs.some(s => s.id === state.selectedTxSubCategory)) {
+        state.selectedTxSubCategory = currentParent.subs[0].id;
+      }
+
+      if (parentLabel) {
+        parentLabel.textContent = currentParent.name;
+      }
+
       grid.innerHTML = list.map(cat => {
         const active = state.selectedTxCategory === cat.id;
         return `
           <button type="button" onclick="selectTxCat('${cat.id}')" class="p-2 rounded-xl border text-center flex flex-col items-center gap-1 transition ${
-            active ? 'border-momo-500 bg-momo-50 shadow-xs' : 'border-slate-200 bg-white hover:bg-slate-50'
+            active ? 'border-momo-500 bg-momo-50 shadow-xs ring-1 ring-momo-400' : 'border-slate-200 bg-white hover:bg-slate-50'
           }">
             <span class="w-8 h-8 rounded-lg flex items-center justify-center text-xs" style="background:${cat.bg}; color:${cat.color}">
               <i class="fa-solid ${cat.icon}"></i>
@@ -2220,10 +2446,37 @@
           </button>
         `;
       }).join('');
+
+      if (subGrid) {
+        subGrid.innerHTML = currentParent.subs.map(sub => {
+          const isSubActive = state.selectedTxSubCategory === sub.id;
+          const iconClass = sub.icon.includes('fa-brands') ? sub.icon : `fa-solid ${sub.icon}`;
+          return `
+            <button type="button" onclick="selectTxSubCat('${sub.id}')" class="px-2.5 py-2 rounded-xl border text-left flex items-center gap-2 transition ${
+              isSubActive
+                ? 'border-momo-500 bg-white text-momo-600 shadow-xs font-extrabold'
+                : 'border-slate-200/80 bg-white/70 text-slate-600 hover:bg-white font-semibold'
+            }">
+              <span class="w-6 h-6 rounded-lg flex items-center justify-center text-[11px] shrink-0" style="background:${currentParent.bg}; color:${currentParent.color}">
+                <i class="${iconClass}"></i>
+              </span>
+              <span class="text-[11px] leading-tight truncate">${sub.name}</span>
+            </button>
+          `;
+        }).join('');
+      }
     }
 
-    function selectTxCat(id) {
+    function selectTxCat(id, customSubId = null) {
       state.selectedTxCategory = id;
+      const list = state.modalMode === 'income' ? INCOME_CATEGORIES : EXPENSE_CATEGORIES;
+      const parent = list.find(c => c.id === id) || list[0];
+      state.selectedTxSubCategory = customSubId || (parent.subs[0] ? parent.subs[0].id : id);
+      renderModalCategoryGrid();
+    }
+
+    function selectTxSubCat(subId) {
+      state.selectedTxSubCategory = subId;
       renderModalCategoryGrid();
     }
 
@@ -2278,7 +2531,15 @@
         if (state.editingRecordId) {
           const idx = state.transactions.findIndex(t => t.id === state.editingRecordId);
           if (idx !== -1) {
-            state.transactions[idx] = { ...state.transactions[idx], type: state.modalMode, amount, category: state.selectedTxCategory, date: dateVal, note };
+            state.transactions[idx] = {
+              ...state.transactions[idx],
+              type: state.modalMode,
+              amount,
+              category: state.selectedTxCategory,
+              subCategory: state.selectedTxSubCategory,
+              date: dateVal,
+              note
+            };
           }
         } else {
           state.transactions.unshift({
@@ -2286,6 +2547,7 @@
             type: state.modalMode,
             amount,
             category: state.selectedTxCategory,
+            subCategory: state.selectedTxSubCategory,
             date: dateVal,
             note
           });
@@ -2422,6 +2684,7 @@
       setTxAmount,
       renderQuickAmountSuggestions,
       selectTxCat,
+      selectTxSubCat,
       selectTaskCat,
       submitRecordModal,
       openBudgetEditModal,
