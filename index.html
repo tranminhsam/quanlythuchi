@@ -119,45 +119,6 @@
 
       <!-- ==================== TAB 1: TỔNG QUAN (OVERVIEW) ==================== -->
       <section id="tab-overview" class="space-y-4">
-        
-        <!-- 4 Quick Shortcut Icons Card (Exact MoMo Layout) -->
-        <div class="bg-white rounded-2xl p-3.5 card-shadow border border-white">
-          <div class="grid grid-cols-4 gap-2 text-center">
-            <!-- 1. Nhập giao dịch -->
-            <button onclick="openAddModal('expense')" class="flex flex-col items-center group active:scale-95 transition">
-              <div class="w-12 h-12 rounded-2xl bg-cyan-50 border border-cyan-100/80 flex items-center justify-center text-teal-600 group-hover:bg-cyan-100 transition mb-1.5">
-                <i class="fa-regular fa-file-lines text-xl"></i>
-                <i class="fa-solid fa-plus text-[9px] -ml-1.5 mt-1.5"></i>
-              </div>
-              <span class="text-[11px] font-medium text-slate-700 leading-tight">Nhập<br>giao dịch</span>
-            </button>
-
-            <!-- 2. Biến động thu chi -->
-            <button onclick="setChartMode('bar'); scrollToElement('chart-section')" class="flex flex-col items-center group active:scale-95 transition">
-              <div class="w-12 h-12 rounded-2xl bg-cyan-50 border border-cyan-100/80 flex items-center justify-center text-teal-600 group-hover:bg-cyan-100 transition mb-1.5">
-                <i class="fa-solid fa-arrow-trend-up text-xl"></i>
-              </div>
-              <span class="text-[11px] font-medium text-slate-700 leading-tight">Biến động<br>thu chi</span>
-            </button>
-
-            <!-- 3. Ngân sách chi tiêu (+Xu) -->
-            <button onclick="switchTab('utilities'); scrollToElement('budget-card-section')" class="flex flex-col items-center group active:scale-95 transition relative">
-              <span class="absolute -top-1 right-0.5 bg-gradient-to-r from-orange-500 to-red-500 text-white text-[9px] font-extrabold px-1.5 py-0.5 rounded-full shadow-xs z-10">+Xu</span>
-              <div class="w-12 h-12 rounded-2xl bg-cyan-50 border border-cyan-100/80 flex items-center justify-center text-teal-600 group-hover:bg-cyan-100 transition mb-1.5">
-                <i class="fa-solid fa-sack-dollar text-xl"></i>
-              </div>
-              <span class="text-[11px] font-medium text-slate-700 leading-tight">Ngân sách<br>chi tiêu</span>
-            </button>
-
-            <!-- 4. Tiện ích khác -->
-            <button onclick="switchTab('utilities')" class="flex flex-col items-center group active:scale-95 transition relative">
-              <div class="w-12 h-12 rounded-2xl bg-cyan-50 border border-cyan-100/80 flex items-center justify-center text-teal-600 group-hover:bg-cyan-100 transition mb-1.5">
-                <i class="fa-solid fa-table-cells-large text-xl"></i>
-              </div>
-              <span class="text-[11px] font-medium text-slate-700 leading-tight">Tiện ích<br>khác</span>
-            </button>
-          </div>
-        </div>
 
         <!-- Section Header: Tình hình thu chi + Eye Icon + Chart Mode Switch -->
         <div class="flex items-center justify-between px-0.5">
@@ -183,7 +144,7 @@
         <!-- Main Financial Situation Card -->
         <div class="bg-white rounded-2xl p-3.5 card-shadow space-y-3.5">
           
-          <!-- Cycle Selector Bar (Default: 15 tháng này -> 15 tháng sau) -->
+          <!-- Cycle Selector Bar (Default: 15 tháng này -> 14 tháng sau) -->
           <div class="space-y-2.5 pb-2.5 border-b border-slate-100">
             <div class="flex items-center justify-between">
               <button onclick="changeOverviewMonth(-1)" class="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-600 active:scale-90 transition" title="Kỳ trước">
@@ -192,7 +153,7 @@
               <div class="text-center">
                 <div class="flex items-center justify-center gap-1.5 text-[14px] font-extrabold text-slate-800">
                   <i class="fa-regular fa-calendar-days text-momo-600 text-xs"></i>
-                  <span id="overview-month-label">15/10 - 15/11</span>
+                  <span id="overview-month-label">15/10 - 14/11</span>
                 </div>
                 <p id="overview-lunar-range" class="text-[10px] text-slate-400 font-medium"></p>
               </div>
@@ -209,7 +170,7 @@
                   Tìm kiếm theo khoảng ngày
                 </span>
                 <button onclick="resetDefaultDateRange()" class="text-[10px] font-extrabold text-momo-600 hover:underline">
-                  Mặc định (15 → 15)
+                  Mặc định (15 → 14)
                 </button>
               </div>
               <div class="grid grid-cols-2 gap-1.5">
@@ -755,7 +716,7 @@
   	storageBucket: "life-money-f6a11.firebasestorage.app",
   	messagingSenderId: "284442463922",
   	appId: "1:284442463922:web:e6933c424828c9a12d83ab",
- 	 measurementId: "G-KDLG43KJ0G"
+  	measurementId: "G-KDLG43KJ0G"
     };
 
     // Mã kênh cố định giúp mọi thiết bị cùng đọc/ghi vào đúng 1 nguồn dữ liệu trên Firestore
@@ -1110,7 +1071,7 @@
         nextM = 1;
         nextY++;
       }
-      const endISO = `${nextY}-${String(nextM).padStart(2, '0')}-15`;
+      const endISO = `${nextY}-${String(nextM).padStart(2, '0')}-14`;
       return { startISO, endISO };
     }
 
@@ -1670,22 +1631,23 @@
       state.filterStartDate = range.startISO;
       state.filterEndDate = range.endISO;
       renderOverview();
-      showToast('Đã đặt lại kỳ mặc định 15 tháng này → 15 tháng sau');
+      showToast('Đã đặt lại kỳ mặc định 15 tháng này → 14 tháng sau');
     }
 
     function applyCustomDateRange() {
-      const startInput = document.getElementById('filter-start-date').value;
-      const endInput = document.getElementById('filter-end-date').value;
-      if (startInput && endInput) {
-        if (startInput > endInput) {
-          state.filterStartDate = endInput;
-          state.filterEndDate = startInput;
-        } else {
-          state.filterStartDate = startInput;
-          state.filterEndDate = endInput;
-        }
-        renderOverview();
+      const startEl = document.getElementById('filter-start-date');
+      const endEl = document.getElementById('filter-end-date');
+      if (!startEl || !endEl) return;
+      let s = startEl.value;
+      let e = endEl.value;
+      if (s && e && s > e) {
+        const tmp = s;
+        s = e;
+        e = tmp;
       }
+      if (s) state.filterStartDate = s;
+      if (e) state.filterEndDate = e;
+      renderOverview();
     }
 
     function setOverviewType(type) {
@@ -1695,311 +1657,338 @@
 
     function setChartMode(mode) {
       state.chartMode = mode;
-      const btnDonut = document.getElementById('btn-mode-donut');
-      const btnBar = document.getElementById('btn-mode-bar');
-      if (mode === 'donut') {
-        btnDonut.className = 'px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 transition bg-momo-50 text-momo-600';
-        btnBar.className = 'px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 transition text-slate-700 hover:text-slate-900';
-        document.getElementById('donut-chart-wrapper').classList.remove('hidden');
-        document.getElementById('bar-chart-wrapper').classList.add('hidden');
-      } else {
-        btnBar.className = 'px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 transition bg-momo-50 text-momo-600';
-        btnDonut.className = 'px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 transition text-slate-700 hover:text-slate-900';
-        document.getElementById('donut-chart-wrapper').classList.add('hidden');
-        document.getElementById('bar-chart-wrapper').classList.remove('hidden');
-      }
       renderOverview();
+    }
+
+    function renderTopLunarBanner() {
+      const lunarToday = getLunarInfoFromISO(todayISO);
+      const pillEl = document.getElementById('top-lunar-pill');
+      if (pillEl) {
+        const tag = lunarToday.isRam ? '🌕 Rằm ' : lunarToday.isMung1 ? '🌑 M1 ' : 'ÂL ';
+        pillEl.textContent = `${tag}${lunarToday.day}/${lunarToday.month}`;
+      }
     }
 
     function renderOverview() {
       const eyeIcon = document.getElementById('eye-icon');
-      eyeIcon.className = state.hideAmounts ? 'fa-regular fa-eye-slash text-base' : 'fa-regular fa-eye text-base';
-
-      const startInputEl = document.getElementById('filter-start-date');
-      const endInputEl = document.getElementById('filter-end-date');
-      if (startInputEl && startInputEl.value !== state.filterStartDate) {
-        startInputEl.value = state.filterStartDate;
-      }
-      if (endInputEl && endInputEl.value !== state.filterEndDate) {
-        endInputEl.value = state.filterEndDate;
+      if (eyeIcon) {
+        eyeIcon.className = state.hideAmounts ? 'fa-regular fa-eye-slash text-base' : 'fa-regular fa-eye text-base';
       }
 
-      const monthLabelEl = document.getElementById('overview-month-label');
-      monthLabelEl.textContent = `${formatDisplayDate(state.filterStartDate)} → ${formatDisplayDate(state.filterEndDate)}`;
+      const startInput = document.getElementById('filter-start-date');
+      const endInput = document.getElementById('filter-end-date');
+      if (startInput && startInput.value !== state.filterStartDate) startInput.value = state.filterStartDate;
+      if (endInput && endInput.value !== state.filterEndDate) endInput.value = state.filterEndDate;
 
-      const startLunar = getLunarInfoFromISO(state.filterStartDate);
-      const endLunar = getLunarInfoFromISO(state.filterEndDate);
-      document.getElementById('overview-lunar-range').innerHTML =
-        `Âm lịch: ${startLunar.day}/${startLunar.month} ÂL → ${endLunar.day}/${endLunar.month} ÂL`;
+      const sParts = state.filterStartDate.split('-');
+      const eParts = state.filterEndDate.split('-');
+      const monthLabel = document.getElementById('overview-month-label');
+      if (monthLabel && sParts.length === 3 && eParts.length === 3) {
+        monthLabel.textContent = `${sParts[2]}/${sParts[1]}/${sParts[0]} - ${eParts[2]}/${eParts[1]}/${eParts[0]}`;
+      }
 
-      const periodTx = state.transactions.filter(
+      const lStart = getLunarInfoFromISO(state.filterStartDate);
+      const lEnd = getLunarInfoFromISO(state.filterEndDate);
+      const lunarRangeEl = document.getElementById('overview-lunar-range');
+      if (lunarRangeEl) {
+        lunarRangeEl.textContent = `Âm lịch: ${lStart.day}/${lStart.month} → ${lEnd.day}/${lEnd.month} (${lEnd.canChi.year})`;
+      }
+
+      const periodTxs = state.transactions.filter(
         t => t.date >= state.filterStartDate && t.date <= state.filterEndDate
       );
-      const expenses = periodTx.filter(t => t.type === 'expense');
-      const incomes = periodTx.filter(t => t.type === 'income');
 
-      const totalExp = expenses.reduce((s, t) => s + Number(t.amount), 0);
-      const totalInc = incomes.reduce((s, t) => s + Number(t.amount), 0);
+      const totalExp = periodTxs
+        .filter(t => t.type === 'expense')
+        .reduce((sum, t) => sum + Number(t.amount || 0), 0);
+      const totalInc = periodTxs
+        .filter(t => t.type === 'income')
+        .reduce((sum, t) => sum + Number(t.amount || 0), 0);
+
+      const expAmountEl = document.getElementById('overview-expense-amount');
+      const incAmountEl = document.getElementById('overview-income-amount');
+      if (expAmountEl) expAmountEl.textContent = formatMoney(totalExp);
+      if (incAmountEl) incAmountEl.textContent = formatMoney(totalInc);
+
+      const expCount = periodTxs.filter(t => t.type === 'expense').length;
+      const incCount = periodTxs.filter(t => t.type === 'income').length;
+      const expBadge = document.getElementById('expense-diff-badge');
+      const incBadge = document.getElementById('income-diff-badge');
+      if (expBadge) expBadge.textContent = `${expCount} GD`;
+      if (incBadge) incBadge.textContent = `${incCount} GD`;
+
       const net = totalInc - totalExp;
-
-      document.getElementById('overview-expense-amount').textContent = formatMoney(totalExp);
-      document.getElementById('overview-income-amount').textContent = formatMoney(totalInc);
-      document.getElementById('overview-net-summary').innerHTML =
-        `Số dư trong kỳ: <strong class="${net >= 0 ? 'text-emerald-600' : 'text-red-600'}">${net >= 0 ? '+' : ''}${formatMoney(net)}</strong>`;
-
-      const expBox = document.getElementById('box-type-expense');
-      const incBox = document.getElementById('box-type-income');
-      const btnQuickLabel = document.getElementById('btn-quick-record-label');
-      if (state.overviewType === 'expense') {
-        expBox.className = 'text-left p-3 rounded-2xl border-2 border-momo-400 bg-momo-50/30 transition relative overflow-hidden';
-        incBox.className = 'text-left p-3 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 transition relative overflow-hidden';
-        btnQuickLabel.textContent = 'Nhập giao dịch chi';
-      } else {
-        incBox.className = 'text-left p-3 rounded-2xl border-2 border-emerald-500 bg-emerald-50/30 transition relative overflow-hidden';
-        expBox.className = 'text-left p-3 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 transition relative overflow-hidden';
-        btnQuickLabel.textContent = 'Nhập giao dịch thu';
+      const netSummaryEl = document.getElementById('overview-net-summary');
+      if (netSummaryEl) {
+        const netColor = net >= 0 ? 'text-emerald-600' : 'text-rose-600';
+        const netSign = net > 0 ? '+' : '';
+        netSummaryEl.innerHTML = `Số dư trong kỳ: <strong class="${netColor}">${ state.hideAmounts ? '******' : netSign + formatMoney(net) }</strong>`;
       }
 
-      const activeList = state.overviewType === 'expense' ? expenses : incomes;
-      const activeTotal = state.overviewType === 'expense' ? totalExp : totalInc;
-      renderDonutAndBreakdown(activeList, activeTotal, state.overviewType);
-      renderBarChart(activeList, state.filterStartDate, state.filterEndDate, state.overviewType);
+      const boxExp = document.getElementById('box-type-expense');
+      const boxInc = document.getElementById('box-type-income');
+      const quickLabel = document.getElementById('btn-quick-record-label');
+      if (state.overviewType === 'expense') {
+        boxExp.className = 'text-left p-3 rounded-2xl border-2 border-momo-400 bg-momo-50/30 transition relative overflow-hidden';
+        boxInc.className = 'text-left p-3 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 transition relative overflow-hidden';
+        if (quickLabel) quickLabel.textContent = 'Nhập giao dịch chi';
+      } else {
+        boxInc.className = 'text-left p-3 rounded-2xl border-2 border-emerald-500 bg-emerald-50/30 transition relative overflow-hidden';
+        boxExp.className = 'text-left p-3 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 transition relative overflow-hidden';
+        if (quickLabel) quickLabel.textContent = 'Nhập giao dịch thu';
+      }
+
+      const btnDonut = document.getElementById('btn-mode-donut');
+      const btnBar = document.getElementById('btn-mode-bar');
+      const donutWrap = document.getElementById('donut-chart-wrapper');
+      const barWrap = document.getElementById('bar-chart-wrapper');
+
+      if (state.chartMode === 'donut') {
+        btnDonut.className = 'px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 transition bg-momo-50 text-momo-600';
+        btnBar.className = 'px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 transition text-slate-700 hover:text-slate-900';
+        donutWrap.classList.remove('hidden');
+        barWrap.classList.add('hidden');
+        renderDonutAndBreakdown(periodTxs);
+      } else {
+        btnBar.className = 'px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 transition bg-momo-50 text-momo-600';
+        btnDonut.className = 'px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 transition text-slate-700 hover:text-slate-900';
+        donutWrap.classList.add('hidden');
+        barWrap.classList.remove('hidden');
+        renderBarChart(periodTxs);
+      }
+
       renderOverviewTasksPreview();
-      renderOverviewRecentTransactions(periodTx);
+      renderOverviewRecentTransactions(periodTxs);
     }
 
-    function renderDonutAndBreakdown(txList, totalAmount, type) {
-      const svgContainer = document.getElementById('donut-svg-container');
-      const breakdownEl = document.getElementById('category-breakdown-list');
+    function renderDonutAndBreakdown(periodTxs) {
+      const targetType = state.overviewType;
+      const filtered = periodTxs.filter(t => t.type === targetType);
+      const total = filtered.reduce((s, t) => s + Number(t.amount || 0), 0);
 
-      const grouped = {};
-      const subGrouped = {};
-      txList.forEach(t => {
-        const meta = getCategoryMeta(t.category, type, t.subCategory);
-        const pId = meta.id;
-        grouped[pId] = (grouped[pId] || 0) + Number(t.amount);
-        if (!subGrouped[pId]) subGrouped[pId] = {};
-        const sKey = meta.subId;
-        if (!subGrouped[pId][sKey]) {
-          subGrouped[pId][sKey] = { name: meta.subName, icon: meta.subIcon, amount: 0 };
+      const catMap = {};
+      filtered.forEach(t => {
+        const meta = getCategoryMeta(t.category, t.type, t.subCategory);
+        if (!catMap[meta.id]) {
+          catMap[meta.id] = {
+            id: meta.id,
+            name: meta.name,
+            icon: meta.icon,
+            color: meta.color,
+            bg: meta.bg,
+            amount: 0,
+            count: 0,
+            subs: {}
+          };
         }
-        subGrouped[pId][sKey].amount += Number(t.amount);
+        catMap[meta.id].amount += Number(t.amount || 0);
+        catMap[meta.id].count += 1;
+
+        const subKey = meta.subId;
+        if (!catMap[meta.id].subs[subKey]) {
+          catMap[meta.id].subs[subKey] = {
+            id: subKey,
+            name: meta.subName,
+            icon: meta.subIcon,
+            amount: 0,
+            count: 0
+          };
+        }
+        catMap[meta.id].subs[subKey].amount += Number(t.amount || 0);
+        catMap[meta.id].subs[subKey].count += 1;
       });
 
-      const items = Object.keys(grouped).map(catId => {
-        const meta = getCategoryMeta(catId, type);
-        const amount = grouped[catId];
-        const pct = totalAmount > 0 ? (amount / totalAmount) * 100 : 0;
-        const subItems = Object.values(subGrouped[catId] || {}).sort((a, b) => b.amount - a.amount);
-        return { ...meta, amount, pct, subItems };
-      }).sort((a, b) => b.amount - a.amount);
+      const items = Object.values(catMap).sort((a, b) => b.amount - a.amount);
+      const svgContainer = document.getElementById('donut-svg-container');
+      const listContainer = document.getElementById('category-breakdown-list');
 
-      if (items.length === 0 || totalAmount === 0) {
+      if (items.length === 0 || total === 0) {
         svgContainer.innerHTML = `
-          <svg viewBox="0 0 320 210" class="w-full max-w-[310px] h-auto">
-            <circle cx="160" cy="105" r="72" fill="none" stroke="#f1f5f9" stroke-width="2" />
-            <circle cx="160" cy="105" r="52" fill="none" stroke="#e2e8f0" stroke-width="24" stroke-dasharray="95 8" />
-          </svg>`;
-        breakdownEl.innerHTML = `<p class="text-center text-xs text-slate-400 py-2">Chưa có khoản ${type === 'expense' ? 'chi tiêu' : 'thu nhập'} nào trong khoảng ngày này.</p>`;
+          <div class="flex flex-col items-center justify-center py-6 text-center">
+            <div class="w-36 h-36 rounded-full border-[16px] border-slate-100 flex items-center justify-center mb-2">
+              <span class="text-xs font-bold text-slate-400">Chưa có dữ liệu</span>
+            </div>
+            <p class="text-[11px] text-slate-400">Hãy bấm "Nhập giao dịch" để bắt đầu theo dõi</p>
+          </div>
+        `;
+        listContainer.innerHTML = '';
         return;
       }
 
-      const cx = 160, cy = 105, r = 54;
-      const circumference = 2 * Math.PI * r;
-      let currentAngle = -90;
-      let circlesHTML = '';
-      let labelsHTML = '';
+      const radius = 62;
+      const circumference = 2 * Math.PI * radius;
+      let accumulatedPercent = 0;
 
-      items.forEach((item, idx) => {
-        const sliceLength = (item.pct / 100) * circumference;
-        const dashArray = `${Math.max(sliceLength - 2, 1)} ${circumference}`;
-        const dashOffset = -((currentAngle + 90) / 360) * circumference;
-
-        circlesHTML += `
-          <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${item.color}"
-            stroke-width="24" stroke-dasharray="${dashArray}" stroke-dashoffset="${dashOffset}"
-            class="transition-all duration-500" />
-        `;
-
-        if (idx < 4) {
-          const midAngleDeg = currentAngle + (item.pct * 3.6) / 2;
-          const midRad = (midAngleDeg * Math.PI) / 180;
-          const x1 = cx + (r + 14) * Math.cos(midRad);
-          const y1 = cy + (r + 14) * Math.sin(midRad);
-          const isRight = Math.cos(midRad) >= 0;
-          const x2 = isRight ? cx + 86 : cx - 86;
-          const y2 = Math.max(24, Math.min(186, cy + (r + 32) * Math.sin(midRad)));
-          const rectX = isRight ? x2 + 3 : x2 - 42;
-
-          labelsHTML += `
-            <polyline points="${x1.toFixed(1)},${y1.toFixed(1)} ${x2.toFixed(1)},${y2.toFixed(1)}" fill="none" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="2 2" />
-            <rect x="${rectX.toFixed(1)}" y="${(y2 - 5).toFixed(1)}" width="9" height="9" rx="2.5" fill="${item.color}" />
-            <text x="${(rectX + 13).toFixed(1)}" y="${(y2 + 3).toFixed(1)}" font-size="10.5" font-weight="700" fill="#475569">${item.pct.toFixed(0)}%</text>
-          `;
-        }
-        currentAngle += (item.pct * 3.6);
-      });
+      const segmentsSVG = items.map(item => {
+        const pct = item.amount / total;
+        const strokeDasharray = `${pct * circumference} ${circumference}`;
+        const strokeDashoffset = -accumulatedPercent * circumference;
+        accumulatedPercent += pct;
+        return `<circle cx="100" cy="100" r="${radius}" fill="transparent" stroke="${item.color}" stroke-width="24" stroke-dasharray="${strokeDasharray}" stroke-dashoffset="${strokeDashoffset}" transform="rotate(-90 100 100)" />`;
+      }).join('');
 
       svgContainer.innerHTML = `
-        <svg viewBox="0 0 320 210" class="w-full max-w-[320px] h-auto overflow-visible">
-          <circle cx="${cx}" cy="${cy}" r="73" fill="none" stroke="#f1f5f9" stroke-width="1.5" />
-          ${circlesHTML}
-          ${labelsHTML}
-          <text x="${cx}" y="${cy - 4}" text-anchor="middle" font-size="10" fill="#64748b" font-weight="600">Tổng ${type === 'expense' ? 'chi' : 'thu'}</text>
-          <text x="${cx}" y="${cy + 12}" text-anchor="middle" font-size="11.5" fill="#0f172a" font-weight="800">${formatShortMoney(totalAmount)}</text>
-        </svg>
+        <div class="relative flex items-center justify-center">
+          <svg width="200" height="200" viewBox="0 0 200 200">
+            <circle cx="100" cy="100" r="${radius}" fill="transparent" stroke="#f1f5f9" stroke-width="24" />
+            ${segmentsSVG}
+          </svg>
+          <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-6 pointer-events-none">
+            <span class="text-[10px] font-bold text-slate-400 uppercase">${targetType === 'expense' ? 'Tổng chi' : 'Tổng thu'}</span>
+            <span class="text-xs font-extrabold text-slate-800 mt-0.5 truncate max-w-[100px]">${formatShortMoney(total)}</span>
+          </div>
+        </div>
       `;
 
-      breakdownEl.innerHTML = items.map(item => `
-        <div class="p-2.5 rounded-2xl bg-slate-50/70 border border-slate-100 space-y-2 transition">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2.5 min-w-0">
-              <span class="w-8 h-8 rounded-xl flex items-center justify-center text-xs shrink-0" style="background:${item.bg}; color:${item.color}">
-                <i class="fa-solid ${item.icon}"></i>
-              </span>
-              <div class="min-w-0">
-                <div class="text-xs font-extrabold text-slate-800 truncate">${item.name}</div>
-                <div class="w-28 h-1.5 bg-slate-200/70 rounded-full overflow-hidden mt-1">
-                  <div class="h-full rounded-full" style="width:${item.pct.toFixed(0)}%; background:${item.color}"></div>
+      listContainer.innerHTML = items.map(item => {
+        const pct = ((item.amount / total) * 100).toFixed(1);
+        const subItems = Object.values(item.subs).sort((a, b) => b.amount - a.amount);
+        const subBadgesHTML = subItems.map(s => `
+          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-slate-50 border border-slate-200/70 text-[10px] font-semibold text-slate-600">
+            <i class="fa-solid ${s.icon} text-[9px]" style="color:${item.color}"></i>
+            <span>${s.name}:</span>
+            <strong class="text-slate-800">${formatShortMoney(s.amount)}</strong>
+          </span>
+        `).join('');
+
+        return `
+          <div class="p-2.5 rounded-xl bg-slate-50/70 border border-slate-100 space-y-1.5">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="w-7 h-7 rounded-lg flex items-center justify-center text-xs" style="background:${item.bg}; color:${item.color}">
+                  <i class="fa-solid ${item.icon}"></i>
+                </span>
+                <div>
+                  <div class="text-xs font-extrabold text-slate-800">${item.name}</div>
+                  <div class="text-[10px] font-semibold text-slate-400">${item.count} giao dịch • ${pct}%</div>
                 </div>
               </div>
-            </div>
-            <div class="text-right shrink-0">
               <div class="text-xs font-extrabold text-slate-800">${formatMoney(item.amount)}</div>
-              <div class="text-[10px] font-bold text-slate-400">${item.pct.toFixed(1)}%</div>
             </div>
-          </div>
-          ${item.subItems && item.subItems.length > 0 ? `
-            <div class="flex flex-wrap gap-1.5 pl-10 pt-0.5">
-              ${item.subItems.map(sub => `
-                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-white border border-slate-200/80 text-[10px] text-slate-600 font-semibold">
-                  <i class="${sub.icon.includes('fa-brands') ? sub.icon : 'fa-solid ' + sub.icon} text-[9px]" style="color:${item.color}"></i>
-                  <span>${sub.name}:</span>
-                  <strong class="text-slate-800">${formatMoney(sub.amount)}</strong>
-                </span>
-              `).join('')}
-            </div>
-          ` : ''}
-        </div>
-      `).join('');
-    }
-
-    function renderBarChart(txList, startISO, endISO, type) {
-      const container = document.getElementById('bar-chart-container');
-      document.getElementById('bar-chart-subtitle').textContent = type === 'expense' ? 'Chi tiêu theo ngày' : 'Thu nhập theo ngày';
-
-      const byDate = {};
-      txList.forEach(t => {
-        byDate[t.date] = (byDate[t.date] || 0) + Number(t.amount);
-      });
-
-      const maxVal = Math.max(...Object.values(byDate), 100000);
-      let barsHTML = '';
-
-      const startObj = new Date(startISO + 'T00:00:00');
-      const endObj = new Date(endISO + 'T00:00:00');
-      const diffDays = Math.min(Math.round((endObj - startObj) / 86400000) + 1, 90);
-
-      for (let i = 0; i < diffDays; i++) {
-        const cur = new Date(startObj);
-        cur.setDate(startObj.getDate() + i);
-        const iso = formatISO(cur);
-        const d = cur.getDate();
-        const m = cur.getMonth() + 1;
-        const val = byDate[iso] || 0;
-
-        if (val === 0 && i !== 0 && i !== diffDays - 1 && d !== 1 && d !== 15 && i % 3 !== 0) continue;
-        const heightPct = val > 0 ? Math.max(Math.round((val / maxVal) * 100), 10) : 4;
-        const barColor = type === 'expense' ? 'bg-momo-500' : 'bg-emerald-500';
-
-        barsHTML += `
-          <div onclick="jumpToCalendarDate('${iso}')" class="flex flex-col items-center justify-end h-full min-w-[30px] cursor-pointer group">
-            <span class="text-[9px] font-bold text-slate-500 mb-1">${val > 0 ? formatShortMoney(val) : ''}</span>
-            <div class="w-4 rounded-t-md transition-all ${val > 0 ? barColor : 'bg-slate-200'}" style="height:${heightPct}%"></div>
-            <span class="text-[9px] font-bold mt-1 text-slate-500">${d}/${m}</span>
+            <div class="flex flex-wrap gap-1 pt-0.5">${subBadgesHTML}</div>
           </div>
         `;
+      }).join('');
+    }
+
+    function renderBarChart(periodTxs) {
+      const targetType = state.overviewType;
+      const subtitleEl = document.getElementById('bar-chart-subtitle');
+      if (subtitleEl) subtitleEl.textContent = targetType === 'expense' ? 'Chi tiêu' : 'Thu nhập';
+
+      const container = document.getElementById('bar-chart-container');
+      if (!container) return;
+
+      const byDate = {};
+      periodTxs.filter(t => t.type === targetType).forEach(t => {
+        byDate[t.date] = (byDate[t.date] || 0) + Number(t.amount || 0);
+      });
+
+      const dates = Object.keys(byDate).sort();
+      if (dates.length === 0) {
+        container.innerHTML = `<div class="w-full h-full flex items-center justify-center text-xs text-slate-400 font-semibold">Chưa có giao dịch trong kỳ này</div>`;
+        return;
       }
-      container.innerHTML = barsHTML;
+
+      const maxVal = Math.max(...Object.values(byDate), 1);
+      const barColor = targetType === 'expense' ? 'bg-momo-500' : 'bg-emerald-500';
+
+      container.innerHTML = dates.map(iso => {
+        const val = byDate[iso];
+        const heightPct = Math.max(12, Math.round((val / maxVal) * 100));
+        const [, m, d] = iso.split('-');
+        return `
+          <div class="flex flex-col items-center justify-end h-full min-w-[34px] flex-1">
+            <span class="text-[9px] font-bold text-slate-500 mb-1">${formatShortMoney(val)}</span>
+            <div class="w-5 rounded-t-lg ${barColor} transition-all" style="height: ${heightPct}%"></div>
+            <span class="text-[9px] font-bold text-slate-500 mt-1">${d}/${m}</span>
+          </div>
+        `;
+      }).join('');
     }
 
     function renderOverviewTasksPreview() {
       const container = document.getElementById('overview-tasks-preview');
-      const pendingTasks = state.tasks.filter(t => !t.completed).sort((a, b) => a.date.localeCompare(b.date));
-      
-      const badge = document.getElementById('nav-task-badge');
-      if (pendingTasks.length > 0) {
-        badge.textContent = pendingTasks.length;
-        badge.classList.remove('hidden');
-      } else {
-        badge.classList.add('hidden');
-      }
+      if (!container) return;
+
+      const pendingTasks = state.tasks
+        .filter(t => !t.completed)
+        .sort((a, b) => a.date.localeCompare(b.date) || (a.time || '').localeCompare(b.time || ''))
+        .slice(0, 4);
 
       if (pendingTasks.length === 0) {
-        container.innerHTML = `<div class="text-center py-3 text-xs text-slate-400">Chưa có công việc cần làm.</div>`;
+        container.innerHTML = `
+          <div class="text-center py-3 text-xs text-slate-400 font-medium">
+            Không có công việc tồn đọng. <button onclick="openAddModal('task')" class="text-momo-600 font-bold hover:underline">+ Thêm việc mới</button>
+          </div>
+        `;
         return;
       }
 
-      container.innerHTML = pendingTasks.slice(0, 4).map(task => {
-        const lunar = getLunarInfoFromISO(task.date);
+      container.innerHTML = pendingTasks.map(task => {
+        const l = getLunarInfoFromISO(task.date);
         return `
-          <div class="flex items-center justify-between p-2.5 rounded-xl border bg-slate-50 border-slate-100">
+          <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100 gap-2">
             <div class="flex items-center gap-2.5 min-w-0">
-              <button onclick="toggleTaskDone('${task.id}')" class="w-5 h-5 rounded-md border-2 border-momo-500 flex items-center justify-center text-white shrink-0"></button>
+              <button onclick="toggleTaskDone('${task.id}')" class="w-5 h-5 rounded-md border-2 border-blue-400 flex items-center justify-center text-white shrink-0 hover:bg-blue-50"></button>
               <div class="min-w-0">
                 <div class="text-xs font-bold text-slate-800 truncate">${task.title}</div>
-                <div class="flex items-center gap-1.5 text-[10px] font-semibold mt-0.5 flex-wrap">
-                  <span class="text-slate-500">${formatDisplayDate(task.date)} • ${task.time || '08:00'}</span>
-                  <span class="text-momo-600">${lunar.day}/${lunar.month} ÂL</span>
+                <div class="text-[10px] text-slate-500 font-medium flex items-center gap-1.5">
+                  <span>${formatDisplayDate(task.date)} (${l.day}/${l.month} ÂL)</span>
+                  ${task.time ? `<span>• ${task.time}</span>` : ''}
                 </div>
               </div>
             </div>
-            <button onclick="jumpToCalendarDate('${task.date}')" class="text-slate-400 hover:text-momo-600 px-1.5">
-              <i class="fa-regular fa-calendar text-xs"></i>
+            <button onclick="jumpToCalendarDate('${task.date}')" class="text-[10px] font-bold px-2 py-1 rounded-lg bg-white border border-slate-200 text-slate-600 shrink-0">
+              Xem lịch
             </button>
           </div>
         `;
       }).join('');
     }
 
-    function renderOverviewRecentTransactions(monthTx) {
+    function renderOverviewRecentTransactions(periodTxs) {
       const container = document.getElementById('overview-recent-tx');
       const countEl = document.getElementById('recent-tx-count');
-      const sorted = [...monthTx].sort((a, b) => b.date.localeCompare(a.date));
-      countEl.textContent = `${sorted.length} giao dịch`;
+      if (!container) return;
+
+      const sorted = [...periodTxs].sort((a, b) => b.date.localeCompare(a.date) || (b.createdAt || 0) - (a.createdAt || 0));
+      if (countEl) countEl.textContent = `${sorted.length} giao dịch`;
 
       if (sorted.length === 0) {
-        container.innerHTML = `<div class="text-center py-4 text-xs text-slate-400">Chưa có giao dịch nào trong tháng này.</div>`;
+        container.innerHTML = `<div class="text-center py-4 text-xs text-slate-400">Chưa có giao dịch nào trong khoảng ngày đã chọn</div>`;
         return;
       }
 
-      container.innerHTML = sorted.slice(0, 12).map(tx => {
+      container.innerHTML = sorted.slice(0, 15).map(tx => {
         const meta = getCategoryMeta(tx.category, tx.type, tx.subCategory);
-        const lunar = getLunarInfoFromISO(tx.date);
+        const l = getLunarInfoFromISO(tx.date);
         const isExp = tx.type === 'expense';
-        const iconClass = meta.subIcon.includes('fa-brands') ? meta.subIcon : `fa-solid ${meta.subIcon}`;
         return `
-          <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50/80 hover:bg-slate-100/70 border border-slate-100 transition">
-            <div onclick="openEditTransaction('${tx.id}')" class="flex items-center gap-2.5 min-w-0 cursor-pointer flex-1">
-              <span class="w-9 h-9 rounded-xl flex items-center justify-center text-sm shrink-0" style="background:${meta.bg}; color:${meta.color}">
-                <i class="${iconClass}"></i>
-              </span>
+          <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50/80 hover:bg-slate-100/70 border border-slate-100 transition gap-2">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <div class="w-9 h-9 rounded-xl flex items-center justify-center text-sm shrink-0" style="background:${meta.bg}; color:${meta.color}">
+                <i class="fa-solid ${meta.subIcon}"></i>
+              </div>
               <div class="min-w-0">
-                <div class="flex items-center gap-1.5">
-                  <span class="text-xs font-bold text-slate-800 truncate">${tx.note || meta.subName}</span>
-                  ${lunar.isRam ? '<span class="text-[9px] font-extrabold bg-red-600 text-white px-1.5 rounded-full shrink-0">Rằm 15 ÂL</span>' : ''}
-                </div>
-                <div class="text-[10px] text-slate-500 font-medium truncate">
-                  <span class="font-bold" style="color:${meta.color}">${meta.name}</span> • ${meta.subName} • ${formatDisplayDate(tx.date)} (${lunar.day}/${lunar.month} ÂL)
+                <div class="text-xs font-extrabold text-slate-800 truncate">${tx.note || meta.subName}</div>
+                <div class="text-[10px] text-slate-500 font-medium flex items-center gap-1 flex-wrap">
+                  <span class="font-bold" style="color:${meta.color}">${meta.name} • ${meta.subName}</span>
+                  <span>• ${formatDisplayDate(tx.date)} (${l.day}/${l.month} ÂL)</span>
                 </div>
               </div>
             </div>
-            <div class="flex items-center gap-1.5 shrink-0">
-              <span class="text-xs font-extrabold ${isExp ? 'text-momo-600' : 'text-emerald-600'}">
-                ${isExp ? '-' : '+'}${formatMoney(tx.amount)}
-              </span>
-              <button onclick="deleteTransaction('${tx.id}')" class="text-slate-300 hover:text-red-500 text-xs px-1" title="Xóa">
-                <i class="fa-solid fa-trash-can"></i>
+            <div class="text-right shrink-0 flex items-center gap-1.5">
+              <div>
+                <div class="text-xs font-extrabold ${isExp ? 'text-momo-600' : 'text-emerald-600'}">
+                  ${isExp ? '-' : '+'}${formatMoney(tx.amount)}
+                </div>
+              </div>
+              <button onclick="editTransaction('${tx.id}')" class="w-6 h-6 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-white flex items-center justify-center text-[11px]" title="Sửa">
+                <i class="fa-solid fa-pen"></i>
+              </button>
+              <button onclick="deleteTransaction('${tx.id}')" class="w-6 h-6 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-white flex items-center justify-center text-[11px]" title="Xóa">
+                <i class="fa-solid fa-trash"></i>
               </button>
             </div>
           </div>
@@ -2007,9 +1996,6 @@
       }).join('');
     }
 
-    /********************************************************************
-     * CALENDAR TAB (LỊCH ÂM DƯƠNG VIỆT NAM & NGÀY RẰM TÔ ĐỎ)
-     ********************************************************************/
     function changeCalendarMonth(delta) {
       let m = state.calMonth + delta;
       let y = state.calYear;
@@ -2025,7 +2011,7 @@
       state.calMonth = todayObj.getMonth() + 1;
       state.selectedDate = todayISO;
       renderCalendar();
-      showToast('Đã quay về ngày hôm nay');
+      showToast('Đã về ngày hôm nay');
     }
 
     function jumpToCalendarDate(isoDate) {
@@ -2047,9 +2033,7 @@
       const todayLunar = getLunarInfoFromISO(todayISO);
       const bannerSolar = document.getElementById('cal-banner-solar');
       const bannerLunar = document.getElementById('cal-banner-lunar');
-      if (bannerSolar) {
-        bannerSolar.textContent = `Hôm nay: ${formatDisplayDate(todayISO)}`;
-      }
+      if (bannerSolar) bannerSolar.textContent = `Hôm nay: ${formatDisplayDate(todayISO)}`;
       if (bannerLunar) {
         bannerLunar.textContent = `Âm lịch: Ngày ${todayLunar.day} tháng ${todayLunar.month}${todayLunar.leap ? ' (Nhuận)' : ''} năm ${todayLunar.canChi.year} (${todayLunar.canChi.day})`;
       }
@@ -2057,33 +2041,32 @@
       const y = state.calYear;
       const m = state.calMonth;
       const monthTitle = document.getElementById('cal-month-title');
-      if (monthTitle) monthTitle.textContent = `Tháng ${String(m).padStart(2, '0')} / ${y}`;
+      if (monthTitle) monthTitle.textContent = `Tháng ${m} / ${y}`;
 
       const { ramDate, mung1Date } = findLunarDaysInSolarMonth(y, m);
       const subtitleEl = document.getElementById('cal-month-lunar-subtitle');
       if (subtitleEl) {
         const parts = [];
         if (ramDate) {
-          const rl = getLunarInfoFromISO(ramDate);
-          parts.push(`🌕 Rằm ${rl.day}/${rl.month} ÂL: ${formatDisplayDate(ramDate).slice(0, 5)}`);
+          const lr = getLunarInfoFromISO(ramDate);
+          parts.push(`🌕 Rằm 15/${lr.month} ÂL: ${formatDisplayDate(ramDate).slice(0, 5)}`);
         }
         if (mung1Date) {
-          const ml = getLunarInfoFromISO(mung1Date);
-          parts.push(`🌑 Mùng 1/${ml.month} ÂL: ${formatDisplayDate(mung1Date).slice(0, 5)}`);
+          const lm = getLunarInfoFromISO(mung1Date);
+          parts.push(`🌑 Mùng 1/${lm.month} ÂL: ${formatDisplayDate(mung1Date).slice(0, 5)}`);
         }
-        subtitleEl.textContent = parts.join('  •  ');
+        subtitleEl.textContent = parts.join(' • ');
       }
 
-      const firstDay = new Date(y, m - 1, 1);
+      const firstDayJS = new Date(y, m - 1, 1).getDay();
+      const startOffset = (firstDayJS + 6) % 7; // Thứ 2 là cột đầu tiên
       const daysInMonth = new Date(y, m, 0).getDate();
-      // Chuyển đổi thứ: Thứ 2 = 0 ... Chủ Nhật = 6
-      const startOffset = (firstDay.getDay() + 6) % 7;
 
       const txByDate = {};
       state.transactions.forEach(t => {
         if (!txByDate[t.date]) txByDate[t.date] = { exp: 0, inc: 0 };
-        if (t.type === 'expense') txByDate[t.date].exp += Number(t.amount);
-        else txByDate[t.date].inc += Number(t.amount);
+        if (t.type === 'expense') txByDate[t.date].exp += Number(t.amount || 0);
+        else txByDate[t.date].inc += Number(t.amount || 0);
       });
 
       const taskByDate = {};
@@ -2097,7 +2080,7 @@
 
       let cellsHTML = '';
       for (let i = 0; i < startOffset; i++) {
-        cellsHTML += `<div class="h-16 rounded-xl bg-slate-50/40"></div>`;
+        cellsHTML += `<div class="min-h-[68px] rounded-xl bg-slate-50/40"></div>`;
       }
 
       for (let d = 1; d <= daysInMonth; d++) {
@@ -2128,20 +2111,21 @@
         else if (lunar.isRam) lunarTextClass = 'text-red-600 font-extrabold';
         else if (lunar.isMung1) lunarTextClass = 'text-amber-700 font-extrabold';
 
+        let txBadgeHTML = '';
+        if (dayTx && dayTx.exp > 0) {
+          txBadgeHTML = `<div class="text-[9px] leading-tight font-extrabold tracking-tighter whitespace-nowrap ${isSelected ? 'text-white' : 'text-momo-600'}">-${formatShortMoney(dayTx.exp)}</div>`;
+        } else if (dayTx && dayTx.inc > 0) {
+          txBadgeHTML = `<div class="text-[9px] leading-tight font-extrabold tracking-tighter whitespace-nowrap ${isSelected ? 'text-white' : 'text-emerald-600'}">+${formatShortMoney(dayTx.inc)}</div>`;
+        }
+
         cellsHTML += `
-          <button type="button" onclick="selectCalendarDate('${iso}')" class="h-16 p-1 rounded-xl flex flex-col justify-between items-center relative transition active:scale-95 ${cellClass}">
+          <button type="button" onclick="selectCalendarDate('${iso}')" class="min-h-[68px] py-1.5 px-0.5 rounded-xl flex flex-col justify-between items-center relative transition active:scale-95 overflow-hidden ${cellClass}">
             ${isToday && !isSelected ? '<span class="absolute top-1 left-1 w-1.5 h-1.5 rounded-full bg-momo-600"></span>' : ''}
             ${dayTasks.length > 0 ? `<span class="absolute top-1 right-1 w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-white' : 'bg-blue-500'}"></span>` : ''}
-            <div class="text-xs font-extrabold leading-none mt-0.5">${d}</div>
-            <div class="text-[9px] font-bold leading-none ${lunarTextClass}">${lunarLabel}</div>
-            <div class="w-full text-center truncate leading-none h-2.5">
-              ${
-                dayTx && dayTx.exp > 0
-                  ? `<span class="text-[8px] font-extrabold ${isSelected ? 'text-white' : 'text-momo-600'}">-${formatShortMoney(dayTx.exp)}</span>`
-                  : dayTx && dayTx.inc > 0
-                  ? `<span class="text-[8px] font-extrabold ${isSelected ? 'text-white' : 'text-emerald-600'}">+${formatShortMoney(dayTx.inc)}</span>`
-                  : ''
-              }
+            <div class="text-[13px] font-extrabold leading-tight">${d}</div>
+            <div class="text-[10px] font-bold leading-tight ${lunarTextClass}">${lunarLabel}</div>
+            <div class="w-full min-h-[13px] flex items-center justify-center">
+              ${txBadgeHTML}
             </div>
           </button>
         `;
@@ -2164,11 +2148,11 @@
       if (solarEl) solarEl.textContent = `Dương lịch: ${formatDisplayDate(iso)}`;
       if (badgeEl) {
         if (lunar.isRam) {
-          badgeEl.textContent = '🌕 NGÀY RẰM (15 ÂL)';
           badgeEl.className = 'px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-red-600 text-white shadow-xs';
+          badgeEl.textContent = `🌕 NGÀY RẰM (15/${lunar.month} ÂL)`;
         } else if (lunar.isMung1) {
-          badgeEl.textContent = '🌑 MÙNG 1 ĐẦU THÁNG';
           badgeEl.className = 'px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-500 text-white shadow-xs';
+          badgeEl.textContent = `🌑 MÙNG 1 (${lunar.day}/${lunar.month} ÂL)`;
         } else {
           badgeEl.className = 'hidden';
         }
@@ -2184,34 +2168,40 @@
       const dayTxs = state.transactions.filter(t => t.date === iso);
       const dayTasks = state.tasks.filter(t => t.date === iso);
 
-      const exp = dayTxs.filter(t => t.type === 'expense').reduce((s, t) => s + Number(t.amount), 0);
-      const inc = dayTxs.filter(t => t.type === 'income').reduce((s, t) => s + Number(t.amount), 0);
-      const net = inc - exp;
+      const expSum = dayTxs.filter(t => t.type === 'expense').reduce((s, t) => s + Number(t.amount || 0), 0);
+      const incSum = dayTxs.filter(t => t.type === 'income').reduce((s, t) => s + Number(t.amount || 0), 0);
 
       if (netEl) {
-        netEl.textContent = `${net >= 0 ? '+' : '-'}${formatMoney(Math.abs(net))}`;
-        netEl.className = `text-xs font-extrabold mt-0.5 ${net >= 0 ? 'text-emerald-600' : 'text-momo-600'}`;
+        if (expSum === 0 && incSum === 0) {
+          netEl.innerHTML = `<span class="text-slate-400">0đ</span>`;
+        } else {
+          netEl.innerHTML = `
+            ${incSum > 0 ? `<span class="text-emerald-600">+${formatShortMoney(incSum)}</span> ` : ''}
+            ${expSum > 0 ? `<span class="text-momo-600">-${formatShortMoney(expSum)}</span>` : ''}
+          `;
+        }
       }
 
       const tasksListEl = document.getElementById('sel-day-tasks-list');
       if (tasksListEl) {
         if (dayTasks.length === 0) {
-          tasksListEl.innerHTML = `<div class="text-xs text-slate-400 py-2 text-center bg-slate-50 rounded-xl">Không có công việc nào trong ngày này.</div>`;
+          tasksListEl.innerHTML = `<div class="text-xs text-slate-400 py-2 text-center bg-slate-50 rounded-xl">Chưa có công việc nào trong ngày này</div>`;
         } else {
           tasksListEl.innerHTML = dayTasks.map(tk => `
-            <div class="flex items-center justify-between p-2.5 rounded-xl bg-blue-50/50 border border-blue-100">
-              <div class="flex items-center gap-2.5 min-w-0">
-                <button onclick="toggleTaskDone('${tk.id}')" class="w-5 h-5 rounded-md border-2 ${tk.completed ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-blue-500'} flex items-center justify-center text-xs shrink-0">
+            <div class="flex items-center justify-between p-2.5 rounded-xl bg-blue-50/50 border border-blue-100 gap-2">
+              <div class="flex items-center gap-2 min-w-0">
+                <button onclick="toggleTaskDone('${tk.id}')" class="w-5 h-5 rounded-md border-2 ${tk.completed ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-blue-400 bg-white'} flex items-center justify-center text-xs shrink-0">
                   ${tk.completed ? '<i class="fa-solid fa-check text-[10px]"></i>' : ''}
                 </button>
-                <div onclick="openEditTask('${tk.id}')" class="min-w-0 cursor-pointer">
-                  <div class="text-xs font-bold text-slate-800 ${tk.completed ? 'line-through text-slate-400' : ''}">${tk.title}</div>
-                  <div class="text-[10px] text-slate-500">${tk.time || '08:00'} • ${tk.category}</div>
+                <div class="min-w-0">
+                  <div class="text-xs font-bold ${tk.completed ? 'line-through text-slate-400' : 'text-slate-800'} truncate">${tk.title}</div>
+                  <div class="text-[10px] text-slate-500">${tk.category || 'Công việc'} ${tk.time ? '• ' + tk.time : ''}</div>
                 </div>
               </div>
-              <button onclick="deleteTask('${tk.id}')" class="text-slate-300 hover:text-red-500 text-xs px-1.5">
-                <i class="fa-solid fa-trash-can"></i>
-              </button>
+              <div class="flex items-center gap-1 shrink-0">
+                <button onclick="editTask('${tk.id}')" class="w-6 h-6 rounded-lg text-slate-400 hover:text-blue-600 flex items-center justify-center text-xs"><i class="fa-solid fa-pen"></i></button>
+                <button onclick="deleteTask('${tk.id}')" class="w-6 h-6 rounded-lg text-slate-400 hover:text-rose-600 flex items-center justify-center text-xs"><i class="fa-solid fa-trash"></i></button>
+              </div>
             </div>
           `).join('');
         }
@@ -2220,30 +2210,26 @@
       const txListEl = document.getElementById('sel-day-tx-list');
       if (txListEl) {
         if (dayTxs.length === 0) {
-          txListEl.innerHTML = `<div class="text-xs text-slate-400 py-2 text-center bg-slate-50 rounded-xl">Chưa có giao dịch thu/chi trong ngày này.</div>`;
+          txListEl.innerHTML = `<div class="text-xs text-slate-400 py-2 text-center bg-slate-50 rounded-xl">Chưa có giao dịch thu/chi trong ngày này</div>`;
         } else {
           txListEl.innerHTML = dayTxs.map(tx => {
             const meta = getCategoryMeta(tx.category, tx.type, tx.subCategory);
             const isExp = tx.type === 'expense';
-            const iconClass = meta.subIcon.includes('fa-brands') ? meta.subIcon : `fa-solid ${meta.subIcon}`;
             return `
-              <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100">
-                <div onclick="openEditTransaction('${tx.id}')" class="flex items-center gap-2.5 min-w-0 cursor-pointer flex-1">
-                  <span class="w-8 h-8 rounded-xl flex items-center justify-center text-xs shrink-0" style="background:${meta.bg}; color:${meta.color}">
-                    <i class="${iconClass}"></i>
-                  </span>
+              <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100 gap-2">
+                <div class="flex items-center gap-2.5 min-w-0">
+                  <div class="w-8 h-8 rounded-xl flex items-center justify-center text-xs shrink-0" style="background:${meta.bg}; color:${meta.color}">
+                    <i class="fa-solid ${meta.subIcon}"></i>
+                  </div>
                   <div class="min-w-0">
                     <div class="text-xs font-bold text-slate-800 truncate">${tx.note || meta.subName}</div>
                     <div class="text-[10px] text-slate-500">${meta.name} • ${meta.subName}</div>
                   </div>
                 </div>
                 <div class="flex items-center gap-1.5 shrink-0">
-                  <span class="text-xs font-extrabold ${isExp ? 'text-momo-600' : 'text-emerald-600'}">
-                    ${isExp ? '-' : '+'}${formatMoney(tx.amount)}
-                  </span>
-                  <button onclick="deleteTransaction('${tx.id}')" class="text-slate-300 hover:text-red-500 text-xs px-1">
-                    <i class="fa-solid fa-trash-can"></i>
-                  </button>
+                  <span class="text-xs font-extrabold ${isExp ? 'text-momo-600' : 'text-emerald-600'}">${isExp ? '-' : '+'}${formatMoney(tx.amount)}</span>
+                  <button onclick="editTransaction('${tx.id}')" class="w-6 h-6 rounded-lg text-slate-400 hover:text-blue-600 flex items-center justify-center text-xs"><i class="fa-solid fa-pen"></i></button>
+                  <button onclick="deleteTransaction('${tx.id}')" class="w-6 h-6 rounded-lg text-slate-400 hover:text-rose-600 flex items-center justify-center text-xs"><i class="fa-solid fa-trash"></i></button>
                 </div>
               </div>
             `;
@@ -2252,16 +2238,13 @@
       }
     }
 
-    /********************************************************************
-     * TASKS TAB (CHỈ HIỂN THỊ CÔNG VIỆC)
-     ********************************************************************/
     function setTaskFilter(filter) {
       state.taskFilter = filter;
       ['all', 'today', 'upcoming', 'done'].forEach(f => {
         const btn = document.getElementById(`tfilter-${f}`);
         if (!btn) return;
         if (f === filter) {
-          btn.className = 'px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap bg-momo-600 text-white transition shadow-xs';
+          btn.className = 'px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap bg-momo-600 text-white transition';
         } else {
           btn.className = 'px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap bg-slate-100 text-slate-600 hover:bg-slate-200 transition';
         }
@@ -2269,191 +2252,177 @@
       renderTasksTab();
     }
 
-    function toggleTaskDone(id) {
-      const tk = state.tasks.find(t => t.id === id);
-      if (tk) {
-        tk.completed = !tk.completed;
-        renderAll();
-        triggerCloudSync();
-        showToast(tk.completed ? 'Đã hoàn thành công việc!' : 'Đã mở lại công việc');
-      }
-    }
-
-    function deleteTask(id) {
-      state.tasks = state.tasks.filter(t => t.id !== id);
-      renderAll();
-      triggerCloudSync();
-      showToast('Đã xóa công việc');
-    }
-
-    function deleteTransaction(id) {
-      state.transactions = state.transactions.filter(t => t.id !== id);
-      renderAll();
-      triggerCloudSync();
-      showToast('Đã xóa giao dịch');
-    }
-
     function renderTasksTab() {
-      const allTasks = [...state.tasks].sort((a, b) => a.date.localeCompare(b.date));
-      const pendingCount = allTasks.filter(t => !t.completed).length;
-      const doneCount = allTasks.filter(t => t.completed).length;
-      const todayCount = allTasks.filter(t => t.date === todayISO).length;
+      const pendingCount = state.tasks.filter(t => !t.completed).length;
+      const todayCount = state.tasks.filter(t => t.date === todayISO && !t.completed).length;
+      const doneCount = state.tasks.filter(t => t.completed).length;
 
-      document.getElementById('task-stat-pending').textContent = pendingCount;
-      const todayStatEl = document.getElementById('task-stat-today');
-      if (todayStatEl) todayStatEl.textContent = todayCount;
-      document.getElementById('task-stat-done').textContent = doneCount;
+      const statPending = document.getElementById('task-stat-pending');
+      const statToday = document.getElementById('task-stat-today');
+      const statDone = document.getElementById('task-stat-done');
+      const navBadge = document.getElementById('nav-task-badge');
 
-      let filtered = allTasks;
-      if (state.taskFilter === 'today') {
-        filtered = allTasks.filter(t => t.date === todayISO);
-      } else if (state.taskFilter === 'upcoming') {
-        filtered = allTasks.filter(t => !t.completed && t.date >= todayISO);
-      } else if (state.taskFilter === 'done') {
-        filtered = allTasks.filter(t => t.completed);
+      if (statPending) statPending.textContent = pendingCount;
+      if (statToday) statToday.textContent = todayCount;
+      if (statDone) statDone.textContent = doneCount;
+
+      if (navBadge) {
+        if (pendingCount > 0) {
+          navBadge.textContent = pendingCount;
+          navBadge.classList.remove('hidden');
+        } else {
+          navBadge.classList.add('hidden');
+        }
       }
 
-      const listEl = document.getElementById('tasks-full-list');
-      if (filtered.length === 0) {
-        listEl.innerHTML = `
+      let list = [...state.tasks];
+      if (state.taskFilter === 'today') {
+        list = list.filter(t => t.date === todayISO);
+      } else if (state.taskFilter === 'upcoming') {
+        list = list.filter(t => !t.completed && t.date >= todayISO);
+      } else if (state.taskFilter === 'done') {
+        list = list.filter(t => t.completed);
+      }
+
+      list.sort((a, b) => Number(a.completed) - Number(b.completed) || a.date.localeCompare(b.date));
+
+      const container = document.getElementById('tasks-full-list');
+      if (!container) return;
+
+      if (list.length === 0) {
+        container.innerHTML = `
           <div class="bg-white rounded-2xl p-6 text-center card-shadow space-y-2">
-            <div class="w-12 h-12 rounded-full bg-pink-50 text-momo-500 flex items-center justify-center mx-auto text-lg">
-              <i class="fa-solid fa-calendar-check"></i>
-            </div>
-            <p class="text-xs font-bold text-slate-600">Chưa có công việc nào trong mục này</p>
-            <button onclick="openAddModal('task')" class="text-xs font-extrabold text-momo-600 underline">+ Thêm công việc mới</button>
+            <div class="text-slate-400 text-xs font-semibold">Chưa có công việc nào trong mục này</div>
+            <button onclick="openAddModal('task')" class="px-3.5 py-2 rounded-xl bg-momo-50 text-momo-600 text-xs font-extrabold">+ Thêm công việc mới</button>
           </div>
         `;
         return;
       }
 
-      listEl.innerHTML = filtered.map(tk => {
-        const lunar = getLunarInfoFromISO(tk.date);
+      container.innerHTML = list.map(tk => {
+        const l = getLunarInfoFromISO(tk.date);
         const prioBadge = tk.priority === 'high'
-          ? '<span class="px-1.5 py-0.5 rounded bg-red-100 text-red-600 text-[9px] font-bold">Cao</span>'
-          : tk.priority === 'medium'
-          ? '<span class="px-1.5 py-0.5 rounded bg-amber-100 text-amber-700 text-[9px] font-bold">TB</span>'
-          : '<span class="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700 text-[9px] font-bold">Thấp</span>';
+          ? '<span class="px-1.5 py-0.5 rounded-md bg-rose-50 text-rose-600 text-[10px] font-bold">🔴 Cao</span>'
+          : tk.priority === 'low'
+          ? '<span class="px-1.5 py-0.5 rounded-md bg-emerald-50 text-emerald-600 text-[10px] font-bold">🟢 Thấp</span>'
+          : '<span class="px-1.5 py-0.5 rounded-md bg-amber-50 text-amber-600 text-[10px] font-bold">🟡 Vừa</span>';
 
         return `
-          <div class="bg-white rounded-2xl p-3.5 card-shadow border border-white space-y-2">
-            <div class="flex items-start justify-between gap-2">
-              <div class="flex items-start gap-2.5 min-w-0 flex-1">
-                <button onclick="toggleTaskDone('${tk.id}')" class="mt-0.5 w-5 h-5 rounded-md border-2 ${tk.completed ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-momo-500'} flex items-center justify-center text-xs shrink-0">
-                  ${tk.completed ? '<i class="fa-solid fa-check text-[10px]"></i>' : ''}
-                </button>
-                <div onclick="openEditTask('${tk.id}')" class="min-w-0 cursor-pointer flex-1">
-                  <div class="flex items-center gap-1.5 flex-wrap">
-                    <span class="text-sm font-bold text-slate-800 ${tk.completed ? 'line-through text-slate-400' : ''}">${tk.title}</span>
-                  </div>
-                  ${tk.note ? `<p class="text-xs text-slate-500 mt-0.5">${tk.note}</p>` : ''}
+          <div class="bg-white rounded-2xl p-3.5 card-shadow flex items-start justify-between gap-2.5 border ${l.isRam ? 'border-red-300' : 'border-slate-100'}">
+            <div class="flex items-start gap-2.5 min-w-0">
+              <button onclick="toggleTaskDone('${tk.id}')" class="mt-0.5 w-5 h-5 rounded-md border-2 ${tk.completed ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-blue-400 bg-white'} flex items-center justify-center text-xs shrink-0">
+                ${tk.completed ? '<i class="fa-solid fa-check text-[10px]"></i>' : ''}
+              </button>
+              <div class="space-y-1 min-w-0">
+                <div class="text-xs font-extrabold ${tk.completed ? 'line-through text-slate-400' : 'text-slate-800'}">${tk.title}</div>
+                ${tk.note ? `<p class="text-[11px] text-slate-500">${tk.note}</p>` : ''}
+                <div class="flex flex-wrap items-center gap-1.5 pt-0.5">
+                  <span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-[10px] font-bold">
+                    <i class="fa-regular fa-calendar mr-1"></i>${formatDisplayDate(tk.date)} (${l.day}/${l.month} ÂL)
+                  </span>
+                  ${l.isRam ? '<span class="px-1.5 py-0.5 rounded-md bg-red-600 text-white text-[10px] font-extrabold">🌕 Rằm 15 ÂL</span>' : ''}
+                  ${tk.time ? `<span class="px-1.5 py-0.5 rounded-md bg-blue-50 text-blue-600 text-[10px] font-bold">⏰ ${tk.time}</span>` : ''}
+                  ${prioBadge}
                 </div>
               </div>
-              <div class="flex items-center gap-1 shrink-0">
-                <button onclick="openEditTask('${tk.id}')" class="text-slate-400 hover:text-blue-600 text-xs p-1"><i class="fa-solid fa-pen"></i></button>
-                <button onclick="deleteTask('${tk.id}')" class="text-slate-300 hover:text-red-500 text-xs p-1"><i class="fa-solid fa-trash-can"></i></button>
-              </div>
             </div>
-
-            <div class="flex items-center justify-between pt-2 border-t border-slate-100 flex-wrap gap-1.5">
-              <button onclick="jumpToCalendarDate('${tk.date}')" class="flex items-center gap-1.5 text-[11px] font-bold text-momo-600 bg-pink-50 px-2.5 py-1 rounded-lg hover:opacity-90 transition">
-                <i class="fa-regular fa-calendar"></i>
-                <span>${formatDisplayDate(tk.date)}</span>
-                <span>• ${lunar.day}/${lunar.month} ÂL</span>
+            <div class="flex items-center gap-1 shrink-0">
+              <button onclick="jumpToCalendarDate('${tk.date}')" class="w-7 h-7 rounded-lg bg-slate-50 hover:bg-pink-50 text-slate-500 hover:text-momo-600 flex items-center justify-center text-xs" title="Xem trên lịch">
+                <i class="fa-regular fa-calendar-days"></i>
               </button>
-              <div class="flex items-center gap-1.5">
-                <span class="text-[10px] font-semibold text-slate-500"><i class="fa-regular fa-clock mr-0.5"></i>${tk.time || '08:00'}</span>
-                <span class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 text-[9px] font-bold">${tk.category}</span>
-                ${prioBadge}
-              </div>
+              <button onclick="editTask('${tk.id}')" class="w-7 h-7 rounded-lg bg-slate-50 hover:bg-blue-50 text-slate-500 hover:text-blue-600 flex items-center justify-center text-xs" title="Sửa">
+                <i class="fa-solid fa-pen"></i>
+              </button>
+              <button onclick="deleteTask('${tk.id}')" class="w-7 h-7 rounded-lg bg-slate-50 hover:bg-rose-50 text-slate-500 hover:text-rose-600 flex items-center justify-center text-xs" title="Xóa">
+                <i class="fa-solid fa-trash"></i>
+              </button>
             </div>
           </div>
         `;
       }).join('');
     }
 
-    /********************************************************************
-     * UTILITIES TAB & BACKUP FOLDER VIEWER
-     ********************************************************************/
+    function toggleTaskDone(taskId) {
+      const tk = state.tasks.find(t => t.id === taskId);
+      if (!tk) return;
+      tk.completed = !tk.completed;
+      renderAll();
+      triggerCloudSync();
+      showToast(tk.completed ? 'Đã hoàn thành công việc!' : 'Đã mở lại công việc');
+    }
+
+    function deleteTask(taskId) {
+      state.tasks = state.tasks.filter(t => t.id !== taskId);
+      renderAll();
+      triggerCloudSync();
+      showToast('Đã xóa công việc');
+    }
+
+    function editTask(taskId) {
+      const tk = state.tasks.find(t => t.id === taskId);
+      if (!tk) return;
+      state.editingRecordId = tk.id;
+      openAddModal('task', tk.date, true);
+      document.getElementById('task-title-input').value = tk.title || '';
+      document.getElementById('task-time-input').value = tk.time || '08:00';
+      document.getElementById('task-priority-input').value = tk.priority || 'medium';
+      document.getElementById('task-note-input').value = tk.note || '';
+      selectTaskCat(tk.category || 'Công việc');
+    }
+
     function renderUtilitiesTab() {
-      const monthExp = state.transactions.filter(
+      const periodTxs = state.transactions.filter(
         t => t.type === 'expense' && t.date >= state.filterStartDate && t.date <= state.filterEndDate
       );
-      const totalSpent = monthExp.reduce((s, t) => s + Number(t.amount), 0);
-      const limit = state.monthlyBudget || 12000000;
-      const pct = Math.min(Math.round((totalSpent / limit) * 100), 100);
+      const spent = periodTxs.reduce((s, t) => s + Number(t.amount || 0), 0);
+      const limit = Number(state.monthlyBudget) || 12000000;
+      const pct = Math.min(100, Math.round((spent / limit) * 100));
 
-      document.getElementById('budget-spent-label').textContent = formatMoney(totalSpent);
-      document.getElementById('budget-limit-label').textContent = formatMoney(limit);
-      document.getElementById('budget-percent-label').textContent = `${((totalSpent / limit) * 100).toFixed(1)}%`;
-      document.getElementById('budget-progress-bar').style.width = `${pct}%`;
+      const pctEl = document.getElementById('budget-percent-label');
+      const spentEl = document.getElementById('budget-spent-label');
+      const limitEl = document.getElementById('budget-limit-label');
+      const barEl = document.getElementById('budget-progress-bar');
+      const msgEl = document.getElementById('budget-status-msg');
 
-      const remain = limit - totalSpent;
-      document.getElementById('budget-status-msg').textContent =
-        remain >= 0
-          ? `Bạn còn có thể chi tiêu ${formatMoney(remain)} trong kỳ (${formatDisplayDate(state.filterStartDate).slice(0,5)} → ${formatDisplayDate(state.filterEndDate).slice(0,5)}).`
-          : `Cảnh báo: Bạn đã vượt ngân sách ${formatMoney(Math.abs(remain))}!`;
+      if (pctEl) pctEl.textContent = `${pct}%`;
+      if (spentEl) spentEl.textContent = formatMoney(spent);
+      if (limitEl) limitEl.textContent = formatMoney(limit);
+      if (barEl) barEl.style.width = `${pct}%`;
+      if (msgEl) {
+        const remain = limit - spent;
+        msgEl.textContent = remain >= 0
+          ? `Còn lại có thể chi trong kỳ: ${formatMoney(remain)}`
+          : `Đã vượt hạn mức ngân sách: ${formatMoney(Math.abs(remain))}`;
+      }
 
-      const byCat = {};
-      monthExp.forEach(t => { byCat[t.category] = (byCat[t.category] || 0) + Number(t.amount); });
-
-      document.getElementById('budget-category-list').innerHTML = EXPENSE_CATEGORIES.map(cat => {
-        const spent = byCat[cat.id] || 0;
-        const catPct = limit > 0 ? Math.min((spent / (limit * 0.35)) * 100, 100) : 0;
-        return `
-          <div class="space-y-1">
-            <div class="flex items-center justify-between text-xs">
-              <div class="flex items-center gap-2 font-bold text-slate-700">
-                <span class="w-6 h-6 rounded-lg flex items-center justify-center text-[11px]" style="background:${cat.bg}; color:${cat.color}">
-                  <i class="fa-solid ${cat.icon}"></i>
-                </span>
-                <span>${cat.name}</span>
-              </div>
-              <span class="font-extrabold text-slate-800">${formatMoney(spent)}</span>
-            </div>
-            <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
-              <div class="h-full rounded-full" style="width:${catPct.toFixed(0)}%; background:${cat.color}"></div>
-            </div>
-          </div>
-        `;
-      }).join('');
-
-      // Render Backup Folder List
       const folderCountEl = document.getElementById('backup-folder-count');
       const folderListEl = document.getElementById('backup-folder-list');
-      if (folderCountEl) {
-        folderCountEl.textContent = `${state.backups.length} bản lưu`;
-      }
+      if (folderCountEl) folderCountEl.textContent = `${state.backups.length} bản lưu`;
 
       if (folderListEl) {
         if (state.backups.length === 0) {
-          folderListEl.innerHTML = `<div class="text-center py-4 text-xs text-slate-400">Thư mục sao lưu đang trống.</div>`;
+          folderListEl.innerHTML = `<div class="text-xs text-slate-400 text-center py-4">Thư mục trống</div>`;
         } else {
           folderListEl.innerHTML = state.backups.map(bk => `
-            <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 hover:bg-slate-100/80 border border-slate-200/70 transition">
-              <div onclick="viewBackupDetailModal('${bk.id}')" class="flex items-center gap-2.5 min-w-0 flex-1 cursor-pointer">
-                <span class="w-8 h-8 rounded-xl bg-amber-50 border border-amber-200 text-amber-600 flex items-center justify-center text-xs shrink-0">
-                  <i class="fa-solid fa-file-code"></i>
-                </span>
+            <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-200/70 gap-2">
+              <div class="flex items-center gap-2.5 min-w-0">
+                <i class="fa-solid fa-file-code text-amber-500 text-base shrink-0"></i>
                 <div class="min-w-0">
-                  <div class="flex items-center gap-1.5">
-                    <span class="text-xs font-extrabold text-slate-800 truncate">${bk.fileName}</span>
-                    ${bk.date === todayISO ? '<span class="px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-700 text-[9px] font-bold">Hôm nay</span>' : ''}
-                  </div>
+                  <div class="text-xs font-extrabold text-slate-800 truncate">${bk.fileName}</div>
                   <div class="text-[10px] text-slate-500 font-medium">
-                    ${formatDisplayDate(bk.date)} (${bk.time}) • ${bk.txCount} GD • ${bk.taskCount} việc
+                    ${formatDisplayDate(bk.date)} • ${bk.time} • ${bk.txCount} GD / ${bk.taskCount} việc
                   </div>
                 </div>
               </div>
               <div class="flex items-center gap-1 shrink-0">
-                <button onclick="viewBackupDetailModal('${bk.id}')" class="px-2 py-1 rounded-lg bg-white border border-slate-200 text-[10px] font-bold text-momo-600 hover:bg-pink-50" title="Xem & Khôi phục">
+                <button onclick="viewBackupDetailModal('${bk.id}')" class="px-2 py-1 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-momo-50 hover:text-momo-600 text-[10px] font-extrabold">
                   Mở
                 </button>
-                <button onclick="downloadBackupItem('${bk.id}')" class="p-1.5 text-slate-400 hover:text-blue-600 text-xs" title="Tải về">
+                <button onclick="downloadBackupItem('${bk.id}')" class="w-6 h-6 rounded-lg bg-white border border-slate-200 text-blue-600 flex items-center justify-center text-[10px]" title="Tải về">
                   <i class="fa-solid fa-download"></i>
                 </button>
-                <button onclick="deleteBackupItem('${bk.id}')" class="p-1.5 text-slate-300 hover:text-red-500 text-xs" title="Xóa bản lưu">
-                  <i class="fa-solid fa-trash-can"></i>
+                <button onclick="deleteBackupItem('${bk.id}')" class="w-6 h-6 rounded-lg bg-white border border-slate-200 text-rose-500 flex items-center justify-center text-[10px]" title="Xóa">
+                  <i class="fa-solid fa-trash"></i>
                 </button>
               </div>
             </div>
@@ -2462,308 +2431,33 @@
       }
     }
 
-    /********************************************************************
-     * MODALS, NUMERIC KEYPAD AMOUNT INPUT & FORMS
-     ********************************************************************/
-    function parseRawAmount(val) {
-      if (!val) return 0;
-      const digits = String(val).replace(/\D/g, '');
-      return digits ? Number(digits) : 0;
-    }
-
-    function formatInputNumber(num) {
-      const n = parseRawAmount(num);
-      return n > 0 ? n.toLocaleString('vi-VN') : '';
-    }
-
-    function handleAmountInput(event) {
-      const input = event.target;
-      const raw = parseRawAmount(input.value);
-      input.value = raw > 0 ? raw.toLocaleString('vi-VN') : '';
-      renderQuickAmountSuggestions();
-    }
-
-    function openAddModal(mode = 'expense', customDate = null) {
-      state.editingRecordId = null;
-      document.getElementById('modal-mode-tabs').classList.remove('hidden');
-      document.getElementById('record-modal').classList.remove('hidden');
-      const targetDate = customDate || state.selectedDate || todayISO;
-      document.getElementById('modal-date-input').value = targetDate;
-      document.getElementById('tx-amount-input').value = '';
-      document.getElementById('tx-note-input').value = '';
-      document.getElementById('task-title-input').value = '';
-      document.getElementById('task-note-input').value = '';
-      switchModalMode(mode);
-      updateModalLunarPreview();
-    }
-
-    function openEditTask(taskId) {
-      const tk = state.tasks.find(t => t.id === taskId);
-      if (!tk) return;
-      state.editingRecordId = taskId;
-      document.getElementById('record-modal').classList.remove('hidden');
-      switchModalMode('task');
-      document.getElementById('modal-title').textContent = 'Chỉnh sửa công việc';
-      document.getElementById('modal-date-input').value = tk.date;
-      document.getElementById('task-title-input').value = tk.title;
-      document.getElementById('task-time-input').value = tk.time || '08:00';
-      document.getElementById('task-priority-input').value = tk.priority || 'medium';
-      document.getElementById('task-note-input').value = tk.note || '';
-      selectTaskCat(tk.category || 'Công việc');
-      updateModalLunarPreview();
-    }
-
-    function openEditTransaction(txId) {
-      const tx = state.transactions.find(t => t.id === txId);
-      if (!tx) return;
-      state.editingRecordId = txId;
-      document.getElementById('record-modal').classList.remove('hidden');
-      switchModalMode(tx.type);
-      document.getElementById('modal-title').textContent = 'Chỉnh sửa giao dịch';
-      document.getElementById('modal-date-input').value = tx.date;
-      document.getElementById('tx-amount-input').value = formatInputNumber(tx.amount);
-      document.getElementById('tx-note-input').value = tx.note || '';
-      const meta = getCategoryMeta(tx.category, tx.type, tx.subCategory);
-      selectTxCat(meta.id, meta.subId);
-      updateModalLunarPreview();
-    }
-
-    function closeRecordModal() {
-      document.getElementById('record-modal').classList.add('hidden');
-      state.editingRecordId = null;
-    }
-
-    function switchModalMode(mode) {
-      state.modalMode = mode;
-      ['expense', 'income', 'task'].forEach(m => {
-        const btn = document.getElementById(`mmode-${m}`);
-        if (m === mode) {
-          btn.className = 'py-2 rounded-xl text-xs font-extrabold transition bg-white text-momo-600 shadow-xs';
-        } else {
-          btn.className = 'py-2 rounded-xl text-xs font-extrabold transition text-slate-600';
-        }
-      });
-
-      const txFields = document.getElementById('modal-tx-fields');
-      const taskFields = document.getElementById('modal-task-fields');
-
-      if (mode === 'task') {
-        txFields.classList.add('hidden');
-        taskFields.classList.remove('hidden');
-        if (!state.editingRecordId) document.getElementById('modal-title').textContent = 'Thêm công việc vào lịch';
-      } else {
-        txFields.classList.remove('hidden');
-        taskFields.classList.add('hidden');
-        if (!state.editingRecordId) {
-          document.getElementById('modal-title').textContent = mode === 'expense' ? 'Nhập giao dịch chi' : 'Nhập giao dịch thu';
-          const defaultParent = mode === 'expense' ? EXPENSE_CATEGORIES[0] : INCOME_CATEGORIES[0];
-          state.selectedTxCategory = defaultParent.id;
-          state.selectedTxSubCategory = defaultParent.subs[0].id;
-        }
-        renderModalCategoryGrid();
-      }
-    }
-
-    function updateModalLunarPreview() {
-      const iso = document.getElementById('modal-date-input').value || todayISO;
-      const lunar = getLunarInfoFromISO(iso);
-      const previewEl = document.getElementById('modal-lunar-preview');
-      if (lunar.isRam) {
-        previewEl.innerHTML = `<span class="text-red-600 font-extrabold">🌕 Ngày Rằm ${lunar.day}/${lunar.month} ÂL (${lunar.canChi.day})</span>`;
-      } else if (lunar.isMung1) {
-        previewEl.innerHTML = `<span class="text-amber-600 font-extrabold">🌑 Mùng 1/${lunar.month} ÂL (${lunar.canChi.day})</span>`;
-      } else {
-        previewEl.innerHTML = `Âm lịch: ${lunar.day}/${lunar.month} (${lunar.canChi.day})`;
-      }
-    }
-
-    function setTxAmount(val) {
-      document.getElementById('tx-amount-input').value = formatInputNumber(val);
-    }
-
-    function renderQuickAmountSuggestions() {
-      const raw = parseRawAmount(document.getElementById('tx-amount-input').value);
-      const container = document.getElementById('quick-amount-chips');
-      if (!raw || raw > 100000) return;
-      const base = raw <= 1000 ? raw : Math.round(raw / 1000);
-      const mults = [base * 1000, base * 10000, base * 100000];
-      container.innerHTML = mults.map(v => `
-        <button type="button" onclick="setTxAmount(${v})" class="px-2.5 py-1 rounded-lg bg-pink-50 text-momo-600 text-[11px] font-bold whitespace-nowrap hover:bg-pink-100">
-          ${v.toLocaleString('vi-VN')}đ
-        </button>
-      `).join('');
-    }
-
-    function renderModalCategoryGrid() {
-      const list = state.modalMode === 'income' ? INCOME_CATEGORIES : EXPENSE_CATEGORIES;
-      const grid = document.getElementById('tx-category-grid');
-      const subGrid = document.getElementById('tx-subcategory-grid');
-      const parentLabel = document.getElementById('selected-parent-cat-label');
-
-      const currentParent = list.find(c => c.id === state.selectedTxCategory) || list[0];
-      state.selectedTxCategory = currentParent.id;
-
-      if (!currentParent.subs.some(s => s.id === state.selectedTxSubCategory)) {
-        state.selectedTxSubCategory = currentParent.subs[0].id;
-      }
-
-      if (parentLabel) {
-        parentLabel.textContent = currentParent.name;
-      }
-
-      grid.innerHTML = list.map(cat => {
-        const active = state.selectedTxCategory === cat.id;
-        return `
-          <button type="button" onclick="selectTxCat('${cat.id}')" class="p-2 rounded-xl border text-center flex flex-col items-center gap-1 transition ${
-            active ? 'border-momo-500 bg-momo-50 shadow-xs ring-1 ring-momo-400' : 'border-slate-200 bg-white hover:bg-slate-50'
-          }">
-            <span class="w-8 h-8 rounded-lg flex items-center justify-center text-xs" style="background:${cat.bg}; color:${cat.color}">
-              <i class="fa-solid ${cat.icon}"></i>
-            </span>
-            <span class="text-[10px] font-bold text-slate-700 truncate w-full">${cat.name}</span>
-          </button>
-        `;
-      }).join('');
-
-      if (subGrid) {
-        subGrid.innerHTML = currentParent.subs.map(sub => {
-          const isSubActive = state.selectedTxSubCategory === sub.id;
-          const iconClass = sub.icon.includes('fa-brands') ? sub.icon : `fa-solid ${sub.icon}`;
-          return `
-            <button type="button" onclick="selectTxSubCat('${sub.id}')" class="px-2.5 py-2 rounded-xl border text-left flex items-center gap-2 transition ${
-              isSubActive
-                ? 'border-momo-500 bg-white text-momo-600 shadow-xs font-extrabold'
-                : 'border-slate-200/80 bg-white/70 text-slate-600 hover:bg-white font-semibold'
-            }">
-              <span class="w-6 h-6 rounded-lg flex items-center justify-center text-[11px] shrink-0" style="background:${currentParent.bg}; color:${currentParent.color}">
-                <i class="${iconClass}"></i>
-              </span>
-              <span class="text-[11px] leading-tight truncate">${sub.name}</span>
-            </button>
-          `;
-        }).join('');
-      }
-    }
-
-    function selectTxCat(id, customSubId = null) {
-      state.selectedTxCategory = id;
-      const list = state.modalMode === 'income' ? INCOME_CATEGORIES : EXPENSE_CATEGORIES;
-      const parent = list.find(c => c.id === id) || list[0];
-      state.selectedTxSubCategory = customSubId || (parent.subs[0] ? parent.subs[0].id : id);
-      renderModalCategoryGrid();
-    }
-
-    function selectTxSubCat(subId) {
-      state.selectedTxSubCategory = subId;
-      renderModalCategoryGrid();
-    }
-
-    function selectTaskCat(catName) {
-      state.selectedTaskCategory = catName;
-      document.querySelectorAll('.tcat-btn').forEach(btn => {
-        if (btn.getAttribute('data-tcat') === catName) {
-          btn.className = 'tcat-btn py-2 px-2 rounded-xl border text-xs font-bold border-momo-500 bg-momo-50 text-momo-600';
-        } else {
-          btn.className = 'tcat-btn py-2 px-2 rounded-xl border text-xs font-bold border-slate-200 bg-slate-50 text-slate-600';
-        }
-      });
-    }
-
-    function submitRecordModal() {
-      const dateVal = document.getElementById('modal-date-input').value || todayISO;
-
-      if (state.modalMode === 'task') {
-        const title = document.getElementById('task-title-input').value.trim();
-        if (!title) { showToast('Vui lòng nhập tên công việc!'); return; }
-        const time = document.getElementById('task-time-input').value || '08:00';
-        const priority = document.getElementById('task-priority-input').value;
-        const note = document.getElementById('task-note-input').value.trim();
-
-        if (state.editingRecordId) {
-          const idx = state.tasks.findIndex(t => t.id === state.editingRecordId);
-          if (idx !== -1) {
-            state.tasks[idx] = { ...state.tasks[idx], title, date: dateVal, time, priority, category: state.selectedTaskCategory, note };
-          }
-        } else {
-          state.tasks.unshift({
-            id: 'tk_' + Date.now(),
-            title,
-            date: dateVal,
-            time,
-            priority,
-            category: state.selectedTaskCategory,
-            note,
-            completed: false
-          });
-        }
-        state.selectedDate = dateVal;
-        closeRecordModal();
-        renderAll();
-        triggerCloudSync();
-        showToast('Đã lưu công việc vào lịch!');
-      } else {
-        const amount = parseRawAmount(document.getElementById('tx-amount-input').value);
-        if (!amount || amount <= 0) { showToast('Vui lòng nhập số tiền hợp lệ!'); return; }
-        const note = document.getElementById('tx-note-input').value.trim();
-
-        if (state.editingRecordId) {
-          const idx = state.transactions.findIndex(t => t.id === state.editingRecordId);
-          if (idx !== -1) {
-            state.transactions[idx] = {
-              ...state.transactions[idx],
-              type: state.modalMode,
-              amount,
-              category: state.selectedTxCategory,
-              subCategory: state.selectedTxSubCategory,
-              date: dateVal,
-              note
-            };
-          }
-        } else {
-          state.transactions.unshift({
-            id: 'tx_' + Date.now(),
-            type: state.modalMode,
-            amount,
-            category: state.selectedTxCategory,
-            subCategory: state.selectedTxSubCategory,
-            date: dateVal,
-            note
-          });
-        }
-        state.selectedDate = dateVal;
-        closeRecordModal();
-        renderAll();
-        triggerCloudSync();
-        showToast(state.modalMode === 'expense' ? 'Đã lưu khoản chi tiêu!' : 'Đã lưu khoản thu nhập!');
-      }
-    }
-
     function openBudgetEditModal() {
       const modal = document.getElementById('utility-modal');
       document.getElementById('utility-modal-title').textContent = 'Đặt hạn mức ngân sách tháng';
       document.getElementById('utility-modal-body').innerHTML = `
         <div class="space-y-3">
-          <label class="text-xs font-bold text-slate-600 block">Hạn mức chi tiêu tối đa / tháng (VNĐ)</label>
-          <input type="number" id="budget-input-val" value="${state.monthlyBudget}" class="w-full bg-slate-50 border-2 border-momo-300 rounded-xl px-3 py-2.5 text-base font-extrabold text-slate-800 focus:outline-none" />
-          <div class="flex gap-2">
-            <button onclick="document.getElementById('budget-input-val').value=8000000" class="flex-1 py-1.5 bg-pink-50 text-momo-600 rounded-lg text-xs font-bold">8 Triệu</button>
-            <button onclick="document.getElementById('budget-input-val').value=12000000" class="flex-1 py-1.5 bg-pink-50 text-momo-600 rounded-lg text-xs font-bold">12 Triệu</button>
-            <button onclick="document.getElementById('budget-input-val').value=20000000" class="flex-1 py-1.5 bg-pink-50 text-momo-600 rounded-lg text-xs font-bold">20 Triệu</button>
+          <div>
+            <label class="text-xs font-bold text-slate-600 block mb-1">Hạn mức chi tiêu mỗi kỳ (VNĐ)</label>
+            <input type="text" inputmode="numeric" id="budget-input-field" value="${Number(state.monthlyBudget).toLocaleString('vi-VN')}" oninput="handleAmountInput(event)" class="w-full bg-slate-50 border-2 border-momo-200 rounded-xl px-3 py-2.5 text-base font-extrabold text-slate-800 focus:outline-none focus:border-momo-500" />
           </div>
-          <button onclick="saveBudgetLimit()" class="w-full py-2.5 rounded-xl bg-momo-600 text-white font-bold text-xs">Lưu hạn mức</button>
+          <button onclick="saveBudgetLimit()" class="w-full py-2.5 rounded-xl bg-momo-600 hover:bg-momo-700 text-white font-extrabold text-xs">
+            Lưu hạn mức
+          </button>
         </div>
       `;
       modal.classList.remove('hidden');
     }
 
     function saveBudgetLimit() {
-      const val = Number(document.getElementById('budget-input-val').value);
-      if (val > 0) {
-        state.monthlyBudget = val;
+      const inp = document.getElementById('budget-input-field');
+      if (!inp) return;
+      const raw = Number(String(inp.value).replace(/\D/g, ''));
+      if (raw > 0) {
+        state.monthlyBudget = raw;
         closeUtilityModal();
         renderAll();
         triggerCloudSync();
-        showToast('Đã cập nhật ngân sách tháng!');
+        showToast('Đã cập nhật hạn mức ngân sách!');
       }
     }
 
@@ -2773,18 +2467,18 @@
 
     function exportDataJSON() {
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({
+        exportedAt: new Date().toISOString(),
         transactions: state.transactions,
         tasks: state.tasks,
-        monthlyBudget: state.monthlyBudget,
-        exportedAt: new Date().toISOString()
+        monthlyBudget: state.monthlyBudget
       }, null, 2));
       const a = document.createElement('a');
       a.setAttribute('href', dataStr);
-      a.setAttribute('download', `quan_ly_thu_chi_${todayISO}.json`);
+      a.setAttribute('download', `thu_chi_lich_am_${todayISO}.json`);
       document.body.appendChild(a);
       a.click();
       a.remove();
-      showToast('Đã xuất file JSON dự phòng!');
+      showToast('Đã xuất file JSON thành công!');
     }
 
     function importDataJSON(event) {
@@ -2807,14 +2501,303 @@
       reader.readAsText(file);
     }
 
-    function updateTopLunarPill() {
-      const l = getLunarInfoFromISO(todayISO);
-      const pill = document.getElementById('top-lunar-pill');
-      pill.textContent = `Âm lịch: ${l.day}/${l.month}`;
+    function openAddModal(mode = 'expense', defaultDate = null, isEditing = false) {
+      if (!isEditing) state.editingRecordId = null;
+      const modal = document.getElementById('record-modal');
+      const dateInput = document.getElementById('modal-date-input');
+      dateInput.value = defaultDate || state.selectedDate || todayISO;
+
+      document.getElementById('tx-amount-input').value = '';
+      document.getElementById('tx-note-input').value = '';
+      document.getElementById('task-title-input').value = '';
+      document.getElementById('task-note-input').value = '';
+
+      switchModalMode(mode);
+      updateModalLunarPreview();
+      modal.classList.remove('hidden');
+    }
+
+    function closeRecordModal() {
+      state.editingRecordId = null;
+      document.getElementById('record-modal').classList.add('hidden');
+    }
+
+    function switchModalMode(mode) {
+      state.modalMode = mode;
+      ['expense', 'income', 'task'].forEach(m => {
+        const btn = document.getElementById(`mmode-${m}`);
+        if (!btn) return;
+        if (m === mode) {
+          btn.className = 'py-2 rounded-xl text-xs font-extrabold transition bg-white text-momo-600 shadow-xs';
+        } else {
+          btn.className = 'py-2 rounded-xl text-xs font-extrabold transition text-slate-600';
+        }
+      });
+
+      const txFields = document.getElementById('modal-tx-fields');
+      const taskFields = document.getElementById('modal-task-fields');
+
+      if (mode === 'task') {
+        txFields.classList.add('hidden');
+        taskFields.classList.remove('hidden');
+      } else {
+        txFields.classList.remove('hidden');
+        taskFields.classList.add('hidden');
+        const defaultCat = mode === 'income' ? INCOME_CATEGORIES[0] : EXPENSE_CATEGORIES[0];
+        state.selectedTxCategory = defaultCat.id;
+        state.selectedTxSubCategory = defaultCat.subs[0].id;
+        renderTxCategoryGrid();
+      }
+    }
+
+    function updateModalLunarPreview() {
+      const dateVal = document.getElementById('modal-date-input').value || todayISO;
+      const l = getLunarInfoFromISO(dateVal);
+      const previewEl = document.getElementById('modal-lunar-preview');
+      if (previewEl) {
+        previewEl.textContent = `${l.isRam ? '🌕 Rằm ' : l.isMung1 ? '🌑 Mùng 1 ' : 'ÂL: '}${l.day}/${l.month} (${l.canChi.day})`;
+      }
+    }
+
+    function handleAmountInput(event) {
+      const input = event.target;
+      const digits = String(input.value).replace(/\D/g, '');
+      if (!digits) {
+        input.value = '';
+        return;
+      }
+      input.value = Number(digits).toLocaleString('vi-VN');
+    }
+
+    function setTxAmount(val) {
+      const inp = document.getElementById('tx-amount-input');
+      if (inp) inp.value = Number(val).toLocaleString('vi-VN');
+    }
+
+    function renderTxCategoryGrid() {
+      const list = state.modalMode === 'income' ? INCOME_CATEGORIES : EXPENSE_CATEGORIES;
+      const gridEl = document.getElementById('tx-category-grid');
+      const subGridEl = document.getElementById('tx-subcategory-grid');
+      const parentLabelEl = document.getElementById('selected-parent-cat-label');
+      if (!gridEl || !subGridEl) return;
+
+      const activeParent = list.find(c => c.id === state.selectedTxCategory) || list[0];
+      state.selectedTxCategory = activeParent.id;
+      if (!activeParent.subs.some(s => s.id === state.selectedTxSubCategory)) {
+        state.selectedTxSubCategory = activeParent.subs[0].id;
+      }
+
+      if (parentLabelEl) parentLabelEl.textContent = activeParent.name;
+
+      gridEl.innerHTML = list.map(cat => {
+        const isSel = cat.id === state.selectedTxCategory;
+        return `
+          <button type="button" onclick="selectTxCategory('${cat.id}')" class="p-2 rounded-xl border text-center flex flex-col items-center gap-1 transition ${isSel ? 'border-momo-500 bg-momo-50/70 shadow-xs' : 'border-slate-200 bg-white hover:bg-slate-50'}">
+            <span class="w-7 h-7 rounded-lg flex items-center justify-center text-xs" style="background:${cat.bg}; color:${cat.color}">
+              <i class="fa-solid ${cat.icon}"></i>
+            </span>
+            <span class="text-[10px] font-bold text-slate-700 leading-tight line-clamp-1">${cat.name}</span>
+          </button>
+        `;
+      }).join('');
+
+      subGridEl.innerHTML = activeParent.subs.map(sub => {
+        const isSubSel = sub.id === state.selectedTxSubCategory;
+        return `
+          <button type="button" onclick="selectTxSubCategory('${sub.id}')" class="py-2 px-2.5 rounded-xl border text-left flex items-center gap-2 transition ${isSubSel ? 'border-momo-500 bg-white text-momo-600 shadow-xs font-extrabold' : 'border-slate-200/80 bg-white/60 text-slate-600 font-semibold'}">
+            <i class="fa-solid ${sub.icon} text-xs shrink-0" style="color:${activeParent.color}"></i>
+            <span class="text-[11px] truncate">${sub.name}</span>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function selectTxCategory(catId) {
+      state.selectedTxCategory = catId;
+      const list = state.modalMode === 'income' ? INCOME_CATEGORIES : EXPENSE_CATEGORIES;
+      const parent = list.find(c => c.id === catId);
+      if (parent && parent.subs.length > 0) {
+        state.selectedTxSubCategory = parent.subs[0].id;
+      }
+      renderTxCategoryGrid();
+    }
+
+    function selectTxSubCategory(subId) {
+      state.selectedTxSubCategory = subId;
+      renderTxCategoryGrid();
+    }
+
+    function selectTaskCat(catName) {
+      state.selectedTaskCategory = catName;
+      document.querySelectorAll('.tcat-btn').forEach(btn => {
+        if (btn.getAttribute('data-tcat') === catName) {
+          btn.className = 'tcat-btn py-2 px-2 rounded-xl border text-xs font-bold border-momo-500 bg-momo-50 text-momo-600';
+        } else {
+          btn.className = 'tcat-btn py-2 px-2 rounded-xl border text-xs font-bold border-slate-200 bg-slate-50 text-slate-600';
+        }
+      });
+    }
+
+    function submitRecordModal() {
+      const dateVal = document.getElementById('modal-date-input').value || todayISO;
+
+      if (state.modalMode === 'task') {
+        const title = document.getElementById('task-title-input').value.trim();
+        if (!title) {
+          showToast('Vui lòng nhập tên công việc!');
+          return;
+        }
+        const time = document.getElementById('task-time-input').value || '08:00';
+        const priority = document.getElementById('task-priority-input').value || 'medium';
+        const note = document.getElementById('task-note-input').value.trim();
+
+        if (state.editingRecordId) {
+          const idx = state.tasks.findIndex(t => t.id === state.editingRecordId);
+          if (idx !== -1) {
+            state.tasks[idx] = {
+              ...state.tasks[idx],
+              title,
+              date: dateVal,
+              time,
+              priority,
+              category: state.selectedTaskCategory,
+              note
+            };
+          }
+        } else {
+          state.tasks.unshift({
+            id: 'tk_' + Date.now(),
+            title,
+            date: dateVal,
+            time,
+            priority,
+            category: state.selectedTaskCategory,
+            note,
+            completed: false,
+            createdAt: Date.now()
+          });
+        }
+        closeRecordModal();
+        renderAll();
+        triggerCloudSync();
+        showToast('Đã lưu công việc vào lịch!');
+        return;
+      }
+
+      const rawAmount = String(document.getElementById('tx-amount-input').value).replace(/\D/g, '');
+      const amount = Number(rawAmount);
+      if (!amount || amount <= 0) {
+        showToast('Vui lòng nhập số tiền hợp lệ!');
+        return;
+      }
+
+      const meta = getCategoryMeta(state.selectedTxCategory, state.modalMode, state.selectedTxSubCategory);
+      const noteInput = document.getElementById('tx-note-input').value.trim();
+      const finalNote = noteInput || meta.subName;
+
+      if (state.editingRecordId) {
+        const idx = state.transactions.findIndex(t => t.id === state.editingRecordId);
+        if (idx !== -1) {
+          state.transactions[idx] = {
+            ...state.transactions[idx],
+            type: state.modalMode,
+            amount,
+            category: state.selectedTxCategory,
+            subCategory: state.selectedTxSubCategory,
+            note: finalNote,
+            date: dateVal
+          };
+        }
+      } else {
+        state.transactions.unshift({
+          id: 'tx_' + Date.now(),
+          type: state.modalMode,
+          amount,
+          category: state.selectedTxCategory,
+          subCategory: state.selectedTxSubCategory,
+          note: finalNote,
+          date: dateVal,
+          createdAt: Date.now()
+        });
+      }
+
+      closeRecordModal();
+      renderAll();
+      triggerCloudSync();
+      showToast('Đã lưu giao dịch thành công!');
+    }
+
+    function editTransaction(txId) {
+      const tx = state.transactions.find(t => t.id === txId);
+      if (!tx) return;
+      state.editingRecordId = tx.id;
+      openAddModal(tx.type, tx.date, true);
+      state.selectedTxCategory = tx.category;
+      state.selectedTxSubCategory = tx.subCategory;
+      renderTxCategoryGrid();
+      document.getElementById('tx-amount-input').value = Number(tx.amount).toLocaleString('vi-VN');
+      document.getElementById('tx-note-input').value = tx.note || '';
+    }
+
+    function deleteTransaction(txId) {
+      state.transactions = state.transactions.filter(t => t.id !== txId);
+      renderAll();
+      triggerCloudSync();
+      showToast('Đã xóa giao dịch');
+    }
+
+    function seedInitialDataIfEmpty() {
+      if (state.transactions.length > 0 || state.tasks.length > 0) return;
+      state.transactions = [
+        {
+          id: 'tx_sample_1',
+          type: 'income',
+          amount: 18500000,
+          category: 'salary',
+          subCategory: 'inc_main_salary',
+          note: 'Lương chính hàng tháng',
+          date: todayISO,
+          createdAt: 1
+        },
+        {
+          id: 'tx_sample_2',
+          type: 'expense',
+          amount: 2000000,
+          category: 'family',
+          subCategory: 'fam_cash_paternal',
+          note: 'Biếu tiền Ba Mẹ Nội Ngoại',
+          date: todayISO,
+          createdAt: 2
+        },
+        {
+          id: 'tx_sample_3',
+          type: 'expense',
+          amount: 320000,
+          category: 'food',
+          subCategory: 'food_market',
+          note: 'Đi chợ mua đồ ăn tươi',
+          date: todayISO,
+          createdAt: 3
+        }
+      ];
+      state.tasks = [
+        {
+          id: 'tk_sample_1',
+          title: 'Kiểm tra chi tiêu & ngân sách trong kỳ',
+          date: todayISO,
+          time: '20:00',
+          priority: 'medium',
+          category: 'Tài chính',
+          note: 'Ghi chép đầy đủ các khoản thu chi hàng ngày',
+          completed: false,
+          createdAt: 1
+        }
+      ];
+      state.lastUpdated = 0;
     }
 
     function renderAll() {
-      updateTopLunarPill();
+      renderTopLunarBanner();
       renderOverview();
       renderCalendar();
       renderTasksTab();
@@ -2824,33 +2807,32 @@
     Object.assign(window, {
       switchTab,
       toggleHideAmount,
-      jumpToNextRam,
+      setChartMode,
       changeOverviewMonth,
       resetDefaultDateRange,
       applyCustomDateRange,
       setOverviewType,
-      setChartMode,
-      changeCalendarMonth,
-      goToTodayCalendar,
-      jumpToCalendarDate,
-      selectCalendarDate,
-      setTaskFilter,
-      toggleTaskDone,
-      deleteTask,
-      deleteTransaction,
       openAddModal,
-      openEditTask,
-      openEditTransaction,
       closeRecordModal,
       switchModalMode,
       updateModalLunarPreview,
       handleAmountInput,
       setTxAmount,
-      renderQuickAmountSuggestions,
-      selectTxCat,
-      selectTxSubCat,
+      selectTxCategory,
+      selectTxSubCategory,
       selectTaskCat,
       submitRecordModal,
+      editTransaction,
+      deleteTransaction,
+      goToTodayCalendar,
+      jumpToNextRam,
+      changeCalendarMonth,
+      selectCalendarDate,
+      jumpToCalendarDate,
+      setTaskFilter,
+      toggleTaskDone,
+      editTask,
+      deleteTask,
       openBudgetEditModal,
       saveBudgetLimit,
       closeUtilityModal,
@@ -2860,12 +2842,13 @@
       downloadBackupItem,
       deleteBackupItem,
       exportDataJSON,
-      importDataJSON,
-      scrollToElement
+      importDataJSON
     });
 
-    // Initialize App
-    loadStateFromLocalStorage();
+    const hadLocal = loadStateFromLocalStorage();
+    if (!hadLocal) {
+      seedInitialDataIfEmpty();
+    }
     performDailyAutoBackup(false);
     renderAll();
     initFirebaseCloud();
