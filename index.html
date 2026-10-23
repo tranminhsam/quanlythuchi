@@ -685,6 +685,34 @@
       </div>
     </div>
 
+    <!-- MODAL 3: XÁC NHẬN XÓA (CONFIRM DELETE MODAL) -->
+    <div id="confirm-modal" class="hidden fixed inset-0 z-50 bg-slate-900/55 backdrop-blur-xs flex items-center justify-center p-4">
+      <div class="bg-white w-full max-w-[360px] rounded-3xl p-5 space-y-4 shadow-2xl border border-rose-100 animate-slide-up">
+        <div class="flex flex-col items-center text-center space-y-2">
+          <div class="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-100 text-rose-600 flex items-center justify-center text-xl shadow-xs">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+          </div>
+          <h3 id="confirm-modal-title" class="text-base font-extrabold text-slate-800">Xác nhận xóa giao dịch?</h3>
+          <p id="confirm-modal-desc" class="text-xs text-slate-500 leading-relaxed">
+            Bạn có chắc chắn muốn xóa mục này không? Hành động này không thể hoàn tác.
+          </p>
+        </div>
+
+        <!-- Thông tin chi tiết mục sắp xóa -->
+        <div id="confirm-modal-detail" class="bg-slate-50 rounded-2xl p-3 border border-slate-200/80 text-xs space-y-1"></div>
+
+        <div class="grid grid-cols-2 gap-2.5 pt-1">
+          <button type="button" onclick="closeConfirmModal()" class="py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-extrabold text-xs active:scale-95 transition">
+            Hủy bỏ
+          </button>
+          <button type="button" onclick="executeConfirmedDelete()" class="py-2.5 px-4 rounded-xl bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-700 hover:to-red-700 text-white font-extrabold text-xs shadow-md shadow-rose-500/25 flex items-center justify-center gap-1.5 active:scale-95 transition">
+            <i class="fa-solid fa-trash-can text-[11px]"></i>
+            <span>Xóa ngay</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Toast Notification -->
     <div id="toast-box" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 hidden bg-slate-900/95 text-white text-xs font-bold px-4 py-2.5 rounded-full shadow-xl flex items-center gap-2 transition">
       <i class="fa-solid fa-circle-check text-emerald-400"></i>
@@ -704,14 +732,14 @@
      * Điền trực tiếp thông số Firebase Project của bạn vào bên dưới.
      ********************************************************************/
     const FIREBASE_CUSTOM_CONFIG = {
-      apiKey: "AIzaSyDdEaJvVRRzfcM_IkTjdP0Livz52IQqrMs",
-	authDomain: "life-money-f6a11.firebaseapp.com",
-	databaseURL: "https://life-money-f6a11-default-rtdb.asia-southeast1.firebasedatabase.app",
-	projectId: "life-money-f6a11",
-	storageBucket: "life-money-f6a11.firebasestorage.app",
-	messagingSenderId: "284442463922",
-	appId: "1:284442463922:web:e6933c424828c9a12d83ab",
-	measurementId: "G-KDLG43KJ0G"
+     	apiKey: "AIzaSyDdEaJvVRRzfcM_IkTjdP0Livz52IQqrMs",
+		authDomain: "life-money-f6a11.firebaseapp.com",
+		databaseURL: "https://life-money-f6a11-default-rtdb.asia-southeast1.firebasedatabase.app",
+		projectId: "life-money-f6a11",
+		storageBucket: "life-money-f6a11.firebasestorage.app",
+		messagingSenderId: "284442463922",
+		appId: "1:284442463922:web:e6933c424828c9a12d83ab",
+		measurementId: "G-KDLG43KJ0G"
     };
 
     // Mã kênh cố định giúp mọi thiết bị cùng đọc/ghi vào đúng 1 nguồn dữ liệu trên Firestore
@@ -1131,6 +1159,7 @@
       selectedTxCategory: 'food',
       selectedTxSubCategory: 'food_market',
       selectedTaskCategory: 'Công việc',
+      pendingDelete: null,
       monthlyBudget: 12000000,
       transactions: [],
       tasks: [],
@@ -1317,12 +1346,76 @@
       showToast(`Đã tải xuống ${bk.fileName}`);
     }
 
+    function openConfirmModal({ type, id, title, desc, detailHTML }) {
+      state.pendingDelete = { type, id };
+      const modal = document.getElementById('confirm-modal');
+      const titleEl = document.getElementById('confirm-modal-title');
+      const descEl = document.getElementById('confirm-modal-desc');
+      const detailEl = document.getElementById('confirm-modal-detail');
+
+      if (titleEl) titleEl.textContent = title || 'Xác nhận xóa?';
+      if (descEl) descEl.textContent = desc || 'Bạn có chắc chắn muốn xóa mục này không? Hành động này không thể hoàn tác.';
+      if (detailEl) {
+        if (detailHTML) {
+          detailEl.innerHTML = detailHTML;
+          detailEl.classList.remove('hidden');
+        } else {
+          detailEl.innerHTML = '';
+          detailEl.classList.add('hidden');
+        }
+      }
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeConfirmModal() {
+      state.pendingDelete = null;
+      const modal = document.getElementById('confirm-modal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function executeConfirmedDelete() {
+      if (!state.pendingDelete) return;
+      const { type, id } = state.pendingDelete;
+      closeConfirmModal();
+
+      if (type === 'transaction') {
+        state.transactions = state.transactions.filter(t => t.id !== id);
+        renderAll();
+        triggerCloudSync();
+        showToast('Đã xóa giao dịch');
+      } else if (type === 'task') {
+        state.tasks = state.tasks.filter(t => t.id !== id);
+        renderAll();
+        triggerCloudSync();
+        showToast('Đã xóa công việc');
+      } else if (type === 'backup') {
+        state.backups = state.backups.filter(b => b.id !== id);
+        saveBackupsToLocalStorage();
+        renderUtilitiesTab();
+        triggerCloudSync();
+        showToast('Đã xóa bản sao lưu');
+      }
+    }
+
     function deleteBackupItem(backupId) {
-      state.backups = state.backups.filter(b => b.id !== backupId);
-      saveBackupsToLocalStorage();
-      renderUtilitiesTab();
-      triggerCloudSync();
-      showToast('Đã xóa bản sao lưu');
+      const bk = state.backups.find(b => b.id === backupId);
+      if (!bk) return;
+      openConfirmModal({
+        type: 'backup',
+        id: backupId,
+        title: 'Xác nhận xóa bản sao lưu?',
+        desc: 'Bản sao lưu này sẽ bị xóa khỏi thư mục Backup. Bạn có chắc chắn muốn xóa?',
+        detailHTML: `
+          <div class="flex items-center justify-between">
+            <span class="text-slate-500 font-medium">Tệp sao lưu:</span>
+            <strong class="text-slate-800 truncate ml-2">${bk.fileName}</strong>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-slate-500 font-medium">Thời gian:</span>
+            <span class="font-bold text-slate-700">${formatDisplayDate(bk.date)} • ${bk.time}</span>
+          </div>
+        `
+      });
     }
 
     /********************************************************************
@@ -2338,10 +2431,25 @@
     }
 
     function deleteTask(taskId) {
-      state.tasks = state.tasks.filter(t => t.id !== taskId);
-      renderAll();
-      triggerCloudSync();
-      showToast('Đã xóa công việc');
+      const tk = state.tasks.find(t => t.id === taskId);
+      if (!tk) return;
+      const l = getLunarInfoFromISO(tk.date);
+      openConfirmModal({
+        type: 'task',
+        id: taskId,
+        title: 'Xác nhận xóa công việc?',
+        desc: 'Công việc này sẽ bị xóa khỏi lịch trình của bạn. Bạn có chắc chắn muốn xóa?',
+        detailHTML: `
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-slate-500 font-medium shrink-0">Công việc:</span>
+            <strong class="text-slate-800 truncate">${tk.title}</strong>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-slate-500 font-medium">Ngày:</span>
+            <span class="font-bold text-slate-700">${formatDisplayDate(tk.date)} (${l.day}/${l.month} ÂL)</span>
+          </div>
+        `
+      });
     }
 
     function editTask(taskId) {
@@ -2726,10 +2834,36 @@
     }
 
     function deleteTransaction(txId) {
-      state.transactions = state.transactions.filter(t => t.id !== txId);
-      renderAll();
-      triggerCloudSync();
-      showToast('Đã xóa giao dịch');
+      const tx = state.transactions.find(t => t.id === txId);
+      if (!tx) return;
+      const meta = getCategoryMeta(tx.category, tx.type, tx.subCategory);
+      const l = getLunarInfoFromISO(tx.date);
+      const isExp = tx.type === 'expense';
+
+      openConfirmModal({
+        type: 'transaction',
+        id: txId,
+        title: 'Xác nhận xóa giao dịch?',
+        desc: 'Bạn có chắc chắn muốn xóa khoản giao dịch này không? Dữ liệu sau khi xóa không thể hoàn tác.',
+        detailHTML: `
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-slate-500 font-medium shrink-0">Nội dung:</span>
+            <strong class="text-slate-800 truncate">${tx.note || meta.subName}</strong>
+          </div>
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-slate-500 font-medium shrink-0">Danh mục:</span>
+            <span class="font-bold text-slate-700 truncate">${meta.name} • ${meta.subName}</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-slate-500 font-medium">Số tiền:</span>
+            <strong class="${isExp ? 'text-momo-600' : 'text-emerald-600'} font-extrabold">${isExp ? '-' : '+'}${Number(tx.amount).toLocaleString('vi-VN')}đ</strong>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-slate-500 font-medium">Ngày:</span>
+            <span class="font-bold text-slate-700">${formatDisplayDate(tx.date)} (${l.day}/${l.month} ÂL)</span>
+          </div>
+        `
+      });
     }
 
     function seedInitialDataIfEmpty() {
@@ -2827,6 +2961,8 @@
       restoreFromBackupItem,
       downloadBackupItem,
       deleteBackupItem,
+      closeConfirmModal,
+      executeConfirmedDelete,
       exportDataJSON,
       importDataJSON
     });
