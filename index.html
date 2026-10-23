@@ -120,7 +120,7 @@
       <!-- ==================== TAB 1: TỔNG QUAN (OVERVIEW) ==================== -->
       <section id="tab-overview" class="space-y-4">
 
-        <!-- Section Header: Tình hình thu chi + Eye Icon + Chart Mode Switch -->
+        <!-- Section Header: Tình hình thu chi + Eye Icon -->
         <div class="flex items-center justify-between px-0.5">
           <div class="flex items-center gap-2">
             <h2 class="text-[18px] font-extrabold text-slate-800">Tình hình thu chi</h2>
@@ -129,15 +129,10 @@
             </button>
           </div>
 
-          <!-- Toggle Phân bổ / Biến động -->
-          <div class="bg-white p-0.5 rounded-xl border border-pink-100 flex items-center shadow-xs">
-            <button id="btn-mode-donut" onclick="setChartMode('donut')" class="px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 transition bg-momo-50 text-momo-600">
-              <i class="fa-solid fa-chart-pie text-[11px]"></i>
-              <span>Phân bổ</span>
-            </button>
-            <button id="btn-mode-bar" onclick="setChartMode('bar')" class="px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 transition text-slate-700 hover:text-slate-900">
-              <i class="fa-solid fa-chart-simple text-[11px]"></i>
-            </button>
+          <!-- Nhãn Biến động theo ngày -->
+          <div class="bg-white px-2.5 py-1 rounded-xl border border-pink-100 flex items-center gap-1.5 shadow-xs text-xs font-bold text-momo-600">
+            <i class="fa-solid fa-chart-simple text-[11px]"></i>
+            <span>Biến động ngày</span>
           </div>
         </div>
 
@@ -237,20 +232,20 @@
             </button>
           </div>
 
-          <!-- Chart Container -->
-          <div id="chart-section" class="pt-1">
-            <div id="donut-chart-wrapper" class="flex flex-col items-center">
-              <div id="donut-svg-container" class="w-full flex justify-center items-center py-1 relative min-h-[215px]"></div>
-              <div id="category-breakdown-list" class="w-full space-y-2 mt-2 pt-3 border-t border-slate-100"></div>
+          <!-- Chart Container: Chỉ hiển thị Biến động theo ngày trong kỳ & Chi tiết danh mục -->
+          <div id="chart-section" class="pt-1 space-y-3">
+            <div id="bar-chart-wrapper" class="space-y-2.5">
+              <div class="flex items-center justify-between text-xs text-slate-500 px-1">
+                <span class="font-bold text-slate-700 flex items-center gap-1.5">
+                  <i class="fa-solid fa-chart-column text-momo-500"></i>
+                  Biến động theo ngày trong kỳ
+                </span>
+                <span id="bar-chart-subtitle" class="font-extrabold text-momo-600">Chi tiêu</span>
+              </div>
+              <div id="bar-chart-container" class="h-44 flex items-end gap-1.5 pt-6 pb-2 px-2.5 bg-slate-50 rounded-xl border border-slate-100 overflow-x-auto"></div>
             </div>
 
-            <div id="bar-chart-wrapper" class="hidden space-y-3">
-              <div class="flex items-center justify-between text-xs text-slate-500 px-1">
-                <span>Biến động theo ngày trong kỳ</span>
-                <span id="bar-chart-subtitle" class="font-bold text-momo-600">Chi tiêu</span>
-              </div>
-              <div id="bar-chart-container" class="h-44 flex items-end gap-1.5 pt-6 pb-2 px-2 bg-slate-50 rounded-xl border border-slate-100 overflow-x-auto"></div>
-            </div>
+            <div id="category-breakdown-list" class="w-full space-y-2 pt-3 border-t border-slate-100"></div>
           </div>
         </div>
 
@@ -710,13 +705,13 @@
      ********************************************************************/
     const FIREBASE_CUSTOM_CONFIG = {
       apiKey: "AIzaSyDdEaJvVRRzfcM_IkTjdP0Livz52IQqrMs",
-  	authDomain: "life-money-f6a11.firebaseapp.com",
-  	databaseURL: "https://life-money-f6a11-default-rtdb.asia-southeast1.firebasedatabase.app",
-  	projectId: "life-money-f6a11",
-  	storageBucket: "life-money-f6a11.firebasestorage.app",
-  	messagingSenderId: "284442463922",
-  	appId: "1:284442463922:web:e6933c424828c9a12d83ab",
-  	measurementId: "G-KDLG43KJ0G"
+	authDomain: "life-money-f6a11.firebaseapp.com",
+	databaseURL: "https://life-money-f6a11-default-rtdb.asia-southeast1.firebasedatabase.app",
+	projectId: "life-money-f6a11",
+	storageBucket: "life-money-f6a11.firebasestorage.app",
+	messagingSenderId: "284442463922",
+	appId: "1:284442463922:web:e6933c424828c9a12d83ab",
+	measurementId: "G-KDLG43KJ0G"
     };
 
     // Mã kênh cố định giúp mọi thiết bị cùng đọc/ghi vào đúng 1 nguồn dữ liệu trên Firestore
@@ -895,6 +890,34 @@
         ]
       },
       {
+        id: 'spa_beauty',
+        name: 'Spa & Làm đẹp',
+        icon: 'fa-spa',
+        color: '#db2777',
+        bg: '#fdf2f8',
+        subs: [
+          { id: 'spa_shampoo', name: 'Gội đầu dưỡng sinh', icon: 'fa-soap' },
+          { id: 'spa_nail', name: 'Làm móng (Nail)', icon: 'fa-hand-sparkles' },
+          { id: 'spa_haircut', name: 'Hớt tóc / Tạo kiểu', icon: 'fa-scissors' },
+          { id: 'spa_skincare', name: 'Spa / Chăm sóc da / Massage', icon: 'fa-spa' },
+          { id: 'spa_cosmetics', name: 'Mỹ phẩm / Skincare', icon: 'fa-wand-magic-sparkles' }
+        ]
+      },
+      {
+        id: 'guests',
+        name: 'Tiếp khách',
+        icon: 'fa-champagne-glasses',
+        color: '#ea580c',
+        bg: '#fff7ed',
+        subs: [
+          { id: 'guest_home_food', name: 'Khách đến nhà ăn uống', icon: 'fa-utensils' },
+          { id: 'guest_coffee', name: 'Mời khách cà phê / Nước', icon: 'fa-mug-saucer' },
+          { id: 'guest_fruit', name: 'Trái cây / Bánh kẹo đãi khách', icon: 'fa-apple-whole' },
+          { id: 'guest_party', name: 'Đãi tiệc / Nhậu bạn bè', icon: 'fa-beer-mug-empty' },
+          { id: 'guest_gift', name: 'Quà biếu khách / Xã giao', icon: 'fa-gift' }
+        ]
+      },
+      {
         id: 'family',
         name: 'Nội Ngoại & GĐ',
         icon: 'fa-people-roof',
@@ -917,8 +940,8 @@
         bg: '#f5f3ff',
         subs: [
           { id: 'shop_grocery', name: 'Tạp hóa / Đồ sinh hoạt', icon: 'fa-cart-shopping' },
-          { id: 'shop_cosmetics', name: 'Mỹ phẩm / Làm đẹp', icon: 'fa-wand-magic-sparkles' },
           { id: 'shop_clothes', name: 'Quần áo / Giày dép', icon: 'fa-shirt' },
+          { id: 'shop_cosmetics', name: 'Đồ chăm sóc cá nhân', icon: 'fa-Spray-can-sparkles' },
           { id: 'shop_appliance', name: 'Đồ gia dụng / Điện tử', icon: 'fa-plug' },
           { id: 'shop_online', name: 'Mua online (Shopee...)', icon: 'fa-box-open' }
         ]
@@ -962,7 +985,7 @@
           { id: 'trans_fuel', name: 'Đổ xăng / Sạc điện', icon: 'fa-gas-pump' },
           { id: 'trans_parking', name: 'Gửi xe / Phí cầu đường', icon: 'fa-square-parking' },
           { id: 'trans_taxi', name: 'Grab / Taxi / Xe khách', icon: 'fa-taxi' },
-          { id: 'trans_repair', name: 'Bảo dưỡng / Sửa xe', icon: 'fa-wrench' }
+          { id: 'trans_repair', name: 'Bảo dưỡng / Sửa xe / Rửa xe', icon: 'fa-wrench' }
         ]
       },
       {
@@ -980,7 +1003,7 @@
       },
       {
         id: 'health',
-        name: 'Sức khỏe & Khác',
+        name: 'Sức khỏe',
         icon: 'fa-heart-pulse',
         color: '#3b82f6',
         bg: '#eff6ff',
@@ -988,7 +1011,20 @@
           { id: 'he_medicine', name: 'Thuốc men / Khám bệnh', icon: 'fa-kit-medical' },
           { id: 'he_sport', name: 'Thể thao / Tập Gym', icon: 'fa-dumbbell' },
           { id: 'he_study', name: 'Học tập / Sách vở', icon: 'fa-graduation-cap' },
-          { id: 'he_insurance', name: 'Bảo hiểm / Dự phòng', icon: 'fa-shield-heart' },
+          { id: 'he_insurance', name: 'Bảo hiểm / Dự phòng', icon: 'fa-shield-heart' }
+        ]
+      },
+      {
+        id: 'other_exp',
+        name: 'Vé số & Khác',
+        icon: 'fa-ticket',
+        color: '#6366f1',
+        bg: '#eef2ff',
+        subs: [
+          { id: 'oth_lottery', name: 'Mua vé số / Vietlott', icon: 'fa-clover' },
+          { id: 'oth_charity', name: 'Từ thiện / Quyên góp', icon: 'fa-hand-holding-heart' },
+          { id: 'oth_tip', name: 'Tiền tip / Tiền bo', icon: 'fa-coins' },
+          { id: 'oth_home_repair', name: 'Sửa chữa đồ đạc / Nhà cửa', icon: 'fa-screwdriver-wrench' },
           { id: 'other_exp_sub', name: 'Chi tiêu phát sinh khác', icon: 'fa-ellipsis' }
         ]
       }
@@ -1738,30 +1774,13 @@
         if (quickLabel) quickLabel.textContent = 'Nhập giao dịch thu';
       }
 
-      const btnDonut = document.getElementById('btn-mode-donut');
-      const btnBar = document.getElementById('btn-mode-bar');
-      const donutWrap = document.getElementById('donut-chart-wrapper');
-      const barWrap = document.getElementById('bar-chart-wrapper');
-
-      if (state.chartMode === 'donut') {
-        btnDonut.className = 'px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 transition bg-momo-50 text-momo-600';
-        btnBar.className = 'px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 transition text-slate-700 hover:text-slate-900';
-        donutWrap.classList.remove('hidden');
-        barWrap.classList.add('hidden');
-        renderDonutAndBreakdown(periodTxs);
-      } else {
-        btnBar.className = 'px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 transition bg-momo-50 text-momo-600';
-        btnDonut.className = 'px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 transition text-slate-700 hover:text-slate-900';
-        donutWrap.classList.add('hidden');
-        barWrap.classList.remove('hidden');
-        renderBarChart(periodTxs);
-      }
-
+      renderBarChart(periodTxs);
+      renderCategoryBreakdown(periodTxs);
       renderOverviewTasksPreview();
       renderOverviewRecentTransactions(periodTxs);
     }
 
-    function renderDonutAndBreakdown(periodTxs) {
+    function renderCategoryBreakdown(periodTxs) {
       const targetType = state.overviewType;
       const filtered = periodTxs.filter(t => t.type === targetType);
       const total = filtered.reduce((s, t) => s + Number(t.amount || 0), 0);
@@ -1799,46 +1818,13 @@
       });
 
       const items = Object.values(catMap).sort((a, b) => b.amount - a.amount);
-      const svgContainer = document.getElementById('donut-svg-container');
       const listContainer = document.getElementById('category-breakdown-list');
+      if (!listContainer) return;
 
       if (items.length === 0 || total === 0) {
-        svgContainer.innerHTML = `
-          <div class="flex flex-col items-center justify-center py-6 text-center">
-            <div class="w-36 h-36 rounded-full border-[16px] border-slate-100 flex items-center justify-center mb-2">
-              <span class="text-xs font-bold text-slate-400">Chưa có dữ liệu</span>
-            </div>
-            <p class="text-[11px] text-slate-400">Hãy bấm "Nhập giao dịch" để bắt đầu theo dõi</p>
-          </div>
-        `;
         listContainer.innerHTML = '';
         return;
       }
-
-      const radius = 62;
-      const circumference = 2 * Math.PI * radius;
-      let accumulatedPercent = 0;
-
-      const segmentsSVG = items.map(item => {
-        const pct = item.amount / total;
-        const strokeDasharray = `${pct * circumference} ${circumference}`;
-        const strokeDashoffset = -accumulatedPercent * circumference;
-        accumulatedPercent += pct;
-        return `<circle cx="100" cy="100" r="${radius}" fill="transparent" stroke="${item.color}" stroke-width="24" stroke-dasharray="${strokeDasharray}" stroke-dashoffset="${strokeDashoffset}" transform="rotate(-90 100 100)" />`;
-      }).join('');
-
-      svgContainer.innerHTML = `
-        <div class="relative flex items-center justify-center">
-          <svg width="200" height="200" viewBox="0 0 200 200">
-            <circle cx="100" cy="100" r="${radius}" fill="transparent" stroke="#f1f5f9" stroke-width="24" />
-            ${segmentsSVG}
-          </svg>
-          <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-6 pointer-events-none">
-            <span class="text-[10px] font-bold text-slate-400 uppercase">${targetType === 'expense' ? 'Tổng chi' : 'Tổng thu'}</span>
-            <span class="text-xs font-extrabold text-slate-800 mt-0.5 truncate max-w-[100px]">${formatShortMoney(total)}</span>
-          </div>
-        </div>
-      `;
 
       listContainer.innerHTML = items.map(item => {
         const pct = ((item.amount / total) * 100).toFixed(1);
