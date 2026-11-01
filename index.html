@@ -732,7 +732,7 @@
      * Điền trực tiếp thông số Firebase Project của bạn vào bên dưới.
      ********************************************************************/
     const FIREBASE_CUSTOM_CONFIG = {
-     	apiKey: "AIzaSyDdEaJvVRRzfcM_IkTjdP0Livz52IQqrMs",
+      	apiKey: "AIzaSyDdEaJvVRRzfcM_IkTjdP0Livz52IQqrMs",
 		authDomain: "life-money-f6a11.firebaseapp.com",
 		databaseURL: "https://life-money-f6a11-default-rtdb.asia-southeast1.firebasedatabase.app",
 		projectId: "life-money-f6a11",
@@ -1139,15 +1139,32 @@
       return { startISO, endISO };
     }
 
-    const initialCycle = getCycle15To15Range(todayObj.getFullYear(), todayObj.getMonth() + 1);
+    // Tự động xác định kỳ 15 tháng này -> 14 tháng sau dựa theo ngày hôm nay
+    function getCurrentCycleYearMonth() {
+      const d = todayObj.getDate();
+      let m = todayObj.getMonth() + 1;
+      let y = todayObj.getFullYear();
+      if (d < 15) {
+        // Trước ngày 15: đang thuộc chu kỳ bắt đầu từ ngày 15 tháng trước đến ngày 14 tháng này
+        m = m - 1;
+        if (m < 1) {
+          m = 12;
+          y--;
+        }
+      }
+      return { year: y, month: m };
+    }
+
+    const currentCycleYM = getCurrentCycleYearMonth();
+    const initialCycle = getCycle15To15Range(currentCycleYM.year, currentCycleYM.month);
 
     const state = {
       activeTab: 'overview',
       hideAmounts: false,
       overviewType: 'expense',
       chartMode: 'donut',
-      overviewYear: todayObj.getFullYear(),
-      overviewMonth: todayObj.getMonth() + 1,
+      overviewYear: currentCycleYM.year,
+      overviewMonth: currentCycleYM.month,
       filterStartDate: initialCycle.startISO,
       filterEndDate: initialCycle.endISO,
       calYear: todayObj.getFullYear(),
@@ -1641,17 +1658,11 @@
       return num.toLocaleString('vi-VN') + 'đ';
     }
 
+    // Hiển thị chi tiết đến từng đơn vị (không làm tròn k, tr)
     function formatShortMoney(amount) {
       if (state.hideAmounts) return '***';
-      const n = Math.abs(Number(amount) || 0);
-      if (n >= 1000000) {
-        const tr = n / 1000000;
-        return (tr % 1 === 0 ? tr.toFixed(0) : tr.toFixed(1)) + 'tr';
-      }
-      if (n >= 1000) {
-        return Math.round(n / 1000) + 'k';
-      }
-      return n + 'đ';
+      const num = Number(amount) || 0;
+      return num.toLocaleString('vi-VN') + 'đ';
     }
 
     function getCategoryMeta(catId, type = 'expense', subCatId = null) {
@@ -1754,8 +1765,9 @@
     }
 
     function resetDefaultDateRange() {
-      state.overviewYear = todayObj.getFullYear();
-      state.overviewMonth = todayObj.getMonth() + 1;
+      const ym = getCurrentCycleYearMonth();
+      state.overviewYear = ym.year;
+      state.overviewMonth = ym.month;
       const range = getCycle15To15Range(state.overviewYear, state.overviewMonth);
       state.filterStartDate = range.startISO;
       state.filterEndDate = range.endISO;
@@ -2039,7 +2051,7 @@
         return;
       }
 
-      container.innerHTML = sorted.slice(0, 15).map(tx => {
+      container.innerHTML = sorted.slice(0, 30).map(tx => {
         const meta = getCategoryMeta(tx.category, tx.type, tx.subCategory);
         const l = getLunarInfoFromISO(tx.date);
         const isExp = tx.type === 'expense';
@@ -2060,7 +2072,7 @@
             <div class="text-right shrink-0 flex items-center gap-1.5">
               <div>
                 <div class="text-xs font-extrabold ${isExp ? 'text-momo-600' : 'text-emerald-600'}">
-                  ${isExp ? '-' : '+'}${formatMoney(tx.amount)}
+                  ${isExp ? '-' : '+'}${Number(tx.amount || 0).toLocaleString('vi-VN')}đ
                 </div>
               </div>
               <button onclick="editTransaction('${tx.id}')" class="w-6 h-6 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-white flex items-center justify-center text-[11px]" title="Sửa">
@@ -2192,18 +2204,18 @@
 
         let txBadgeHTML = '';
         if (dayTx && dayTx.exp > 0) {
-          txBadgeHTML = `<div class="text-[9px] leading-tight font-extrabold tracking-tighter whitespace-nowrap ${isSelected ? 'text-white' : 'text-momo-600'}">-${formatShortMoney(dayTx.exp)}</div>`;
+          txBadgeHTML = `<div class="text-[8px] leading-tight font-extrabold tracking-tighter truncate w-full px-0.5 text-center ${isSelected ? 'text-white' : 'text-momo-600'}">-${Number(dayTx.exp).toLocaleString('vi-VN')}đ</div>`;
         } else if (dayTx && dayTx.inc > 0) {
-          txBadgeHTML = `<div class="text-[9px] leading-tight font-extrabold tracking-tighter whitespace-nowrap ${isSelected ? 'text-white' : 'text-emerald-600'}">+${formatShortMoney(dayTx.inc)}</div>`;
+          txBadgeHTML = `<div class="text-[8px] leading-tight font-extrabold tracking-tighter truncate w-full px-0.5 text-center ${isSelected ? 'text-white' : 'text-emerald-600'}">+${Number(dayTx.inc).toLocaleString('vi-VN')}đ</div>`;
         }
 
         cellsHTML += `
-          <button type="button" onclick="selectCalendarDate('${iso}')" class="min-h-[68px] py-1.5 px-0.5 rounded-xl flex flex-col justify-between items-center relative transition active:scale-95 overflow-hidden ${cellClass}">
+          <button type="button" onclick="selectCalendarDate('${iso}')" class="min-h-[70px] py-1.5 px-0.5 rounded-xl flex flex-col justify-between items-center relative transition active:scale-95 overflow-hidden ${cellClass}">
             ${isToday && !isSelected ? '<span class="absolute top-1 left-1 w-1.5 h-1.5 rounded-full bg-momo-600"></span>' : ''}
             ${dayTasks.length > 0 ? `<span class="absolute top-1 right-1 w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-white' : 'bg-blue-500'}"></span>` : ''}
             <div class="text-[13px] font-extrabold leading-tight">${d}</div>
             <div class="text-[10px] font-bold leading-tight ${lunarTextClass}">${lunarLabel}</div>
-            <div class="w-full min-h-[13px] flex items-center justify-center">
+            <div class="w-full min-h-[14px] flex items-center justify-center">
               ${txBadgeHTML}
             </div>
           </button>
@@ -2255,8 +2267,8 @@
           netEl.innerHTML = `<span class="text-slate-400">0đ</span>`;
         } else {
           netEl.innerHTML = `
-            ${incSum > 0 ? `<span class="text-emerald-600">+${formatShortMoney(incSum)}</span> ` : ''}
-            ${expSum > 0 ? `<span class="text-momo-600">-${formatShortMoney(expSum)}</span>` : ''}
+            ${incSum > 0 ? `<span class="text-emerald-600">+${Number(incSum).toLocaleString('vi-VN')}đ</span> ` : ''}
+            ${expSum > 0 ? `<span class="text-momo-600">-${Number(expSum).toLocaleString('vi-VN')}đ</span>` : ''}
           `;
         }
       }
