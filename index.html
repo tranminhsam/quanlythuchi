@@ -221,17 +221,6 @@
             <i class="fa-solid fa-shield-halved text-xs text-blue-500" title="Firebase Cloud Sync Active"></i>
           </div>
 
-          <!-- Call-to-action Box -->
-          <div class="bg-[#f7f9fc] rounded-2xl p-3.5 border border-slate-100 space-y-2.5">
-            <p class="text-xs text-slate-600 leading-relaxed">
-              Ghi chép mọi chi tiêu giúp bạn <strong class="text-slate-800">theo dõi chính xác tình hình tài chính</strong> của mình.
-            </p>
-            <button onclick="openAddModal(state.overviewType)" class="w-full py-2.5 rounded-xl border border-momo-500 bg-white hover:bg-momo-50 text-momo-600 font-bold text-xs flex items-center justify-center gap-1.5 active:scale-[0.99] transition shadow-xs">
-              <i class="fa-regular fa-file-lines"></i>
-              <span id="btn-quick-record-label">Nhập giao dịch chi</span>
-            </button>
-          </div>
-
           <!-- Chart Container: Chỉ hiển thị Biến động theo ngày trong kỳ & Chi tiết danh mục -->
           <div id="chart-section" class="pt-1 space-y-3">
             <div id="bar-chart-wrapper" class="space-y-2.5">
@@ -242,25 +231,16 @@
                 </span>
                 <span id="bar-chart-subtitle" class="font-extrabold text-momo-600">Chi tiêu</span>
               </div>
-              <div id="bar-chart-container" class="h-44 flex items-end gap-1.5 pt-6 pb-2 px-2.5 bg-slate-50 rounded-xl border border-slate-100 overflow-x-auto"></div>
+              <!-- Thanh thông tin ngày đang chọn trên biểu đồ cột -->
+              <div id="selected-chart-day-indicator" class="hidden bg-pink-50/70 border border-pink-200/80 rounded-xl px-3 py-1.5 flex items-center justify-between text-xs">
+                <span id="selected-chart-day-text" class="font-bold text-momo-700"></span>
+                <button onclick="clearSelectedChartDate()" class="text-[11px] font-extrabold text-slate-500 hover:text-slate-700">Xem cả kỳ</button>
+              </div>
+              <div id="bar-chart-container" class="h-48 flex items-end gap-3 pt-8 pb-2 px-3 bg-slate-50 rounded-xl border border-slate-100 overflow-x-auto"></div>
             </div>
 
             <div id="category-breakdown-list" class="w-full space-y-2 pt-3 border-t border-slate-100"></div>
           </div>
-        </div>
-
-        <!-- Tasks Preview Card (Only Tasks, no upcoming Rằm schedule) -->
-        <div class="bg-white rounded-2xl p-3.5 card-shadow space-y-3">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <span class="w-6 h-6 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center text-xs">
-                <i class="fa-solid fa-calendar-check"></i>
-              </span>
-              <h3 class="text-sm font-bold text-slate-800">Công việc cần làm</h3>
-            </div>
-            <button onclick="switchTab('tasks')" class="text-xs font-bold text-momo-600 hover:underline">Xem tất cả</button>
-          </div>
-          <div id="overview-tasks-preview" class="space-y-2"></div>
         </div>
 
         <!-- Recent Transactions in Selected Period -->
@@ -270,7 +250,7 @@
               <span class="w-6 h-6 rounded-lg bg-momo-100 text-momo-600 flex items-center justify-center text-xs">
                 <i class="fa-solid fa-clock-rotate-left"></i>
               </span>
-              <h3 class="text-sm font-bold text-slate-800">Chi tiết giao dịch trong kỳ</h3>
+              <h3 id="recent-tx-heading" class="text-sm font-bold text-slate-800">Chi tiết giao dịch trong kỳ</h3>
             </div>
             <span id="recent-tx-count" class="text-[11px] text-slate-400 font-medium"></span>
           </div>
@@ -732,7 +712,7 @@
      * Điền trực tiếp thông số Firebase Project của bạn vào bên dưới.
      ********************************************************************/
     const FIREBASE_CUSTOM_CONFIG = {
-      	apiKey: "AIzaSyDdEaJvVRRzfcM_IkTjdP0Livz52IQqrMs",
+     	apiKey: "AIzaSyDdEaJvVRRzfcM_IkTjdP0Livz52IQqrMs",
 		authDomain: "life-money-f6a11.firebaseapp.com",
 		databaseURL: "https://life-money-f6a11-default-rtdb.asia-southeast1.firebasedatabase.app",
 		projectId: "life-money-f6a11",
@@ -1167,6 +1147,7 @@
       overviewMonth: currentCycleYM.month,
       filterStartDate: initialCycle.startISO,
       filterEndDate: initialCycle.endISO,
+      selectedChartDate: null,
       calYear: todayObj.getFullYear(),
       calMonth: todayObj.getMonth() + 1,
       selectedDate: todayISO,
@@ -1868,20 +1849,21 @@
 
       const boxExp = document.getElementById('box-type-expense');
       const boxInc = document.getElementById('box-type-income');
-      const quickLabel = document.getElementById('btn-quick-record-label');
       if (state.overviewType === 'expense') {
         boxExp.className = 'text-left p-3 rounded-2xl border-2 border-momo-400 bg-momo-50/30 transition relative overflow-hidden';
         boxInc.className = 'text-left p-3 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 transition relative overflow-hidden';
-        if (quickLabel) quickLabel.textContent = 'Nhập giao dịch chi';
       } else {
         boxInc.className = 'text-left p-3 rounded-2xl border-2 border-emerald-500 bg-emerald-50/30 transition relative overflow-hidden';
         boxExp.className = 'text-left p-3 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 transition relative overflow-hidden';
-        if (quickLabel) quickLabel.textContent = 'Nhập giao dịch thu';
+      }
+
+      // Kiểm tra xem ngày đang chọn trên biểu đồ có còn trong khoảng thời gian không
+      if (state.selectedChartDate && (state.selectedChartDate < state.filterStartDate || state.selectedChartDate > state.filterEndDate)) {
+        state.selectedChartDate = null;
       }
 
       renderBarChart(periodTxs);
       renderCategoryBreakdown(periodTxs);
-      renderOverviewTasksPreview();
       renderOverviewRecentTransactions(periodTxs);
     }
 
@@ -1962,10 +1944,44 @@
       }).join('');
     }
 
+    function selectChartDate(isoDate) {
+      if (state.selectedChartDate === isoDate) {
+        state.selectedChartDate = null;
+      } else {
+        state.selectedChartDate = isoDate;
+      }
+      const periodTxs = state.transactions.filter(
+        t => t.date >= state.filterStartDate && t.date <= state.filterEndDate
+      );
+      renderBarChart(periodTxs);
+      renderOverviewRecentTransactions(periodTxs);
+    }
+
+    function clearSelectedChartDate() {
+      state.selectedChartDate = null;
+      const periodTxs = state.transactions.filter(
+        t => t.date >= state.filterStartDate && t.date <= state.filterEndDate
+      );
+      renderBarChart(periodTxs);
+      renderOverviewRecentTransactions(periodTxs);
+    }
+
     function renderBarChart(periodTxs) {
       const targetType = state.overviewType;
       const subtitleEl = document.getElementById('bar-chart-subtitle');
       if (subtitleEl) subtitleEl.textContent = targetType === 'expense' ? 'Chi tiêu' : 'Thu nhập';
+
+      const indicator = document.getElementById('selected-chart-day-indicator');
+      const indicatorText = document.getElementById('selected-chart-day-text');
+      if (indicator && indicatorText) {
+        if (state.selectedChartDate) {
+          const l = getLunarInfoFromISO(state.selectedChartDate);
+          indicator.classList.remove('hidden');
+          indicatorText.innerHTML = `<i class="fa-regular fa-calendar-check mr-1 text-momo-600"></i> Đang lọc ngày: <strong>${formatDisplayDate(state.selectedChartDate)} (${l.day}/${l.month} ÂL)</strong>`;
+        } else {
+          indicator.classList.add('hidden');
+        }
+      }
 
       const container = document.getElementById('bar-chart-container');
       if (!container) return;
@@ -1982,58 +1998,25 @@
       }
 
       const maxVal = Math.max(...Object.values(byDate), 1);
-      const barColor = targetType === 'expense' ? 'bg-momo-500' : 'bg-emerald-500';
+      const isExpense = targetType === 'expense';
 
       container.innerHTML = dates.map(iso => {
         const val = byDate[iso];
-        const heightPct = Math.max(12, Math.round((val / maxVal) * 100));
+        const heightPct = Math.max(14, Math.round((val / maxVal) * 100));
         const [, m, d] = iso.split('-');
+        const isSelected = state.selectedChartDate === iso;
+
+        let barColor = isExpense ? 'bg-momo-500 hover:bg-momo-600' : 'bg-emerald-500 hover:bg-emerald-600';
+        let ringClass = isSelected ? 'ring-2 ring-offset-2 ' + (isExpense ? 'ring-momo-600 scale-105' : 'ring-emerald-600 scale-105') : '';
+        let amountTextClass = isSelected ? (isExpense ? 'text-momo-700 font-black scale-105' : 'text-emerald-700 font-black scale-105') : 'text-slate-600';
+        let dateTextClass = isSelected ? (isExpense ? 'bg-momo-600 text-white px-1.5 py-0.5 rounded-md' : 'bg-emerald-600 text-white px-1.5 py-0.5 rounded-md') : 'text-slate-600';
+
         return `
-          <div class="flex flex-col items-center justify-end h-full min-w-[34px] flex-1">
-            <span class="text-[9px] font-bold text-slate-500 mb-1">${formatShortMoney(val)}</span>
-            <div class="w-5 rounded-t-lg ${barColor} transition-all" style="height: ${heightPct}%"></div>
-            <span class="text-[9px] font-bold text-slate-500 mt-1">${d}/${m}</span>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function renderOverviewTasksPreview() {
-      const container = document.getElementById('overview-tasks-preview');
-      if (!container) return;
-
-      const pendingTasks = state.tasks
-        .filter(t => !t.completed)
-        .sort((a, b) => a.date.localeCompare(b.date) || (a.time || '').localeCompare(b.time || ''))
-        .slice(0, 4);
-
-      if (pendingTasks.length === 0) {
-        container.innerHTML = `
-          <div class="text-center py-3 text-xs text-slate-400 font-medium">
-            Không có công việc tồn đọng. <button onclick="openAddModal('task')" class="text-momo-600 font-bold hover:underline">+ Thêm việc mới</button>
-          </div>
-        `;
-        return;
-      }
-
-      container.innerHTML = pendingTasks.map(task => {
-        const l = getLunarInfoFromISO(task.date);
-        return `
-          <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100 gap-2">
-            <div class="flex items-center gap-2.5 min-w-0">
-              <button onclick="toggleTaskDone('${task.id}')" class="w-5 h-5 rounded-md border-2 border-blue-400 flex items-center justify-center text-white shrink-0 hover:bg-blue-50"></button>
-              <div class="min-w-0">
-                <div class="text-xs font-bold text-slate-800 truncate">${task.title}</div>
-                <div class="text-[10px] text-slate-500 font-medium flex items-center gap-1.5">
-                  <span>${formatDisplayDate(task.date)} (${l.day}/${l.month} ÂL)</span>
-                  ${task.time ? `<span>• ${task.time}</span>` : ''}
-                </div>
-              </div>
-            </div>
-            <button onclick="jumpToCalendarDate('${task.date}')" class="text-[10px] font-bold px-2 py-1 rounded-lg bg-white border border-slate-200 text-slate-600 shrink-0">
-              Xem lịch
-            </button>
-          </div>
+          <button type="button" onclick="selectChartDate('${iso}')" class="flex flex-col items-center justify-end h-full min-w-[76px] px-1 py-1 rounded-xl transition cursor-pointer shrink-0 hover:bg-white/80 active:scale-95 group">
+            <span class="text-[10px] font-bold leading-tight ${amountTextClass} mb-1.5 whitespace-nowrap transition-transform">${formatShortMoney(val)}</span>
+            <div class="w-7 rounded-t-xl ${barColor} ${ringClass} transition-all duration-200 shadow-xs" style="height: ${heightPct}%"></div>
+            <span class="text-[10px] font-bold mt-1.5 whitespace-nowrap transition-all ${dateTextClass}">${d}/${m}</span>
+          </button>
         `;
       }).join('');
     }
@@ -2041,13 +2024,27 @@
     function renderOverviewRecentTransactions(periodTxs) {
       const container = document.getElementById('overview-recent-tx');
       const countEl = document.getElementById('recent-tx-count');
+      const headingEl = document.getElementById('recent-tx-heading');
       if (!container) return;
 
-      const sorted = [...periodTxs].sort((a, b) => b.date.localeCompare(a.date) || (b.createdAt || 0) - (a.createdAt || 0));
+      let displayTxs = [...periodTxs];
+      if (state.selectedChartDate) {
+        displayTxs = displayTxs.filter(t => t.date === state.selectedChartDate);
+        if (headingEl) {
+          const l = getLunarInfoFromISO(state.selectedChartDate);
+          headingEl.textContent = `Giao dịch ngày ${formatDisplayDate(state.selectedChartDate)} (${l.day}/${l.month} ÂL)`;
+        }
+      } else {
+        if (headingEl) {
+          headingEl.textContent = 'Chi tiết giao dịch trong kỳ';
+        }
+      }
+
+      const sorted = displayTxs.sort((a, b) => b.date.localeCompare(a.date) || (b.createdAt || 0) - (a.createdAt || 0));
       if (countEl) countEl.textContent = `${sorted.length} giao dịch`;
 
       if (sorted.length === 0) {
-        container.innerHTML = `<div class="text-center py-4 text-xs text-slate-400">Chưa có giao dịch nào trong khoảng ngày đã chọn</div>`;
+        container.innerHTML = `<div class="text-center py-4 text-xs text-slate-400">Không có giao dịch nào ${state.selectedChartDate ? 'trong ngày này' : 'trong khoảng ngày đã chọn'}</div>`;
         return;
       }
 
@@ -2944,6 +2941,8 @@
       resetDefaultDateRange,
       applyCustomDateRange,
       setOverviewType,
+      selectChartDate,
+      clearSelectedChartDate,
       openAddModal,
       closeRecordModal,
       switchModalMode,
