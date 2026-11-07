@@ -712,7 +712,7 @@
      * Điền trực tiếp thông số Firebase Project của bạn vào bên dưới.
      ********************************************************************/
     const FIREBASE_CUSTOM_CONFIG = {
-     	apiKey: "AIzaSyDdEaJvVRRzfcM_IkTjdP0Livz52IQqrMs",
+      apiKey: "AIzaSyDdEaJvVRRzfcM_IkTjdP0Livz52IQqrMs",
 		authDomain: "life-money-f6a11.firebaseapp.com",
 		databaseURL: "https://life-money-f6a11-default-rtdb.asia-southeast1.firebasedatabase.app",
 		projectId: "life-money-f6a11",
@@ -1148,6 +1148,7 @@
       filterStartDate: initialCycle.startISO,
       filterEndDate: initialCycle.endISO,
       selectedChartDate: null,
+      selectedSubCatFilter: null,
       calYear: todayObj.getFullYear(),
       calMonth: todayObj.getMonth() + 1,
       selectedDate: todayISO,
@@ -1897,11 +1898,13 @@
             name: meta.subName,
             icon: meta.subIcon,
             amount: 0,
-            count: 0
+            count: 0,
+            txs: []
           };
         }
         catMap[meta.id].subs[subKey].amount += Number(t.amount || 0);
         catMap[meta.id].subs[subKey].count += 1;
+        catMap[meta.id].subs[subKey].txs.push(t);
       });
 
       const items = Object.values(catMap).sort((a, b) => b.amount - a.amount);
@@ -1916,16 +1919,72 @@
       listContainer.innerHTML = items.map(item => {
         const pct = ((item.amount / total) * 100).toFixed(1);
         const subItems = Object.values(item.subs).sort((a, b) => b.amount - a.amount);
-        const subBadgesHTML = subItems.map(s => `
-          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-slate-50 border border-slate-200/70 text-[10px] font-semibold text-slate-600">
-            <i class="fa-solid ${s.icon} text-[9px]" style="color:${item.color}"></i>
-            <span>${s.name}:</span>
-            <strong class="text-slate-800">${formatShortMoney(s.amount)}</strong>
-          </span>
-        `).join('');
+
+        const subBadgesHTML = subItems.map(s => {
+          const isSelected = state.selectedSubCatFilter === s.id;
+          const activeClass = isSelected
+            ? 'ring-2 ring-momo-500 bg-pink-50 border-pink-300 shadow-xs'
+            : 'bg-white border-slate-200/80 hover:bg-slate-50';
+
+          return `
+            <button type="button" onclick="toggleSubCatFilter('${s.id}')" class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-[11px] font-semibold text-slate-700 transition active:scale-95 ${activeClass}">
+              <i class="fa-solid ${s.icon} text-[10px]" style="color:${item.color}"></i>
+              <span>${s.name}:</span>
+              <strong class="text-slate-900">${formatShortMoney(s.amount)}</strong>
+              <i class="fa-solid ${isSelected ? 'fa-chevron-up text-momo-600' : 'fa-chevron-down text-slate-400'} text-[9px] ml-0.5"></i>
+            </button>
+          `;
+        }).join('');
+
+        // Kiểm tra xem danh mục lớn này có chứa danh mục nhỏ đang được chọn để hiển thị danh sách con không
+        let expandedDetailHTML = '';
+        const activeSubInThisCat = subItems.find(s => s.id === state.selectedSubCatFilter);
+        if (activeSubInThisCat) {
+          const subTxs = activeSubInThisCat.txs.sort((a, b) => b.date.localeCompare(a.date) || (b.createdAt || 0) - (a.createdAt || 0));
+          expandedDetailHTML = `
+            <div class="mt-2.5 p-2.5 rounded-xl bg-pink-50/60 border border-pink-200/70 space-y-2 animate-slide-up">
+              <div class="flex items-center justify-between border-b border-pink-200/60 pb-1.5">
+                <span class="text-[11px] font-extrabold text-momo-700 flex items-center gap-1.5">
+                  <i class="fa-solid ${activeSubInThisCat.icon} text-xs"></i>
+                  Chi tiết: ${activeSubInThisCat.name} (${subTxs.length} GD)
+                </span>
+                <button type="button" onclick="toggleSubCatFilter(null)" class="text-[10px] font-bold text-slate-500 hover:text-slate-800 flex items-center gap-1">
+                  <span>Đóng</span>
+                  <i class="fa-solid fa-xmark text-[9px]"></i>
+                </button>
+              </div>
+              <div class="space-y-1.5">
+                ${subTxs.map(t => {
+                  const l = getLunarInfoFromISO(t.date);
+                  return `
+                    <div class="flex items-center justify-between p-2 rounded-lg bg-white border border-pink-100 shadow-2xs gap-2">
+                      <div class="min-w-0">
+                        <div class="text-[11px] font-extrabold text-slate-800 truncate">${t.note || activeSubInThisCat.name}</div>
+                        <div class="text-[9px] text-slate-500">
+                          ${formatDisplayDate(t.date)} (${l.day}/${l.month} ÂL)
+                        </div>
+                      </div>
+                      <div class="flex items-center gap-1.5 shrink-0">
+                        <strong class="text-xs font-black ${t.type === 'expense' ? 'text-momo-600' : 'text-emerald-600'}">
+                          ${t.type === 'expense' ? '-' : '+'}${Number(t.amount).toLocaleString('vi-VN')}đ
+                        </strong>
+                        <button onclick="editTransaction('${t.id}')" class="w-5 h-5 rounded hover:bg-slate-100 text-slate-400 hover:text-blue-600 flex items-center justify-center text-[10px]" title="Sửa">
+                          <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <button onclick="deleteTransaction('${t.id}')" class="w-5 h-5 rounded hover:bg-slate-100 text-slate-400 hover:text-rose-600 flex items-center justify-center text-[10px]" title="Xóa">
+                          <i class="fa-solid fa-trash"></i>
+                        </button>
+                      </div>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+          `;
+        }
 
         return `
-          <div class="p-2.5 rounded-xl bg-slate-50/70 border border-slate-100 space-y-1.5">
+          <div class="p-3 rounded-2xl bg-slate-50/70 border border-slate-100 space-y-2">
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-2">
                 <span class="w-7 h-7 rounded-lg flex items-center justify-center text-xs" style="background:${item.bg}; color:${item.color}">
@@ -1938,10 +1997,24 @@
               </div>
               <div class="text-xs font-extrabold text-slate-800">${formatMoney(item.amount)}</div>
             </div>
-            <div class="flex flex-wrap gap-1 pt-0.5">${subBadgesHTML}</div>
+            <div class="flex flex-wrap gap-1.5 pt-0.5">${subBadgesHTML}</div>
+            ${expandedDetailHTML}
           </div>
         `;
       }).join('');
+    }
+
+    function toggleSubCatFilter(subId) {
+      if (state.selectedSubCatFilter === subId) {
+        state.selectedSubCatFilter = null;
+      } else {
+        state.selectedSubCatFilter = subId;
+      }
+      const periodTxs = state.transactions.filter(
+        t => t.date >= state.filterStartDate && t.date <= state.filterEndDate
+      );
+      renderCategoryBreakdown(periodTxs);
+      renderOverviewRecentTransactions(periodTxs);
     }
 
     function selectChartDate(isoDate) {
@@ -2028,7 +2101,14 @@
       if (!container) return;
 
       let displayTxs = [...periodTxs];
-      if (state.selectedChartDate) {
+      if (state.selectedSubCatFilter) {
+        displayTxs = displayTxs.filter(t => t.subCategory === state.selectedSubCatFilter || t.category === state.selectedSubCatFilter);
+        const sampleTx = displayTxs[0];
+        const meta = sampleTx ? getCategoryMeta(sampleTx.category, sampleTx.type, sampleTx.subCategory) : null;
+        if (headingEl) {
+          headingEl.textContent = meta ? `Chi tiết: ${meta.subName}` : 'Chi tiết danh mục đã chọn';
+        }
+      } else if (state.selectedChartDate) {
         displayTxs = displayTxs.filter(t => t.date === state.selectedChartDate);
         if (headingEl) {
           const l = getLunarInfoFromISO(state.selectedChartDate);
@@ -2044,7 +2124,7 @@
       if (countEl) countEl.textContent = `${sorted.length} giao dịch`;
 
       if (sorted.length === 0) {
-        container.innerHTML = `<div class="text-center py-4 text-xs text-slate-400">Không có giao dịch nào ${state.selectedChartDate ? 'trong ngày này' : 'trong khoảng ngày đã chọn'}</div>`;
+        container.innerHTML = `<div class="text-center py-4 text-xs text-slate-400">Không có giao dịch nào ${state.selectedSubCatFilter ? 'trong danh mục này' : state.selectedChartDate ? 'trong ngày này' : 'trong khoảng ngày đã chọn'}</div>`;
         return;
       }
 
@@ -2943,6 +3023,7 @@
       setOverviewType,
       selectChartDate,
       clearSelectedChartDate,
+      toggleSubCatFilter,
       openAddModal,
       closeRecordModal,
       switchModalMode,
