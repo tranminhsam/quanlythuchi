@@ -514,6 +514,45 @@
       <!-- ==================== TAB 4: TIỆN ÍCH (UTILITIES) ==================== -->
       <section id="tab-utilities" class="hidden space-y-3.5">
         
+        <!-- Sổ tay Quán Ăn & Món Ngon Yêu Thích -->
+        <div class="bg-white rounded-2xl p-4 card-shadow space-y-3.5 border border-pink-100/60">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-500 to-rose-500 text-white flex items-center justify-center text-sm shadow-xs">
+                <i class="fa-solid fa-utensils"></i>
+              </span>
+              <div>
+                <h3 class="text-sm font-extrabold text-slate-800">Quán Ăn & Món Ngon Yêu Thích</h3>
+                <p class="text-[11px] text-slate-500">Lưu lại địa chỉ Google Maps & món ruột</p>
+              </div>
+            </div>
+            <button onclick="openRestaurantModal()" class="px-3 py-1.5 rounded-xl bg-momo-600 hover:bg-momo-700 text-white text-[11px] font-extrabold flex items-center gap-1 active:scale-95 transition shadow-xs">
+              <i class="fa-solid fa-plus text-[10px]"></i>
+              <span>Thêm quán</span>
+            </button>
+          </div>
+
+          <!-- Thanh tìm kiếm & lọc nhanh quán -->
+          <div class="space-y-2">
+            <div class="relative">
+              <input type="text" id="food-place-search-input" placeholder="Tìm tên quán, địa chỉ hoặc món ăn..." oninput="handleSearchFoodPlaces(event)" class="w-full bg-slate-50 border border-slate-200/90 rounded-xl pl-8 pr-3 py-1.5 text-xs text-slate-800 focus:outline-none focus:border-momo-500" />
+              <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2.5 text-slate-400 text-[11px]"></i>
+            </div>
+            <div class="flex items-center gap-1.5 overflow-x-auto pb-1 text-[11px]" id="food-place-tag-filter">
+              <button onclick="filterFoodPlacesByCategory('all')" id="fcat-all" class="px-2.5 py-1 rounded-full text-[10px] font-bold whitespace-nowrap bg-momo-600 text-white transition">Tất cả</button>
+              <button onclick="filterFoodPlacesByCategory('Bún / Phở / Mì')" id="fcat-bunpho" class="px-2.5 py-1 rounded-full text-[10px] font-bold whitespace-nowrap bg-slate-100 text-slate-600 hover:bg-slate-200 transition">🍜 Bún/Phở</button>
+              <button onclick="filterFoodPlacesByCategory('Cơm / Đồ mặn')" id="fcat-com" class="px-2.5 py-1 rounded-full text-[10px] font-bold whitespace-nowrap bg-slate-100 text-slate-600 hover:bg-slate-200 transition">🍚 Cơm</button>
+              <button onclick="filterFoodPlacesByCategory('Hải sản / Lẩu nướng')" id="fcat-haisan" class="px-2.5 py-1 rounded-full text-[10px] font-bold whitespace-nowrap bg-slate-100 text-slate-600 hover:bg-slate-200 transition">🦀 Lẩu/Nướng</button>
+              <button onclick="filterFoodPlacesByCategory('Cà phê / Trà sữa')" id="fcat-cafe" class="px-2.5 py-1 rounded-full text-[10px] font-bold whitespace-nowrap bg-slate-100 text-slate-600 hover:bg-slate-200 transition">☕ Cà phê</button>
+              <button onclick="filterFoodPlacesByCategory('Ăn vặt / Tráng miệng')" id="fcat-anvat" class="px-2.5 py-1 rounded-full text-[10px] font-bold whitespace-nowrap bg-slate-100 text-slate-600 hover:bg-slate-200 transition">🧋 Ăn vặt</button>
+              <button onclick="filterFoodPlacesByCategory('Nhậu / Tiếp khách')" id="fcat-nhau" class="px-2.5 py-1 rounded-full text-[10px] font-bold whitespace-nowrap bg-slate-100 text-slate-600 hover:bg-slate-200 transition">🍻 Quán nhậu</button>
+            </div>
+          </div>
+
+          <!-- Danh sách quán ăn & món ngon -->
+          <div id="food-places-container" class="space-y-3 max-h-[380px] overflow-y-auto pr-0.5"></div>
+        </div>
+
         <!-- Monthly Budget Card -->
         <div id="budget-card-section" class="bg-white rounded-2xl p-4 card-shadow space-y-3.5">
           <div class="flex items-center justify-between">
@@ -749,6 +788,99 @@
           </button>
         </div>
         <div id="utility-modal-body" class="space-y-3"></div>
+      </div>
+    </div>
+
+    <!-- MODAL 4: THÊM / SỬA QUÁN ĂN & MÓN NGON -->
+    <div id="restaurant-modal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
+      <div class="bg-white w-full max-w-[420px] rounded-t-3xl sm:rounded-3xl p-4 pb-6 space-y-3.5 animate-slide-up max-h-[90vh] overflow-y-auto">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+          <div class="flex items-center gap-2">
+            <span class="w-7 h-7 rounded-lg bg-pink-100 text-momo-600 flex items-center justify-center text-xs">
+              <i class="fa-solid fa-utensils"></i>
+            </span>
+            <h3 id="restaurant-modal-title" class="text-sm font-extrabold text-slate-800">Thêm quán ăn ngon</h3>
+          </div>
+          <button onclick="closeRestaurantModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-slate-200">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <div class="space-y-3">
+          <!-- Tên quán -->
+          <div>
+            <label class="text-xs font-bold text-slate-600 block mb-1">Tên quán ăn <span class="text-rose-500">*</span></label>
+            <input type="text" id="res-name-input" placeholder="VD: Phở Thìn, Bún Chả Hương Liên, Cơm tấm Ba Ghiền..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none focus:border-momo-500" />
+          </div>
+
+          <!-- Phân loại & Đánh giá sao -->
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="text-xs font-bold text-slate-600 block mb-1">Phân loại</label>
+              <select id="res-category-input" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2 text-xs font-bold text-slate-700 focus:outline-none focus:border-momo-500">
+                <option value="Bún / Phở / Mì">🍜 Bún / Phở / Mì</option>
+                <option value="Cơm / Đồ mặn">🍚 Cơm / Đồ mặn</option>
+                <option value="Hải sản / Lẩu nướng">🦀 Lẩu / Nướng / Hải sản</option>
+                <option value="Cà phê / Trà sữa">☕ Cà phê / Trà sữa</option>
+                <option value="Ăn vặt / Tráng miệng">🧋 Ăn vặt / Tráng miệng</option>
+                <option value="Nhậu / Tiếp khách">🍻 Quán nhậu / Tiếp khách</option>
+                <option value="Khác">🍽️ Món khác</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-xs font-bold text-slate-600 block mb-1">Mức độ thích</label>
+              <select id="res-rating-input" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2 text-xs font-bold text-slate-700 focus:outline-none focus:border-momo-500">
+                <option value="5">⭐⭐⭐⭐⭐ Cực ngon</option>
+                <option value="4" selected>⭐⭐⭐⭐ Rất thích</option>
+                <option value="3">⭐⭐⭐ Ngon vừa miệng</option>
+                <option value="2">⭐⭐ Tạm ổn</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Địa chỉ -->
+          <div>
+            <label class="text-xs font-bold text-slate-600 block mb-1">Địa chỉ quán</label>
+            <input type="text" id="res-address-input" placeholder="VD: 13 Lò Đúc, Hai Bà Trưng hoặc 84 Đặng Văn Bi, Thủ Đức..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-momo-500" />
+          </div>
+
+          <!-- Link Google Maps -->
+          <div>
+            <label class="text-xs font-bold text-slate-600 block mb-1">
+              Link Google Maps
+              <span class="text-[10px] text-momo-600 font-semibold">(maps.app.goo.gl/... hoặc google.com/maps)</span>
+            </label>
+            <div class="relative">
+              <input type="url" id="res-map-input" placeholder="Dán link chia sẻ vị trí từ Google Maps..." class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-8 pr-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-momo-500" />
+              <i class="fa-solid fa-location-dot absolute left-2.5 top-2.5 text-rose-500 text-xs"></i>
+            </div>
+          </div>
+
+          <!-- Danh sách món ăn yêu thích -->
+          <div class="bg-pink-50/50 p-3 rounded-2xl border border-pink-100 space-y-2">
+            <div class="flex items-center justify-between">
+              <label class="text-xs font-extrabold text-momo-700 flex items-center gap-1.5">
+                <i class="fa-solid fa-heart text-rose-500"></i>
+                <span>Các món ăn yêu thích (Món "ruột")</span>
+              </label>
+              <button type="button" onclick="addNewFavoriteDishRow()" class="text-[10px] font-extrabold text-momo-600 hover:text-momo-700 bg-white px-2 py-0.5 rounded-lg border border-pink-200 shadow-2xs">
+                + Thêm món
+              </button>
+            </div>
+            <div id="favorite-dishes-inputs-container" class="space-y-1.5 max-h-40 overflow-y-auto pr-0.5"></div>
+            <p class="text-[10px] text-slate-400 italic">Nhập tên món và giá tiền tham khảo để lần sau ghé quán gọi ngay món ngon.</p>
+          </div>
+
+          <!-- Ghi chú thêm -->
+          <div>
+            <label class="text-xs font-bold text-slate-600 block mb-1">Ghi chú (Giờ mở cửa, bãi đậu xe, mẹo ăn ngon...)</label>
+            <input type="text" id="res-note-input" placeholder="VD: Mở từ 6h-13h, có chỗ đậu ô tô, nhớ gọi thêm quẩy..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-momo-500" />
+          </div>
+        </div>
+
+        <button type="button" onclick="saveRestaurantPlace()" class="w-full py-3 rounded-2xl bg-gradient-to-r from-momo-600 to-rose-500 hover:from-momo-700 hover:to-rose-600 text-white font-extrabold text-xs shadow-md shadow-momo-500/25 active:scale-95 transition">
+          Lưu thông tin quán
+        </button>
       </div>
     </div>
 
@@ -1193,6 +1325,7 @@
     const todayISO = formatISO(todayObj);
     const LOCAL_STORAGE_KEY = 'momo_lunar_expense_firebase_v6';
     const BACKUP_FOLDER_STORAGE_KEY = 'momo_lunar_backup_folder_v1';
+    const FOOD_PLACES_STORAGE_KEY = 'momo_lunar_food_places_v1';
 
     function getCycle15To15Range(year, month) {
       const startISO = `${year}-${String(month).padStart(2, '0')}-15`;
@@ -1250,6 +1383,10 @@
       transactions: [],
       tasks: [],
       backups: [],
+      foodPlaces: [],
+      foodFilterCategory: 'all',
+      foodSearchQuery: '',
+      editingRestaurantId: null,
       lastUpdated: 0
     };
 
@@ -1259,12 +1396,17 @@
       const payload = {
         transactions: state.transactions,
         tasks: state.tasks,
+        foodPlaces: state.foodPlaces,
         monthlyBudget: state.monthlyBudget,
         hideAmounts: state.hideAmounts,
         lastUpdated: state.lastUpdated
       };
       try {
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(payload));
+      } catch (e) {}
+
+      try {
+        localStorage.setItem(FOOD_PLACES_STORAGE_KEY, JSON.stringify(state.foodPlaces));
       } catch (e) {}
     }
 
@@ -1282,10 +1424,21 @@
           const parsed = JSON.parse(raw);
           if (Array.isArray(parsed.transactions)) state.transactions = parsed.transactions;
           if (Array.isArray(parsed.tasks)) state.tasks = parsed.tasks;
+          if (Array.isArray(parsed.foodPlaces)) state.foodPlaces = parsed.foodPlaces;
           if (parsed.monthlyBudget) state.monthlyBudget = Number(parsed.monthlyBudget);
           if (typeof parsed.hideAmounts === 'boolean') state.hideAmounts = parsed.hideAmounts;
           if (typeof parsed.lastUpdated === 'number') state.lastUpdated = parsed.lastUpdated;
           hasData = true;
+        }
+      } catch (e) {}
+
+      try {
+        const rawFp = localStorage.getItem(FOOD_PLACES_STORAGE_KEY);
+        if (rawFp) {
+          const parsedFp = JSON.parse(rawFp);
+          if (Array.isArray(parsedFp) && parsedFp.length > 0) {
+            state.foodPlaces = parsedFp;
+          }
         }
       } catch (e) {}
 
@@ -1334,6 +1487,7 @@
         payload: {
           transactions: JSON.parse(JSON.stringify(state.transactions)),
           tasks: JSON.parse(JSON.stringify(state.tasks)),
+          foodPlaces: JSON.parse(JSON.stringify(state.foodPlaces)),
           monthlyBudget: state.monthlyBudget
         }
       };
@@ -1407,6 +1561,9 @@
       if (!bk || !bk.payload) return;
       state.transactions = JSON.parse(JSON.stringify(bk.payload.transactions || []));
       state.tasks = JSON.parse(JSON.stringify(bk.payload.tasks || []));
+      if (Array.isArray(bk.payload.foodPlaces)) {
+        state.foodPlaces = JSON.parse(JSON.stringify(bk.payload.foodPlaces));
+      }
       if (bk.payload.monthlyBudget) state.monthlyBudget = Number(bk.payload.monthlyBudget);
       closeUtilityModal();
       renderAll();
@@ -1474,6 +1631,11 @@
         renderAll();
         triggerCloudSync();
         showToast('Đã xóa công việc');
+      } else if (type === 'food_place') {
+        state.foodPlaces = state.foodPlaces.filter(p => p.id !== id);
+        renderUtilitiesTab();
+        triggerCloudSync();
+        showToast('Đã xóa quán ăn');
       } else if (type === 'backup') {
         state.backups = state.backups.filter(b => b.id !== id);
         saveBackupsToLocalStorage();
@@ -1481,6 +1643,27 @@
         triggerCloudSync();
         showToast('Đã xóa bản sao lưu');
       }
+    }
+
+    function deleteFoodPlace(placeId) {
+      const place = state.foodPlaces.find(p => p.id === placeId);
+      if (!place) return;
+      openConfirmModal({
+        type: 'food_place',
+        id: placeId,
+        title: 'Xác nhận xóa quán ăn?',
+        desc: 'Thông tin quán và các món ăn yêu thích của quán này sẽ bị xóa. Bạn có chắc chắn muốn xóa?',
+        detailHTML: `
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-slate-500 font-medium shrink-0">Tên quán:</span>
+            <strong class="text-slate-800 truncate">${place.name}</strong>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-slate-500 font-medium">Món ruột:</span>
+            <span class="font-bold text-momo-600 truncate">${(place.dishes || []).map(d => d.name).join(', ') || 'Chưa lưu món'}</span>
+          </div>
+        `
+      });
     }
 
     function deleteBackupItem(backupId) {
@@ -1606,6 +1789,12 @@
           state.tasks = data.tasks;
         }
 
+        if (typeof data.foodPlacesJson === 'string') {
+          state.foodPlaces = JSON.parse(data.foodPlacesJson);
+        } else if (Array.isArray(data.foodPlaces)) {
+          state.foodPlaces = data.foodPlaces;
+        }
+
         if (data.monthlyBudget) {
           state.monthlyBudget = Number(data.monthlyBudget);
         }
@@ -1689,6 +1878,7 @@
         const payload = {
           transactionsJson: JSON.stringify(state.transactions),
           tasksJson: JSON.stringify(state.tasks),
+          foodPlacesJson: JSON.stringify(state.foodPlaces),
           backupsJson: JSON.stringify(state.backups.slice(0, 15)),
           monthlyBudget: Number(state.monthlyBudget) || 12000000,
           hideAmounts: Boolean(state.hideAmounts),
@@ -2757,6 +2947,10 @@
     }
 
     function renderUtilitiesTab() {
+      // 1. Render Quán Ăn & Món Ngon Yêu Thích
+      renderFoodPlacesSection();
+
+      // 2. Render Ngân sách tháng
       const periodTxs = state.transactions.filter(
         t => t.type === 'expense' && t.date >= state.filterStartDate && t.date <= state.filterEndDate
       );
@@ -2817,6 +3011,281 @@
       }
     }
 
+    /********************************************************************
+     * QUẢN LÝ QUÁN ĂN & MÓN NGON YÊU THÍCH (GOOGLE MAPS & FAVORITE DISHES)
+     ********************************************************************/
+    function renderFoodPlacesSection() {
+      const container = document.getElementById('food-places-container');
+      if (!container) return;
+
+      let list = [...(state.foodPlaces || [])];
+
+      // Lọc theo Category
+      if (state.foodFilterCategory && state.foodFilterCategory !== 'all') {
+        list = list.filter(p => p.category === state.foodFilterCategory);
+      }
+
+      // Lọc theo Search Query
+      if (state.foodSearchQuery && state.foodSearchQuery.trim()) {
+        const q = state.foodSearchQuery.toLowerCase().trim();
+        list = list.filter(p => {
+          const matchName = (p.name || '').toLowerCase().includes(q);
+          const matchAddress = (p.address || '').toLowerCase().includes(q);
+          const matchNote = (p.note || '').toLowerCase().includes(q);
+          const matchDishes = (p.dishes || []).some(d => (d.name || '').toLowerCase().includes(q));
+          return matchName || matchAddress || matchNote || matchDishes;
+        });
+      }
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="p-6 text-center bg-slate-50/70 rounded-2xl border border-slate-200/80 space-y-2">
+            <i class="fa-solid fa-bowl-food text-3xl text-slate-300"></i>
+            <p class="text-xs font-semibold text-slate-500">Chưa có quán ăn nào trong danh sách</p>
+            <button onclick="openRestaurantModal()" class="px-3.5 py-1.5 rounded-xl bg-pink-50 text-momo-600 text-xs font-extrabold hover:bg-pink-100 transition">
+              + Thêm quán ăn đầu tiên
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = list.map(p => {
+        const starCount = Number(p.rating) || 4;
+        const starsHTML = '⭐'.repeat(starCount);
+
+        // Nút Google Maps
+        let mapButtonHTML = '';
+        if (p.mapUrl && p.mapUrl.trim()) {
+          mapButtonHTML = `
+            <a href="${p.mapUrl}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-rose-50 text-rose-600 hover:bg-rose-100 text-[10px] font-extrabold border border-rose-200 transition active:scale-95">
+              <i class="fa-solid fa-location-dot text-rose-500"></i>
+              <span>Xem trên Google Maps</span>
+              <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
+            </a>
+          `;
+        }
+
+        // Danh sách món ăn yêu thích của quán
+        let dishesHTML = '';
+        if (Array.isArray(p.dishes) && p.dishes.length > 0) {
+          dishesHTML = `
+            <div class="pt-1.5 space-y-1 border-t border-slate-100">
+              <div class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider flex items-center gap-1">
+                <i class="fa-solid fa-heart text-rose-500 text-[9px]"></i>
+                <span>Món yêu thích (${p.dishes.length}):</span>
+              </div>
+              <div class="flex flex-wrap gap-1.5">
+                ${p.dishes.map(d => `
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-pink-50 text-momo-700 border border-pink-200 text-[11px] font-bold">
+                    <span>${d.name}</span>
+                    ${d.price ? `<span class="text-[10px] font-extrabold text-slate-500">(${Number(d.price).toLocaleString('vi-VN')}đ)</span>` : ''}
+                  </span>
+                `).join('')}
+              </div>
+            </div>
+          `;
+        }
+
+        return `
+          <div class="p-3 rounded-2xl bg-slate-50/80 border border-slate-200/90 hover:border-pink-200 space-y-2 transition">
+            <div class="flex items-start justify-between gap-2">
+              <div class="min-w-0 space-y-0.5">
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <h4 class="text-xs font-black text-slate-800 truncate">${p.name}</h4>
+                  <span class="text-[10px] tracking-tighter">${starsHTML}</span>
+                </div>
+                <div class="flex items-center gap-1.5 text-[10px] text-slate-500 font-semibold flex-wrap">
+                  <span class="px-1.5 py-0.5 rounded bg-white border border-slate-200 text-slate-600 font-bold">${p.category || 'Ăn uống'}</span>
+                  ${p.address ? `<span class="truncate"><i class="fa-regular fa-compass mr-0.5 text-slate-400"></i>${p.address}</span>` : ''}
+                </div>
+              </div>
+              <div class="flex items-center gap-1 shrink-0">
+                <button onclick="editFoodPlace('${p.id}')" class="w-6 h-6 rounded-lg bg-white border border-slate-200 text-slate-500 hover:text-blue-600 flex items-center justify-center text-[10px]" title="Sửa">
+                  <i class="fa-solid fa-pen"></i>
+                </button>
+                <button onclick="deleteFoodPlace('${p.id}')" class="w-6 h-6 rounded-lg bg-white border border-slate-200 text-slate-500 hover:text-rose-600 flex items-center justify-center text-[10px]" title="Xóa">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            </div>
+
+            ${p.note ? `<p class="text-[11px] text-slate-600 bg-white/70 p-1.5 rounded-lg border border-slate-100 italic">${p.note}</p>` : ''}
+            
+            ${dishesHTML}
+
+            ${mapButtonHTML ? `<div class="pt-0.5">${mapButtonHTML}</div>` : ''}
+          </div>
+        `;
+      }).join('');
+    }
+
+    function handleSearchFoodPlaces(event) {
+      state.foodSearchQuery = event.target.value;
+      renderFoodPlacesSection();
+    }
+
+    function filterFoodPlacesByCategory(cat) {
+      state.foodFilterCategory = cat;
+      const cats = ['all', 'Bún / Phở / Mì', 'Cơm / Đồ mặn', 'Hải sản / Lẩu nướng', 'Cà phê / Trà sữa', 'Ăn vặt / Tráng miệng', 'Nhậu / Tiếp khách'];
+      const catMap = {
+        'all': 'fcat-all',
+        'Bún / Phở / Mì': 'fcat-bunpho',
+        'Cơm / Đồ mặn': 'fcat-com',
+        'Hải sản / Lẩu nướng': 'fcat-haisan',
+        'Cà phê / Trà sữa': 'fcat-cafe',
+        'Ăn vặt / Tráng miệng': 'fcat-anvat',
+        'Nhậu / Tiếp khách': 'fcat-nhau'
+      };
+
+      Object.entries(catMap).forEach(([k, btnId]) => {
+        const btn = document.getElementById(btnId);
+        if (!btn) return;
+        if (k === cat) {
+          btn.className = 'px-2.5 py-1 rounded-full text-[10px] font-bold whitespace-nowrap bg-momo-600 text-white transition';
+        } else {
+          btn.className = 'px-2.5 py-1 rounded-full text-[10px] font-bold whitespace-nowrap bg-slate-100 text-slate-600 hover:bg-slate-200 transition';
+        }
+      });
+
+      renderFoodPlacesSection();
+    }
+
+    function openRestaurantModal(isEditing = false) {
+      if (!isEditing) {
+        state.editingRestaurantId = null;
+        document.getElementById('restaurant-modal-title').textContent = 'Thêm quán ăn ngon';
+        document.getElementById('res-name-input').value = '';
+        document.getElementById('res-category-input').value = 'Bún / Phở / Mì';
+        document.getElementById('res-rating-input').value = '4';
+        document.getElementById('res-address-input').value = '';
+        document.getElementById('res-map-input').value = '';
+        document.getElementById('res-note-input').value = '';
+        
+        const container = document.getElementById('favorite-dishes-inputs-container');
+        container.innerHTML = '';
+        addNewFavoriteDishRow(); // Dòng món đầu tiên
+      }
+      document.getElementById('restaurant-modal').classList.remove('hidden');
+    }
+
+    function closeRestaurantModal() {
+      state.editingRestaurantId = null;
+      document.getElementById('restaurant-modal').classList.add('hidden');
+    }
+
+    function addNewFavoriteDishRow(name = '', price = '') {
+      const container = document.getElementById('favorite-dishes-inputs-container');
+      if (!container) return;
+      const rowId = 'dish_row_' + Math.random().toString(36).substr(2, 7);
+      const row = document.createElement('div');
+      row.id = rowId;
+      row.className = 'flex items-center gap-1.5';
+      row.innerHTML = `
+        <input type="text" placeholder="Tên món (vd: Phở tái gầu, Bò sốt tiêu...)" value="${name}" class="dish-name-field flex-1 bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 font-semibold focus:outline-none focus:border-momo-500" />
+        <input type="text" inputmode="numeric" placeholder="Giá tiền (đ)" value="${price ? Number(price).toLocaleString('vi-VN') : ''}" oninput="handleAmountInput(event)" class="dish-price-field w-24 bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs text-slate-800 font-bold focus:outline-none focus:border-momo-500" />
+        <button type="button" onclick="document.getElementById('${rowId}').remove()" class="w-6 h-6 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-white flex items-center justify-center text-xs" title="Xóa món này">
+          <i class="fa-solid fa-trash-can"></i>
+        </button>
+      `;
+      container.appendChild(row);
+    }
+
+    function saveRestaurantPlace() {
+      const name = (document.getElementById('res-name-input').value || '').trim();
+      if (!name) {
+        showToast('Vui lòng nhập tên quán ăn!');
+        return;
+      }
+
+      const category = document.getElementById('res-category-input').value;
+      const rating = document.getElementById('res-rating-input').value;
+      const address = (document.getElementById('res-address-input').value || '').trim();
+      let mapUrl = (document.getElementById('res-map-input').value || '').trim();
+
+      // Nếu người dùng chỉ nhập địa chỉ hoặc link maps thì giữ nguyên
+      if (mapUrl && !mapUrl.startsWith('http://') && !mapUrl.startsWith('https://')) {
+        mapUrl = 'https://' + mapUrl;
+      }
+
+      const note = (document.getElementById('res-note-input').value || '').trim();
+
+      // Gom danh sách món ăn yêu thích
+      const dishes = [];
+      const dishRows = document.querySelectorAll('#favorite-dishes-inputs-container > div');
+      dishRows.forEach(row => {
+        const nameField = row.querySelector('.dish-name-field');
+        const priceField = row.querySelector('.dish-price-field');
+        const dName = nameField ? nameField.value.trim() : '';
+        const dPriceRaw = priceField ? priceField.value.replace(/\D/g, '') : '';
+        if (dName) {
+          dishes.push({
+            name: dName,
+            price: dPriceRaw ? Number(dPriceRaw) : null
+          });
+        }
+      });
+
+      if (state.editingRestaurantId) {
+        const idx = state.foodPlaces.findIndex(p => p.id === state.editingRestaurantId);
+        if (idx !== -1) {
+          state.foodPlaces[idx] = {
+            ...state.foodPlaces[idx],
+            name,
+            category,
+            rating,
+            address,
+            mapUrl,
+            dishes,
+            note,
+            updatedAt: Date.now()
+          };
+        }
+      } else {
+        if (!Array.isArray(state.foodPlaces)) state.foodPlaces = [];
+        state.foodPlaces.unshift({
+          id: 'res_' + Date.now(),
+          name,
+          category,
+          rating,
+          address,
+          mapUrl,
+          dishes,
+          note,
+          createdAt: Date.now()
+        });
+      }
+
+      closeRestaurantModal();
+      renderUtilitiesTab();
+      triggerCloudSync();
+      showToast('Đã lưu quán ăn và món ngon thành công!');
+    }
+
+    function editFoodPlace(placeId) {
+      const place = state.foodPlaces.find(p => p.id === placeId);
+      if (!place) return;
+      state.editingRestaurantId = place.id;
+
+      document.getElementById('restaurant-modal-title').textContent = 'Sửa thông tin quán ăn';
+      document.getElementById('res-name-input').value = place.name || '';
+      document.getElementById('res-category-input').value = place.category || 'Bún / Phở / Mì';
+      document.getElementById('res-rating-input').value = place.rating || '4';
+      document.getElementById('res-address-input').value = place.address || '';
+      document.getElementById('res-map-input').value = place.mapUrl || '';
+      document.getElementById('res-note-input').value = place.note || '';
+
+      const container = document.getElementById('favorite-dishes-inputs-container');
+      container.innerHTML = '';
+      if (Array.isArray(place.dishes) && place.dishes.length > 0) {
+        place.dishes.forEach(d => addNewFavoriteDishRow(d.name, d.price));
+      } else {
+        addNewFavoriteDishRow();
+      }
+
+      openRestaurantModal(true);
+    }
+
     function openBudgetEditModal() {
       const modal = document.getElementById('utility-modal');
       document.getElementById('utility-modal-title').textContent = 'Đặt hạn mức ngân sách tháng';
@@ -2856,6 +3325,7 @@
         exportedAt: new Date().toISOString(),
         transactions: state.transactions,
         tasks: state.tasks,
+        foodPlaces: state.foodPlaces,
         monthlyBudget: state.monthlyBudget
       }, null, 2));
       const a = document.createElement('a');
@@ -2876,6 +3346,7 @@
           const parsed = JSON.parse(e.target.result);
           if (Array.isArray(parsed.transactions)) state.transactions = parsed.transactions;
           if (Array.isArray(parsed.tasks)) state.tasks = parsed.tasks;
+          if (Array.isArray(parsed.foodPlaces)) state.foodPlaces = parsed.foodPlaces;
           if (parsed.monthlyBudget) state.monthlyBudget = Number(parsed.monthlyBudget);
           renderAll();
           triggerCloudSync();
@@ -3205,6 +3676,36 @@
           createdAt: 1
         }
       ];
+      state.foodPlaces = [
+        {
+          id: 'res_sample_1',
+          name: 'Cơm Tấm Ba Ghiền',
+          category: 'Cơm / Đồ mặn',
+          rating: '5',
+          address: '84 Đặng Văn Bi, P. Bình Thọ, TP. Thủ Đức',
+          mapUrl: 'https://maps.google.com/?q=Com+Tam+Ba+Ghien',
+          note: 'Miếng sườn nướng siêu to mọng nước, nên ăn lúc 11h trưa để tránh đông',
+          dishes: [
+            { name: 'Cơm tấm sườn bì chả ốp la', price: 75000 },
+            { name: 'Canh khổ qua dồn thịt', price: 25000 }
+          ],
+          createdAt: 1
+        },
+        {
+          id: 'res_sample_2',
+          name: 'Phở Thìn Lò Đúc',
+          category: 'Bún / Phở / Mì',
+          rating: '5',
+          address: '13 Lò Đúc, Ngô Thì Nhậm, Hai Bà Trưng, Hà Nội',
+          mapUrl: 'https://maps.google.com/?q=Pho+Thin+13+Lo+Duc',
+          note: 'Nước dùng béo ngậy thơm nức mùi hành xào, gọi thêm quẩy giòn và trứng chần',
+          dishes: [
+            { name: 'Phở bò tái lăn đặc biệt', price: 90000 },
+            { name: 'Quẩy giòn & trứng chần', price: 15000 }
+          ],
+          createdAt: 2
+        }
+      ];
       state.lastUpdated = 0;
     }
 
@@ -3262,7 +3763,15 @@
       closeConfirmModal,
       executeConfirmedDelete,
       exportDataJSON,
-      importDataJSON
+      importDataJSON,
+      openRestaurantModal,
+      closeRestaurantModal,
+      addNewFavoriteDishRow,
+      saveRestaurantPlace,
+      editFoodPlace,
+      deleteFoodPlace,
+      handleSearchFoodPlaces,
+      filterFoodPlacesByCategory
     });
 
     const hadLocal = loadStateFromLocalStorage();
