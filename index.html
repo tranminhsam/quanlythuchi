@@ -115,7 +115,12 @@
     }
     @keyframes slideUp {
       from { transform: translateY(100%); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
+      to { transform: none; opacity: 1; }
+    }
+    .modal-scroll-area {
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+      touch-action: pan-y;
     }
     .animate-slide-up {
       animation: slideUp 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -581,9 +586,55 @@
 
 
 
+  </div>
+
+    <!-- ==================== FIXED BOTTOM NAVIGATION BAR ==================== -->
+    <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[440px] bg-white/95 backdrop-blur-md nav-shadow border-t border-slate-100 rounded-t-3xl px-2 pt-1.5 pb-[max(0.65rem,env(safe-area-inset-bottom))] z-40">
+      <div class="grid grid-cols-5 items-end">
+        <button onclick="switchTab('overview')" id="nav-overview" class="flex flex-col items-center justify-center py-1 text-emerald-600 transition relative">
+          <div id="nav-ind-overview" class="w-8 h-0.5 bg-emerald-600 rounded-full absolute -top-1.5"></div>
+          <i class="fa-solid fa-receipt text-lg mb-1"></i>
+          <span class="text-[10px] font-bold">Tổng quan</span>
+        </button>
+
+        <button onclick="switchTab('calendar')" id="nav-calendar" class="flex flex-col items-center justify-center py-1 text-slate-400 hover:text-emerald-600 transition relative">
+          <div id="nav-ind-calendar" class="hidden w-8 h-0.5 bg-emerald-600 rounded-full absolute -top-1.5"></div>
+          <div class="relative">
+            <i class="fa-regular fa-calendar-days text-lg mb-1"></i>
+            <span class="w-2 h-2 rounded-full bg-emerald-600 absolute -top-0.5 -right-1.5 border border-white"></span>
+          </div>
+          <span class="text-[10px] font-semibold">Lịch</span>
+        </button>
+
+        <div class="flex flex-col items-center justify-end relative -top-3">
+          <button onclick="openAddModal('expense')" class="w-12 h-12 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-500 text-white shadow-lg shadow-emerald-500/35 border-4 border-white flex items-center justify-center active:scale-90 transition">
+            <i class="fa-solid fa-plus text-lg"></i>
+          </button>
+          <span class="mt-1 bg-emerald-600 text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-xs whitespace-nowrap">
+            Ghi chép GD
+          </span>
+        </div>
+
+        <button onclick="switchTab('tasks')" id="nav-tasks" class="flex flex-col items-center justify-center py-1 text-slate-400 hover:text-emerald-600 transition relative">
+          <div id="nav-ind-tasks" class="hidden w-8 h-0.5 bg-emerald-600 rounded-full absolute -top-1.5"></div>
+          <div class="relative">
+            <i class="fa-solid fa-calendar-check text-lg mb-1"></i>
+            <span id="nav-task-badge" class="hidden absolute -top-1 -right-2.5 bg-emerald-600 text-white text-[8px] font-extrabold px-1 rounded-full">0</span>
+          </div>
+          <span class="text-[10px] font-semibold">Công việc</span>
+        </button>
+
+        <button onclick="switchTab('utilities')" id="nav-utilities" class="flex flex-col items-center justify-center py-1 text-slate-400 hover:text-emerald-600 transition relative">
+          <div id="nav-ind-utilities" class="hidden w-8 h-0.5 bg-emerald-600 rounded-full absolute -top-1.5"></div>
+          <i class="fa-solid fa-table-cells-large text-lg mb-1"></i>
+          <span class="text-[10px] font-semibold">Tiện ích</span>
+        </button>
+      </div>
+    </nav>
+
     <!-- MODAL 1: GHI CHÉP GD / CÔNG VIỆC -->
     <div id="record-modal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-end sm:items-center justify-center">
-      <div class="bg-white w-full max-w-[440px] rounded-t-3xl sm:rounded-3xl p-3 pb-3.5 flex flex-col gap-2 animate-slide-up max-h-[96vh]">
+      <div class="bg-white w-full max-w-[440px] rounded-t-3xl sm:rounded-3xl p-3 pb-[max(0.875rem,env(safe-area-inset-bottom))] flex flex-col gap-2 animate-slide-up max-h-[90dvh]">
         <div class="flex items-center justify-between border-b border-slate-100 pb-1.5 shrink-0">
           <h3 id="modal-title" class="text-sm font-extrabold text-slate-800">Ghi chép mới</h3>
           <button onclick="closeRecordModal()" class="w-7 h-7 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-slate-200 text-xs">
@@ -597,7 +648,7 @@
           <button type="button" onclick="switchModalMode('task')" id="mmode-task" class="py-1.5 rounded-lg text-xs font-extrabold transition text-slate-600">Công việc</button>
         </div>
 
-        <div class="flex-1 min-h-0 overflow-y-auto space-y-2 pr-0.5">
+        <div class="flex-1 min-h-0 overflow-y-auto modal-scroll-area space-y-2 pr-0.5">
           <div class="bg-slate-50 px-2.5 py-1.5 rounded-xl border border-slate-200/70 flex items-center justify-between gap-2">
             <div class="min-w-0">
               <label class="text-[11px] font-bold text-slate-600 block leading-tight">Ngày thực hiện</label>
@@ -821,51 +872,7 @@
       <span id="toast-msg">Đã lưu!</span>
     </div>
 
-  </div>
 
-    <!-- ==================== FIXED BOTTOM NAVIGATION BAR ==================== -->
-    <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[440px] bg-white/95 backdrop-blur-md nav-shadow border-t border-slate-100 rounded-t-3xl px-2 pt-1.5 pb-[max(0.65rem,env(safe-area-inset-bottom))] z-40">
-      <div class="grid grid-cols-5 items-end">
-        <button onclick="switchTab('overview')" id="nav-overview" class="flex flex-col items-center justify-center py-1 text-emerald-600 transition relative">
-          <div id="nav-ind-overview" class="w-8 h-0.5 bg-emerald-600 rounded-full absolute -top-1.5"></div>
-          <i class="fa-solid fa-receipt text-lg mb-1"></i>
-          <span class="text-[10px] font-bold">Tổng quan</span>
-        </button>
-
-        <button onclick="switchTab('calendar')" id="nav-calendar" class="flex flex-col items-center justify-center py-1 text-slate-400 hover:text-emerald-600 transition relative">
-          <div id="nav-ind-calendar" class="hidden w-8 h-0.5 bg-emerald-600 rounded-full absolute -top-1.5"></div>
-          <div class="relative">
-            <i class="fa-regular fa-calendar-days text-lg mb-1"></i>
-            <span class="w-2 h-2 rounded-full bg-emerald-600 absolute -top-0.5 -right-1.5 border border-white"></span>
-          </div>
-          <span class="text-[10px] font-semibold">Lịch</span>
-        </button>
-
-        <div class="flex flex-col items-center justify-end relative -top-3">
-          <button onclick="openAddModal('expense')" class="w-12 h-12 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-500 text-white shadow-lg shadow-emerald-500/35 border-4 border-white flex items-center justify-center active:scale-90 transition">
-            <i class="fa-solid fa-plus text-lg"></i>
-          </button>
-          <span class="mt-1 bg-emerald-600 text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-xs whitespace-nowrap">
-            Ghi chép GD
-          </span>
-        </div>
-
-        <button onclick="switchTab('tasks')" id="nav-tasks" class="flex flex-col items-center justify-center py-1 text-slate-400 hover:text-emerald-600 transition relative">
-          <div id="nav-ind-tasks" class="hidden w-8 h-0.5 bg-emerald-600 rounded-full absolute -top-1.5"></div>
-          <div class="relative">
-            <i class="fa-solid fa-calendar-check text-lg mb-1"></i>
-            <span id="nav-task-badge" class="hidden absolute -top-1 -right-2.5 bg-emerald-600 text-white text-[8px] font-extrabold px-1 rounded-full">0</span>
-          </div>
-          <span class="text-[10px] font-semibold">Công việc</span>
-        </button>
-
-        <button onclick="switchTab('utilities')" id="nav-utilities" class="flex flex-col items-center justify-center py-1 text-slate-400 hover:text-emerald-600 transition relative">
-          <div id="nav-ind-utilities" class="hidden w-8 h-0.5 bg-emerald-600 rounded-full absolute -top-1.5"></div>
-          <i class="fa-solid fa-table-cells-large text-lg mb-1"></i>
-          <span class="text-[10px] font-semibold">Tiện ích</span>
-        </button>
-      </div>
-    </nav>
 
   <!-- FIREBASE & APP SCRIPT -->
   <script type="module">
@@ -3207,11 +3214,13 @@
 
       switchModalMode(mode);
       updateModalLunarPreview();
+      document.body.style.overflow = 'hidden';
       modal.classList.remove('hidden');
     }
 
     function closeRecordModal() {
       state.editingRecordId = null;
+      document.body.style.overflow = '';
       document.getElementById('record-modal').classList.add('hidden');
     }
 
