@@ -18,16 +18,16 @@
           },
           colors: {
             momo: {
-              50: '#fff2f8',
-              100: '#ffe5f2',
-              200: '#ffcbe6',
-              300: '#ffa1d0',
-              400: '#ff66b0',
-              500: '#f0328f',
-              600: '#d82d8b',
-              700: '#b81d71',
-              800: '#981b5e',
-              900: '#7f1b50',
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              200: '#a7f3d0',
+              300: '#6ee7b7',
+              400: '#34d399',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+              800: '#065f46',
+              900: '#064e3b',
             }
           }
         }
@@ -41,7 +41,8 @@
     }
     body {
       font-family: 'Be Vietnam Pro', sans-serif;
-      background: linear-gradient(135deg, #fce7f3 0%, #f3e8ff 50%, #ffe4e6 100%);
+      background: radial-gradient(circle at 15% 15%, #d1fae5 0%, #ecfdf5 42%, #e0f2fe 85%, #f0fdfa 100%);
+      background-attachment: fixed;
       color: #1e293b;
       overflow-x: hidden;
       margin: 0;
@@ -54,35 +55,44 @@
       background: transparent;
     }
     ::-webkit-scrollbar-thumb {
-      background: rgba(216, 45, 139, 0.22);
+      background: rgba(16, 185, 129, 0.28);
       border-radius: 9999px;
     }
     .momo-bg-gradient {
-      background: linear-gradient(180deg, #ffeef7 0%, #f6f7fb 230px, #f4f5f9 100%);
+      background: linear-gradient(180deg, rgba(240, 253, 250, 0.65) 0%, rgba(248, 250, 252, 0.72) 240px, rgba(241, 245, 249, 0.76) 100%);
     }
     .nav-shadow {
-      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.06);
+      box-shadow: 0 -8px 28px rgba(16, 185, 129, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.95);
     }
     .card-shadow {
-      box-shadow: 0 4px 20px -2px rgba(216, 45, 139, 0.06), 0 2px 8px -2px rgba(15, 23, 42, 0.04);
+      box-shadow: 0 4px 0 0 rgba(16, 185, 129, 0.08), 0 12px 26px -6px rgba(15, 23, 42, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.95);
     }
-    /* Highlight Ngày Rằm (15 Âm lịch) Tô Đỏ */
+    .tile-3d {
+      box-shadow: 0 3px 0 0 rgba(16, 185, 129, 0.14), 0 6px 14px -3px rgba(15, 23, 42, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.92);
+      transition: transform 0.14s ease, box-shadow 0.14s ease;
+    }
+    .tile-3d:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 0 rgba(16, 185, 129, 0.14), 0 3px 6px -2px rgba(15, 23, 42, 0.05);
+    }
+    /* Highlight Ngày Rằm (15 Âm lịch) bằng tông Vàng Hổ Phách nổi khối 3D */
     .ram-cell {
-      background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%) !important;
-      border: 1.5px solid #ef4444 !important;
-      color: #b91c1c !important;
+      background: linear-gradient(145deg, #fffbeb 0%, #fef3c7 100%) !important;
+      border: 1.5px solid #f59e0b !important;
+      color: #b45309 !important;
+      box-shadow: 0 3px 0 0 rgba(245, 158, 11, 0.22), 0 6px 12px -3px rgba(245, 158, 11, 0.15) !important;
     }
     .ram-cell-selected {
-      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+      background: linear-gradient(145deg, #f59e0b 0%, #d97706 100%) !important;
       color: #ffffff !important;
-      border: 1.5px solid #991b1b !important;
-      box-shadow: 0 6px 15px -3px rgba(239, 68, 68, 0.45);
+      border: 1.5px solid #b45309 !important;
+      box-shadow: 0 3px 0 0 rgba(180, 83, 9, 0.45), 0 8px 16px -3px rgba(245, 158, 11, 0.4) !important;
     }
     .day-selected {
-      background: linear-gradient(135deg, #d82d8b 0%, #f0469b 100%) !important;
+      background: linear-gradient(145deg, #10b981 0%, #059669 100%) !important;
       color: #ffffff !important;
-      border-color: #d82d8b !important;
-      box-shadow: 0 6px 15px -3px rgba(216, 45, 139, 0.4);
+      border: 1.5px solid #047857 !important;
+      box-shadow: 0 3px 0 0 rgba(4, 120, 87, 0.40), 0 8px 16px -3px rgba(16, 185, 129, 0.35) !important;
     }
     @keyframes slideUp {
       from { transform: translateY(100%); opacity: 0; }
@@ -93,159 +103,163 @@
     }
   </style>
 </head>
-<body class="min-h-screen flex justify-center items-start">
+<body class="min-h-screen flex justify-center items-start relative">
 
-  <!-- Mobile App Container (No status bar, no top title header) -->
-  <div id="app-container" class="w-full max-w-[440px] min-h-screen momo-bg-gradient md:shadow-2xl md:border-x-[4px] md:border-white flex flex-col relative pb-28">
+  <!-- Modern Blurred Ambient Background Orbs (Soft Mint & Aqua) -->
+  <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
+    <div class="absolute -top-24 -left-20 w-80 h-80 rounded-full bg-emerald-300/35 blur-3xl"></div>
+    <div class="absolute top-1/3 -right-20 w-80 h-80 rounded-full bg-teal-300/30 blur-3xl"></div>
+    <div class="absolute -bottom-24 left-1/4 w-96 h-96 rounded-full bg-sky-200/40 blur-3xl"></div>
+    <div class="absolute bottom-1/4 right-1/3 w-64 h-64 rounded-full bg-emerald-200/35 blur-3xl"></div>
+  </div>
 
-    <!-- Sticky Lunar Status Strip (No sync UI on screen) -->
-    <div class="sticky top-0 z-30 bg-[#ffeef7]/95 backdrop-blur-md px-3.5 pt-2.5 pb-2 border-b border-pink-100/70 flex items-center justify-between gap-2 shrink-0">
-      <div class="flex items-center gap-1.5 text-xs font-bold text-slate-700">
-        <span id="firebase-status-dot" class="w-2 h-2 rounded-full bg-amber-400 animate-pulse" title="Trạng thái kết nối Firebase"></span>
-        <span>Quản Lý Thu Chi & Lịch Âm</span>
+  <!-- Mobile App Container -->
+  <div id="app-container" class="w-full max-w-[440px] min-h-screen momo-bg-gradient md:shadow-2xl md:border-x-[4px] md:border-white/80 flex flex-col relative z-10 pb-28">
+
+    <!-- Sticky Bento Header -->
+    <div class="sticky top-0 z-30 bg-[#ecfdf5]/85 backdrop-blur-md px-4 pt-3 pb-2.5 flex items-center justify-between gap-2 shrink-0 border-b border-emerald-100/60">
+      <div class="min-w-0">
+        <div class="flex items-center gap-1.5">
+          <span id="greeting-text" class="text-[11px] font-semibold text-slate-400">Chào buổi sáng</span>
+          <span id="firebase-status-dot" class="w-2 h-2 rounded-full bg-amber-400 animate-pulse" title="Trạng thái kết nối Firebase"></span>
+        </div>
+        <h1 class="text-[20px] font-black text-slate-900 tracking-tight leading-tight">Khám phá</h1>
       </div>
 
-      <!-- Quick Today Lunar Pill -->
-      <div class="flex items-center gap-1.5 shrink-0">
-        <button onclick="switchTab('calendar')" class="px-2.5 py-1 rounded-full bg-pink-50 hover:bg-pink-100 border border-pink-200 text-momo-600 text-[11px] font-extrabold flex items-center gap-1 active:scale-95 transition shadow-xs">
-          <i class="fa-regular fa-calendar-days text-[10px]"></i>
+      <div class="flex items-center gap-2 shrink-0">
+        <button onclick="toggleHideAmount()" class="w-9 h-9 rounded-full bg-white border border-slate-200/70 text-slate-600 hover:text-emerald-600 flex items-center justify-center active:scale-90 transition shadow-xs" title="Ẩn/Hiện số tiền">
+          <i id="eye-icon" class="fa-regular fa-eye text-sm"></i>
+        </button>
+        <button onclick="switchTab('calendar')" class="px-2.5 py-1.5 rounded-2xl bg-white hover:bg-emerald-50 border border-slate-200/80 text-slate-700 text-[11px] font-extrabold flex items-center gap-1.5 active:scale-95 transition shadow-xs">
+          <span class="w-4 h-4 rounded-md bg-emerald-600 text-white flex items-center justify-center text-[9px] font-black">ÂL</span>
           <span id="top-lunar-pill">ÂL hôm nay</span>
         </button>
       </div>
     </div>
 
     <!-- Main Scrollable Content Area -->
-    <main id="main-scroll" class="flex-1 px-3.5 pt-2.5 pb-6 space-y-4">
+    <main id="main-scroll" class="flex-1 px-3.5 pt-1 pb-6 space-y-3">
 
-      <!-- ==================== TAB 1: TỔNG QUAN (OVERVIEW) ==================== -->
-      <section id="tab-overview" class="space-y-4">
+      <!-- ==================== TAB 1: TỔNG QUAN (BENTO OVERVIEW) ==================== -->
+      <section id="tab-overview" class="space-y-3">
 
-        <!-- Section Header: Tình hình thu chi + Eye Icon -->
-        <div class="flex items-center justify-between px-0.5">
-          <div class="flex items-center gap-2">
-            <h2 class="text-[18px] font-extrabold text-slate-800">Tình hình thu chi</h2>
-            <button onclick="toggleHideAmount()" class="text-momo-600 hover:text-momo-700 p-1 rounded-full active:scale-90 transition" title="Ẩn/Hiện số tiền">
-              <i id="eye-icon" class="fa-regular fa-eye text-base"></i>
-            </button>
+        <!-- Bento Hero Card: Chi tiêu & Ngân sách -->
+        <button id="box-type-expense" onclick="setOverviewType('expense')" class="tile-3d w-full text-left rounded-3xl p-4 bg-gradient-to-br from-[#fffbeb] via-[#fefce8] to-[#ecfdf5]/80 border-2 border-amber-300/90 card-shadow transition relative overflow-hidden active:scale-[0.99]">
+          <!-- Decorative floral/sparkle accent -->
+          <div class="pointer-events-none absolute -right-2 top-2 opacity-25 text-amber-400 text-5xl">
+            <i class="fa-solid fa-sun"></i>
           </div>
-
-          <!-- Nhãn Biến động theo ngày -->
-          <div class="bg-white px-2.5 py-1 rounded-xl border border-pink-100 flex items-center gap-1.5 shadow-xs text-xs font-bold text-momo-600">
-            <i class="fa-solid fa-chart-simple text-[11px]"></i>
-            <span>Biến động ngày</span>
+          <div class="flex items-center justify-between gap-2 mb-2 relative z-10">
+            <div class="flex items-center gap-2">
+              <span class="w-8 h-8 rounded-xl bg-gradient-to-br from-amber-400 to-orange-400 text-white flex items-center justify-center text-sm shadow-xs">
+                <i class="fa-solid fa-wallet"></i>
+              </span>
+              <span class="text-sm font-extrabold text-slate-800">Chi Tiêu</span>
+              <span id="expense-diff-badge" class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-600 text-white shadow-2xs">0 GD</span>
+            </div>
+            <span class="text-[10px] font-bold text-slate-400">Bấm để xem biểu đồ</span>
           </div>
+          <div class="text-[11px] font-semibold text-slate-500 relative z-10">Đã chi trong kỳ</div>
+          <div id="overview-expense-amount" class="text-[24px] font-black text-slate-900 tracking-tight leading-tight mt-0.5 mb-2.5 relative z-10 truncate">0đ</div>
+          <div class="w-full h-1.5 bg-slate-200/80 rounded-full overflow-hidden relative z-10">
+            <div id="hero-budget-bar" class="h-full bg-gradient-to-r from-amber-500 to-emerald-500 rounded-full transition-all duration-300" style="width: 0%"></div>
+          </div>
+          <div id="hero-budget-caption" class="text-[11px] font-semibold text-slate-500 mt-1.5 relative z-10">Còn 0đ trong kỳ</div>
+        </button>
+
+        <!-- Bento Row 2: Thu nhập & Tiết kiệm -->
+        <div class="grid grid-cols-2 gap-2.5">
+          <!-- Thu nhập Bento Card -->
+          <button id="box-type-income" onclick="setOverviewType('income')" class="tile-3d text-left rounded-3xl p-3.5 bg-gradient-to-br from-[#ecfdf5] to-[#f0fdfa] border border-emerald-200/80 card-shadow transition relative overflow-hidden active:scale-[0.98]">
+            <div class="flex items-center justify-between gap-1 mb-2.5">
+              <span class="w-8 h-8 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 text-white flex items-center justify-center text-sm shadow-xs">
+                <i class="fa-solid fa-sack-dollar"></i>
+              </span>
+              <span id="income-diff-badge" class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">0 GD</span>
+            </div>
+            <div class="text-[11px] font-bold text-slate-500">Thu nhập</div>
+            <div id="overview-income-amount" class="text-[16px] font-black text-slate-900 truncate mt-0.5">0đ</div>
+          </button>
+
+          <!-- Tiết kiệm Bento Card -->
+          <button id="box-type-saving" onclick="setOverviewType('saving')" class="tile-3d text-left rounded-3xl p-3.5 bg-gradient-to-br from-[#ecfdf5] to-[#e0f2fe] border border-sky-200/80 card-shadow transition relative overflow-hidden active:scale-[0.98]">
+            <div class="flex items-center justify-between gap-1 mb-2.5">
+              <span class="w-8 h-8 rounded-xl bg-gradient-to-br from-sky-500 to-teal-500 text-white flex items-center justify-center text-sm shadow-xs">
+                <i class="fa-solid fa-piggy-bank"></i>
+              </span>
+              <span id="saving-diff-badge" class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-sky-100 text-sky-700">0 GD</span>
+            </div>
+            <div class="text-[11px] font-bold text-slate-500">Tiết kiệm</div>
+            <div id="overview-saving-amount" class="text-[16px] font-black text-slate-900 truncate mt-0.5">0đ</div>
+          </button>
         </div>
 
-        <!-- Main Financial Situation Card -->
-        <div class="bg-white rounded-2xl p-3.5 card-shadow space-y-3.5">
-          
+        <!-- Bento Row 3: Net Summary Strip -->
+        <div class="bg-white/80 backdrop-blur-md rounded-2xl px-3.5 py-2.5 card-shadow border border-white/80 border border-slate-100 flex items-center justify-between">
+          <div class="flex items-center gap-2 min-w-0">
+            <span class="w-6 h-6 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-xs shrink-0">
+              <i class="fa-solid fa-scale-balanced"></i>
+            </span>
+            <span id="overview-net-summary" class="text-xs text-slate-600 font-semibold truncate">Còn lại sau chi &amp; tiết kiệm: <strong class="text-slate-900">0đ</strong></span>
+          </div>
+          <i class="fa-solid fa-shield-halved text-xs text-emerald-500 shrink-0" title="Firebase Cloud Sync Active"></i>
+        </div>
+
+        <!-- Bento Card: Cycle Filter + Chart + Category Breakdown -->
+        <div class="bg-white/80 backdrop-blur-md rounded-3xl p-3.5 card-shadow border border-white/80 border border-slate-100/80 space-y-3.5">
           <!-- Cycle Selector Bar (Default: 15 tháng này -> 14 tháng sau) -->
-          <div class="space-y-2.5 pb-2.5 border-b border-slate-100">
+          <div class="space-y-2 pb-2.5 border-b border-slate-100">
             <div class="flex items-center justify-between">
-              <button onclick="changeOverviewMonth(-1)" class="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-600 active:scale-90 transition" title="Kỳ trước">
+              <button onclick="changeOverviewMonth(-1)" class="w-8 h-8 rounded-full bg-slate-50 hover:bg-emerald-50 flex items-center justify-center text-slate-600 active:scale-90 transition" title="Kỳ trước">
                 <i class="fa-solid fa-chevron-left text-xs"></i>
               </button>
               <div class="text-center">
-                <div class="flex items-center justify-center gap-1.5 text-[14px] font-extrabold text-slate-800">
-                  <i class="fa-regular fa-calendar-days text-momo-600 text-xs"></i>
+                <div class="flex items-center justify-center gap-1.5 text-[13px] font-extrabold text-slate-800">
+                  <i class="fa-regular fa-calendar-days text-emerald-600 text-xs"></i>
                   <span id="overview-month-label">15/10 - 14/11</span>
                 </div>
                 <p id="overview-lunar-range" class="text-[10px] text-slate-400 font-medium"></p>
               </div>
-              <button onclick="changeOverviewMonth(1)" class="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-600 active:scale-90 transition" title="Kỳ sau">
+              <button onclick="changeOverviewMonth(1)" class="w-8 h-8 rounded-full bg-slate-50 hover:bg-emerald-50 flex items-center justify-center text-slate-600 active:scale-90 transition" title="Kỳ sau">
                 <i class="fa-solid fa-chevron-right text-xs"></i>
               </button>
             </div>
 
             <!-- Custom Date Range Search Filter -->
-            <div class="bg-slate-50 p-2 rounded-xl border border-slate-200/70 space-y-1.5">
+            <div class="bg-slate-50/80 p-2 rounded-2xl border border-slate-100 space-y-1.5">
               <div class="flex items-center justify-between px-0.5">
                 <span class="text-[10px] font-bold text-slate-500 flex items-center gap-1">
-                  <i class="fa-solid fa-magnifying-glass text-momo-500"></i>
+                  <i class="fa-solid fa-magnifying-glass text-emerald-500"></i>
                   Tìm kiếm theo khoảng ngày
                 </span>
-                <button onclick="resetDefaultDateRange()" class="text-[10px] font-extrabold text-momo-600 hover:underline">
+                <button onclick="resetDefaultDateRange()" class="text-[10px] font-extrabold text-emerald-600 hover:underline">
                   Mặc định (15 → 14)
                 </button>
               </div>
               <div class="grid grid-cols-2 gap-1.5">
                 <div>
                   <label class="text-[9px] font-semibold text-slate-400 block mb-0.5">Từ ngày</label>
-                  <input type="date" id="filter-start-date" onchange="applyCustomDateRange()" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 text-[11px] font-bold text-slate-700 focus:outline-none focus:border-momo-500" />
+                  <input type="date" id="filter-start-date" onchange="applyCustomDateRange()" class="w-full bg-white border border-slate-200 rounded-xl px-2 py-1 text-[11px] font-bold text-slate-700 focus:outline-none focus:border-emerald-500" />
                 </div>
                 <div>
                   <label class="text-[9px] font-semibold text-slate-400 block mb-0.5">Đến ngày</label>
-                  <input type="date" id="filter-end-date" onchange="applyCustomDateRange()" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 text-[11px] font-bold text-slate-700 focus:outline-none focus:border-momo-500" />
+                  <input type="date" id="filter-end-date" onchange="applyCustomDateRange()" class="w-full bg-white border border-slate-200 rounded-xl px-2 py-1 text-[11px] font-bold text-slate-700 focus:outline-none focus:border-emerald-500" />
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- 3 Selectable Cards: Chi tiêu, Thu nhập & Tiết kiệm -->
-          <div class="grid grid-cols-3 gap-2">
-            <!-- Chi tiêu Box -->
-            <button id="box-type-expense" onclick="setOverviewType('expense')" class="text-left p-2.5 rounded-2xl border-2 border-momo-400 bg-momo-50/30 transition relative overflow-hidden">
-              <div class="flex items-center justify-between gap-1 mb-1">
-                <div class="flex items-center gap-1 min-w-0">
-                  <span class="w-4 h-4 rounded-full bg-momo-100 text-momo-600 flex items-center justify-center text-[9px] shrink-0">
-                    <i class="fa-solid fa-coins"></i>
-                  </span>
-                  <span class="text-[11px] font-semibold text-slate-600 truncate">Chi tiêu</span>
-                </div>
-                <span id="expense-diff-badge" class="text-[9px] font-bold px-1 py-0.5 rounded-full bg-slate-100 text-slate-500 shrink-0">--</span>
-              </div>
-              <div id="overview-expense-amount" class="text-[13px] font-extrabold text-slate-900 truncate">0đ</div>
-            </button>
-
-            <!-- Thu nhập Box -->
-            <button id="box-type-income" onclick="setOverviewType('income')" class="text-left p-2.5 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 transition relative overflow-hidden">
-              <div class="flex items-center justify-between gap-1 mb-1">
-                <div class="flex items-center gap-1 min-w-0">
-                  <span class="w-4 h-4 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-[9px] shrink-0">
-                    <i class="fa-solid fa-sack-dollar"></i>
-                  </span>
-                  <span class="text-[11px] font-semibold text-slate-600 truncate">Thu nhập</span>
-                </div>
-                <span id="income-diff-badge" class="text-[9px] font-bold px-1 py-0.5 rounded-full bg-slate-100 text-slate-500 shrink-0">--</span>
-              </div>
-              <div id="overview-income-amount" class="text-[13px] font-extrabold text-slate-900 truncate">0đ</div>
-            </button>
-
-            <!-- Tiết kiệm Box -->
-            <button id="box-type-saving" onclick="setOverviewType('saving')" class="text-left p-2.5 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 transition relative overflow-hidden">
-              <div class="flex items-center justify-between gap-1 mb-1">
-                <div class="flex items-center gap-1 min-w-0">
-                  <span class="w-4 h-4 rounded-full bg-sky-100 text-sky-600 flex items-center justify-center text-[9px] shrink-0">
-                    <i class="fa-solid fa-piggy-bank"></i>
-                  </span>
-                  <span class="text-[11px] font-semibold text-slate-600 truncate">Tiết kiệm</span>
-                </div>
-                <span id="saving-diff-badge" class="text-[9px] font-bold px-1 py-0.5 rounded-full bg-slate-100 text-slate-500 shrink-0">--</span>
-              </div>
-              <div id="overview-saving-amount" class="text-[13px] font-extrabold text-slate-900 truncate">0đ</div>
-            </button>
-          </div>
-
-          <!-- Status Banner -->
-          <div class="bg-[#f0f6ff] border border-blue-100 rounded-xl px-3 py-2 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <i class="fa-solid fa-chart-column text-blue-500 text-sm"></i>
-              <span id="overview-net-summary" class="text-xs text-slate-700 font-medium">Số dư tháng: <strong class="text-slate-900">0đ</strong></span>
-            </div>
-            <i class="fa-solid fa-shield-halved text-xs text-blue-500" title="Firebase Cloud Sync Active"></i>
-          </div>
-
-          <!-- Chart Container: Chỉ hiển thị Biến động theo ngày trong kỳ & Chi tiết danh mục -->
-          <div id="chart-section" class="pt-1 space-y-3">
-            <div id="bar-chart-wrapper" class="space-y-2.5">
+          <!-- Chart Container: Biến động theo ngày trong kỳ & Chi tiết danh mục -->
+          <div id="chart-section" class="space-y-3">
+            <div id="bar-chart-wrapper" class="space-y-2">
               <div class="flex items-center justify-between text-xs text-slate-500 px-1">
                 <span class="font-bold text-slate-700 flex items-center gap-1.5">
-                  <i class="fa-solid fa-chart-column text-momo-500"></i>
+                  <i class="fa-solid fa-chart-column text-emerald-500"></i>
                   Biến động theo ngày trong kỳ
                 </span>
-                <span id="bar-chart-subtitle" class="font-extrabold text-momo-600">Chi tiêu</span>
+                <span id="bar-chart-subtitle" class="font-extrabold text-emerald-600">Chi tiêu</span>
               </div>
-              <div id="bar-chart-container" class="h-48 flex items-end gap-3 pt-8 pb-2 px-3 bg-slate-50 rounded-xl border border-slate-100 overflow-x-auto"></div>
+              <div id="bar-chart-container" class="h-44 flex items-end gap-3 pt-7 pb-2 px-3 bg-slate-50/80 rounded-2xl border border-slate-100 overflow-x-auto"></div>
             </div>
 
             <div id="category-breakdown-list" class="w-full space-y-2 pt-3 border-t border-slate-100"></div>
@@ -253,7 +267,7 @@
         </div>
 
         <!-- Recent Transactions in Selected Period -->
-        <div class="bg-white rounded-2xl p-3.5 card-shadow space-y-3">
+        <div class="bg-white/80 backdrop-blur-md rounded-3xl p-3.5 card-shadow border border-white/80 border border-slate-100/80 space-y-3">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
               <span class="w-6 h-6 rounded-lg bg-momo-100 text-momo-600 flex items-center justify-center text-xs">
@@ -272,45 +286,45 @@
       <section id="tab-calendar" class="hidden space-y-3.5">
         
         <!-- Lunar Today & Quick Jump Header Banner -->
-        <div class="bg-gradient-to-r from-momo-600 via-pink-600 to-rose-500 rounded-2xl p-3.5 text-white shadow-md space-y-2.5">
+        <div class="bg-gradient-to-r from-teal-600 via-emerald-500 to-teal-500 rounded-2xl p-3.5 text-white shadow-md space-y-2.5">
           <div class="flex items-center justify-between">
             <div class="space-y-0.5">
-              <div class="flex items-center gap-1.5 text-[11px] font-semibold text-pink-100">
+              <div class="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-50">
                 <i class="fa-solid fa-moon"></i>
                 <span>Lịch Âm Dương Việt Nam (Hồ Ngọc Đức • UTC+7)</span>
               </div>
               <h2 id="cal-banner-solar" class="text-base font-extrabold">Hôm nay</h2>
-              <p id="cal-banner-lunar" class="text-xs text-pink-100 font-medium"></p>
+              <p id="cal-banner-lunar" class="text-xs text-emerald-50 font-medium"></p>
             </div>
           </div>
           <div class="flex items-center gap-2 pt-1">
             <button onclick="goToTodayCalendar()" class="flex-1 py-1.5 px-3 rounded-xl bg-white/20 hover:bg-white/30 text-xs font-bold border border-white/30 active:scale-95 transition">
               <i class="fa-solid fa-location-crosshairs mr-1"></i>Hôm nay
             </button>
-            <button onclick="jumpToNextRam()" class="flex-1 py-1.5 px-3 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-extrabold border border-red-300 shadow-xs active:scale-95 transition">
+            <button onclick="jumpToNextRam()" class="flex-1 py-1.5 px-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-extrabold border border-amber-300 shadow-xs active:scale-95 transition">
               🌕 Ngày Rằm gần nhất
             </button>
           </div>
         </div>
 
         <!-- Calendar Card -->
-        <div class="bg-white rounded-2xl p-3 card-shadow space-y-3">
+        <div class="bg-white/80 backdrop-blur-md rounded-3xl p-3 card-shadow border border-white/80 space-y-3">
           <div class="flex items-center justify-between px-1">
-            <button onclick="changeCalendarMonth(-1)" class="w-8 h-8 rounded-xl bg-slate-50 hover:bg-pink-50 text-slate-700 flex items-center justify-center active:scale-90 transition border border-slate-200/60">
+            <button onclick="changeCalendarMonth(-1)" class="w-8 h-8 rounded-xl bg-slate-50 hover:bg-emerald-50 text-slate-700 flex items-center justify-center active:scale-90 transition border border-slate-200/60">
               <i class="fa-solid fa-chevron-left text-xs"></i>
             </button>
             <div class="text-center">
               <h3 id="cal-month-title" class="text-base font-extrabold text-slate-800">Tháng 10 / 2026</h3>
-              <p id="cal-month-lunar-subtitle" class="text-[11px] font-bold text-red-600"></p>
+              <p id="cal-month-lunar-subtitle" class="text-[11px] font-bold text-amber-600"></p>
             </div>
-            <button onclick="changeCalendarMonth(1)" class="w-8 h-8 rounded-xl bg-slate-50 hover:bg-pink-50 text-slate-700 flex items-center justify-center active:scale-90 transition border border-slate-200/60">
+            <button onclick="changeCalendarMonth(1)" class="w-8 h-8 rounded-xl bg-slate-50 hover:bg-emerald-50 text-slate-700 flex items-center justify-center active:scale-90 transition border border-slate-200/60">
               <i class="fa-solid fa-chevron-right text-xs"></i>
             </button>
           </div>
 
           <div class="flex flex-wrap items-center justify-center gap-2.5 text-[10px] font-semibold text-slate-500 bg-slate-50 py-1.5 px-2 rounded-xl border border-slate-100">
-            <span class="flex items-center gap-1 text-red-600 font-extrabold">
-              <span class="w-2.5 h-2.5 rounded-xs bg-red-100 border border-red-500 inline-block"></span>
+            <span class="flex items-center gap-1 text-amber-600 font-extrabold">
+              <span class="w-2.5 h-2.5 rounded-xs bg-amber-100 border border-amber-500 inline-block"></span>
               Ngày Rằm (15 ÂL)
             </span>
             <span class="flex items-center gap-1 text-amber-600 font-bold">
@@ -334,19 +348,19 @@
             <div>T5</div>
             <div>T6</div>
             <div class="text-blue-500">T7</div>
-            <div class="text-red-500">CN</div>
+            <div class="text-teal-600">CN</div>
           </div>
 
           <div id="calendar-grid" class="grid grid-cols-7 gap-1"></div>
         </div>
 
         <!-- Selected Day Detail Card -->
-        <div id="selected-day-panel" class="bg-white rounded-2xl p-4 card-shadow space-y-4 border border-pink-100">
+        <div id="selected-day-panel" class="bg-white/80 backdrop-blur-md rounded-3xl p-4 card-shadow border border-white/80 space-y-4 border border-emerald-100">
           <div class="flex items-start justify-between border-b border-slate-100 pb-3 gap-2">
             <div class="space-y-1">
               <div class="flex items-center gap-2 flex-wrap">
                 <span id="sel-day-solar" class="text-base font-extrabold text-slate-800">15/10/2026</span>
-                <span id="sel-day-special-badge" class="hidden px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-red-600 text-white shadow-xs">
+                <span id="sel-day-special-badge" class="hidden px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-500 text-white shadow-xs">
                   🌕 NGÀY RẰM (15 ÂL)
                 </span>
               </div>
@@ -392,7 +406,7 @@
       <!-- ==================== TAB 3: CÔNG VIỆC GẮN LỊCH (TASKS) ==================== -->
       <section id="tab-tasks" class="hidden space-y-3.5">
         
-        <div class="bg-white rounded-2xl p-3.5 card-shadow space-y-3">
+        <div class="bg-white/80 backdrop-blur-md rounded-3xl p-3.5 card-shadow border border-white/80 space-y-3">
           <div class="flex items-center justify-between gap-2">
             <div>
               <h2 class="text-base font-extrabold text-slate-800">Công việc & Lịch trình</h2>
@@ -437,10 +451,10 @@
       <section id="tab-utilities" class="hidden space-y-3.5">
         
         <!-- Sổ tay Quán Ăn & Món Ngon Yêu Thích -->
-        <div class="bg-white rounded-2xl p-4 card-shadow space-y-3.5 border border-pink-100/60">
+        <div class="bg-white/80 backdrop-blur-md rounded-3xl p-4 card-shadow border border-white/80 space-y-3.5 border border-emerald-100/60">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
-              <span class="w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-500 to-rose-500 text-white flex items-center justify-center text-sm shadow-xs">
+              <span class="w-8 h-8 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-500 text-white flex items-center justify-center text-sm shadow-xs">
                 <i class="fa-solid fa-utensils"></i>
               </span>
               <div>
@@ -476,7 +490,7 @@
         </div>
 
         <!-- Monthly Budget Card -->
-        <div id="budget-card-section" class="bg-white rounded-2xl p-4 card-shadow space-y-3.5">
+        <div id="budget-card-section" class="bg-white/80 backdrop-blur-md rounded-3xl p-4 card-shadow border border-white/80 space-y-3.5">
           <div class="flex items-center justify-between">
             <div>
               <h2 class="text-base font-extrabold text-slate-800">Ngân sách chi tiêu tháng</h2>
@@ -490,14 +504,14 @@
           <div class="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-4 text-white space-y-3">
             <div class="flex items-center justify-between text-xs text-slate-300">
               <span>Đã chi trong kỳ</span>
-              <span id="budget-percent-label" class="font-bold text-pink-400">0%</span>
+              <span id="budget-percent-label" class="font-bold text-emerald-200">0%</span>
             </div>
             <div class="flex items-baseline justify-between">
               <div id="budget-spent-label" class="text-xl font-extrabold">0đ</div>
               <div class="text-xs text-slate-300">/ <span id="budget-limit-label">12.000.000đ</span></div>
             </div>
             <div class="w-full h-2.5 bg-slate-700 rounded-full overflow-hidden">
-              <div id="budget-progress-bar" class="h-full bg-gradient-to-r from-momo-500 to-rose-400 rounded-full transition-all duration-300" style="width: 0%"></div>
+              <div id="budget-progress-bar" class="h-full bg-gradient-to-r from-momo-500 to-teal-500 rounded-full transition-all duration-300" style="width: 0%"></div>
             </div>
             <p id="budget-status-msg" class="text-[11px] text-slate-300"></p>
           </div>
@@ -506,7 +520,7 @@
         </div>
 
         <!-- Auto Daily Backup & Folder Viewer Card -->
-        <div class="bg-white rounded-2xl p-4 card-shadow space-y-3.5">
+        <div class="bg-white/80 backdrop-blur-md rounded-3xl p-4 card-shadow border border-white/80 space-y-3.5">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
               <span class="w-8 h-8 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-sm">
@@ -556,49 +570,7 @@
 
     </main>
 
-    <!-- ==================== FIXED BOTTOM NAVIGATION BAR ==================== -->
-    <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[440px] bg-white/95 backdrop-blur-md nav-shadow border-t border-pink-100 px-2 pt-1.5 pb-[max(0.65rem,env(safe-area-inset-bottom))] z-40">
-      <div class="grid grid-cols-5 items-end">
-        <button onclick="switchTab('overview')" id="nav-overview" class="flex flex-col items-center justify-center py-1 text-momo-600 transition relative">
-          <div id="nav-ind-overview" class="w-8 h-0.5 bg-momo-600 rounded-full absolute -top-1.5"></div>
-          <i class="fa-solid fa-receipt text-lg mb-1"></i>
-          <span class="text-[10px] font-bold">Tổng quan</span>
-        </button>
 
-        <button onclick="switchTab('calendar')" id="nav-calendar" class="flex flex-col items-center justify-center py-1 text-slate-500 hover:text-momo-600 transition relative">
-          <div id="nav-ind-calendar" class="hidden w-8 h-0.5 bg-momo-600 rounded-full absolute -top-1.5"></div>
-          <div class="relative">
-            <i class="fa-regular fa-calendar-days text-lg mb-1"></i>
-            <span class="w-2 h-2 rounded-full bg-red-500 absolute -top-0.5 -right-1.5 border border-white"></span>
-          </div>
-          <span class="text-[10px] font-semibold">Lịch</span>
-        </button>
-
-        <div class="flex flex-col items-center justify-end relative -top-3">
-          <button onclick="openAddModal('expense')" class="w-12 h-12 rounded-full bg-gradient-to-tr from-momo-600 to-momo-400 text-white shadow-lg shadow-momo-500/40 border-4 border-white flex items-center justify-center active:scale-90 transition">
-            <i class="fa-solid fa-file-circle-plus text-lg"></i>
-          </button>
-          <span class="mt-1 bg-momo-600 text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-xs whitespace-nowrap">
-            Ghi chép GD
-          </span>
-        </div>
-
-        <button onclick="switchTab('tasks')" id="nav-tasks" class="flex flex-col items-center justify-center py-1 text-slate-500 hover:text-momo-600 transition relative">
-          <div id="nav-ind-tasks" class="hidden w-8 h-0.5 bg-momo-600 rounded-full absolute -top-1.5"></div>
-          <div class="relative">
-            <i class="fa-solid fa-calendar-check text-lg mb-1"></i>
-            <span id="nav-task-badge" class="hidden absolute -top-1 -right-2.5 bg-blue-600 text-white text-[8px] font-extrabold px-1 rounded-full">0</span>
-          </div>
-          <span class="text-[10px] font-semibold">Công việc</span>
-        </button>
-
-        <button onclick="switchTab('utilities')" id="nav-utilities" class="flex flex-col items-center justify-center py-1 text-slate-500 hover:text-momo-600 transition relative">
-          <div id="nav-ind-utilities" class="hidden w-8 h-0.5 bg-momo-600 rounded-full absolute -top-1.5"></div>
-          <i class="fa-solid fa-table-cells-large text-lg mb-1"></i>
-          <span class="text-[10px] font-semibold">Tiện ích</span>
-        </button>
-      </div>
-    </nav>
 
     <!-- MODAL 1: GHI CHÉP GD / CÔNG VIỆC -->
     <div id="record-modal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-end sm:items-center justify-center">
@@ -633,11 +605,11 @@
                 <span class="absolute right-3 top-2 text-[11px] font-bold text-slate-400">VNĐ</span>
               </div>
               <div id="quick-amount-chips" class="flex items-center gap-1 overflow-x-auto pt-1.5">
-                <button type="button" onclick="setTxAmount(35000)" class="px-2 py-0.5 rounded-md bg-pink-50 text-momo-600 text-[10px] font-bold whitespace-nowrap">35.000đ</button>
-                <button type="button" onclick="setTxAmount(50000)" class="px-2 py-0.5 rounded-md bg-pink-50 text-momo-600 text-[10px] font-bold whitespace-nowrap">50.000đ</button>
-                <button type="button" onclick="setTxAmount(100000)" class="px-2 py-0.5 rounded-md bg-pink-50 text-momo-600 text-[10px] font-bold whitespace-nowrap">100.000đ</button>
-                <button type="button" onclick="setTxAmount(200000)" class="px-2 py-0.5 rounded-md bg-pink-50 text-momo-600 text-[10px] font-bold whitespace-nowrap">200.000đ</button>
-                <button type="button" onclick="setTxAmount(500000)" class="px-2 py-0.5 rounded-md bg-pink-50 text-momo-600 text-[10px] font-bold whitespace-nowrap">500.000đ</button>
+                <button type="button" onclick="setTxAmount(35000)" class="px-2 py-0.5 rounded-md bg-emerald-50 text-momo-600 text-[10px] font-bold whitespace-nowrap">35.000đ</button>
+                <button type="button" onclick="setTxAmount(50000)" class="px-2 py-0.5 rounded-md bg-emerald-50 text-momo-600 text-[10px] font-bold whitespace-nowrap">50.000đ</button>
+                <button type="button" onclick="setTxAmount(100000)" class="px-2 py-0.5 rounded-md bg-emerald-50 text-momo-600 text-[10px] font-bold whitespace-nowrap">100.000đ</button>
+                <button type="button" onclick="setTxAmount(200000)" class="px-2 py-0.5 rounded-md bg-emerald-50 text-momo-600 text-[10px] font-bold whitespace-nowrap">200.000đ</button>
+                <button type="button" onclick="setTxAmount(500000)" class="px-2 py-0.5 rounded-md bg-emerald-50 text-momo-600 text-[10px] font-bold whitespace-nowrap">500.000đ</button>
               </div>
             </div>
             <div class="space-y-1.5">
@@ -671,7 +643,7 @@
               <div>
                 <label class="text-[11px] font-bold text-slate-600 block mb-1">Mức độ ưu tiên</label>
                 <select id="task-priority-input" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs font-bold text-slate-800 focus:outline-none">
-                  <option value="high">🔴 Cao</option>
+                  <option value="high">⚡ Cao</option>
                   <option value="medium" selected>🟡 Trung bình</option>
                   <option value="low">🟢 Thấp</option>
                 </select>
@@ -719,7 +691,7 @@
       <div class="bg-white w-full max-w-[420px] rounded-t-3xl sm:rounded-3xl p-4 pb-6 space-y-3.5 animate-slide-up max-h-[90vh] overflow-y-auto">
         <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
           <div class="flex items-center gap-2">
-            <span class="w-7 h-7 rounded-lg bg-pink-100 text-momo-600 flex items-center justify-center text-xs">
+            <span class="w-7 h-7 rounded-lg bg-emerald-100 text-momo-600 flex items-center justify-center text-xs">
               <i class="fa-solid fa-utensils"></i>
             </span>
             <h3 id="restaurant-modal-title" class="text-sm font-extrabold text-slate-800">Thêm quán ăn ngon</h3>
@@ -732,7 +704,7 @@
         <div class="space-y-3">
           <!-- Tên quán -->
           <div>
-            <label class="text-xs font-bold text-slate-600 block mb-1">Tên quán ăn <span class="text-rose-500">*</span></label>
+            <label class="text-xs font-bold text-slate-600 block mb-1">Tên quán ăn <span class="text-emerald-500">*</span></label>
             <input type="text" id="res-name-input" placeholder="VD: Phở Thìn, Bún Chả Hương Liên, Cơm tấm Ba Ghiền..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none focus:border-momo-500" />
           </div>
 
@@ -775,18 +747,18 @@
             </label>
             <div class="relative">
               <input type="url" id="res-map-input" placeholder="Dán link chia sẻ vị trí từ Google Maps..." class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-8 pr-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-momo-500" />
-              <i class="fa-solid fa-location-dot absolute left-2.5 top-2.5 text-rose-500 text-xs"></i>
+              <i class="fa-solid fa-location-dot absolute left-2.5 top-2.5 text-emerald-500 text-xs"></i>
             </div>
           </div>
 
           <!-- Danh sách món ăn yêu thích -->
-          <div class="bg-pink-50/50 p-3 rounded-2xl border border-pink-100 space-y-2">
+          <div class="bg-emerald-50/50 p-3 rounded-2xl border border-emerald-100 space-y-2">
             <div class="flex items-center justify-between">
               <label class="text-xs font-extrabold text-momo-700 flex items-center gap-1.5">
-                <i class="fa-solid fa-heart text-rose-500"></i>
+                <i class="fa-solid fa-heart text-emerald-500"></i>
                 <span>Các món ăn yêu thích (Món "ruột")</span>
               </label>
-              <button type="button" onclick="addNewFavoriteDishRow()" class="text-[10px] font-extrabold text-momo-600 hover:text-momo-700 bg-white px-2 py-0.5 rounded-lg border border-pink-200 shadow-2xs">
+              <button type="button" onclick="addNewFavoriteDishRow()" class="text-[10px] font-extrabold text-momo-600 hover:text-momo-700 bg-white px-2 py-0.5 rounded-lg border border-emerald-200 shadow-2xs">
                 + Thêm món
               </button>
             </div>
@@ -801,7 +773,7 @@
           </div>
         </div>
 
-        <button type="button" onclick="saveRestaurantPlace()" class="w-full py-3 rounded-2xl bg-gradient-to-r from-momo-600 to-rose-500 hover:from-momo-700 hover:to-rose-600 text-white font-extrabold text-xs shadow-md shadow-momo-500/25 active:scale-95 transition">
+        <button type="button" onclick="saveRestaurantPlace()" class="w-full py-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-700 hover:to-teal-600 text-white font-extrabold text-xs shadow-md shadow-momo-500/25 active:scale-95 transition">
           Lưu thông tin quán
         </button>
       </div>
@@ -809,9 +781,9 @@
 
     <!-- MODAL 3: XÁC NHẬN XÓA (CONFIRM DELETE MODAL) -->
     <div id="confirm-modal" class="hidden fixed inset-0 z-50 bg-slate-900/55 backdrop-blur-xs flex items-center justify-center p-4">
-      <div class="bg-white w-full max-w-[360px] rounded-3xl p-5 space-y-4 shadow-2xl border border-rose-100 animate-slide-up">
+      <div class="bg-white w-full max-w-[360px] rounded-3xl p-5 space-y-4 shadow-2xl border border-emerald-100 animate-slide-up">
         <div class="flex flex-col items-center text-center space-y-2">
-          <div class="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-100 text-rose-600 flex items-center justify-center text-xl shadow-xs">
+          <div class="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-100 text-teal-600 flex items-center justify-center text-xl shadow-xs">
             <i class="fa-solid fa-triangle-exclamation"></i>
           </div>
           <h3 id="confirm-modal-title" class="text-base font-extrabold text-slate-800">Xác nhận xóa giao dịch?</h3>
@@ -827,7 +799,7 @@
           <button type="button" onclick="closeConfirmModal()" class="py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-extrabold text-xs active:scale-95 transition">
             Hủy bỏ
           </button>
-          <button type="button" onclick="executeConfirmedDelete()" class="py-2.5 px-4 rounded-xl bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-700 hover:to-red-700 text-white font-extrabold text-xs shadow-md shadow-rose-500/25 flex items-center justify-center gap-1.5 active:scale-95 transition">
+          <button type="button" onclick="executeConfirmedDelete()" class="py-2.5 px-4 rounded-xl bg-gradient-to-r from-slate-800 to-slate-900 hover:from-slate-900 hover:to-black text-white font-extrabold text-xs shadow-md shadow-emerald-500/25 flex items-center justify-center gap-1.5 active:scale-95 transition">
             <i class="fa-solid fa-trash-can text-[11px]"></i>
             <span>Xóa ngay</span>
           </button>
@@ -842,6 +814,50 @@
     </div>
 
   </div>
+
+    <!-- ==================== FIXED BOTTOM NAVIGATION BAR ==================== -->
+    <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[440px] bg-white/95 backdrop-blur-md nav-shadow border-t border-slate-100 rounded-t-3xl px-2 pt-1.5 pb-[max(0.65rem,env(safe-area-inset-bottom))] z-40">
+      <div class="grid grid-cols-5 items-end">
+        <button onclick="switchTab('overview')" id="nav-overview" class="flex flex-col items-center justify-center py-1 text-emerald-600 transition relative">
+          <div id="nav-ind-overview" class="w-8 h-0.5 bg-emerald-600 rounded-full absolute -top-1.5"></div>
+          <i class="fa-solid fa-receipt text-lg mb-1"></i>
+          <span class="text-[10px] font-bold">Tổng quan</span>
+        </button>
+
+        <button onclick="switchTab('calendar')" id="nav-calendar" class="flex flex-col items-center justify-center py-1 text-slate-400 hover:text-emerald-600 transition relative">
+          <div id="nav-ind-calendar" class="hidden w-8 h-0.5 bg-emerald-600 rounded-full absolute -top-1.5"></div>
+          <div class="relative">
+            <i class="fa-regular fa-calendar-days text-lg mb-1"></i>
+            <span class="w-2 h-2 rounded-full bg-emerald-600 absolute -top-0.5 -right-1.5 border border-white"></span>
+          </div>
+          <span class="text-[10px] font-semibold">Lịch</span>
+        </button>
+
+        <div class="flex flex-col items-center justify-end relative -top-3">
+          <button onclick="openAddModal('expense')" class="w-12 h-12 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-500 text-white shadow-lg shadow-emerald-500/35 border-4 border-white flex items-center justify-center active:scale-90 transition">
+            <i class="fa-solid fa-plus text-lg"></i>
+          </button>
+          <span class="mt-1 bg-emerald-600 text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-xs whitespace-nowrap">
+            Ghi chép GD
+          </span>
+        </div>
+
+        <button onclick="switchTab('tasks')" id="nav-tasks" class="flex flex-col items-center justify-center py-1 text-slate-400 hover:text-emerald-600 transition relative">
+          <div id="nav-ind-tasks" class="hidden w-8 h-0.5 bg-emerald-600 rounded-full absolute -top-1.5"></div>
+          <div class="relative">
+            <i class="fa-solid fa-calendar-check text-lg mb-1"></i>
+            <span id="nav-task-badge" class="hidden absolute -top-1 -right-2.5 bg-emerald-600 text-white text-[8px] font-extrabold px-1 rounded-full">0</span>
+          </div>
+          <span class="text-[10px] font-semibold">Công việc</span>
+        </button>
+
+        <button onclick="switchTab('utilities')" id="nav-utilities" class="flex flex-col items-center justify-center py-1 text-slate-400 hover:text-emerald-600 transition relative">
+          <div id="nav-ind-utilities" class="hidden w-8 h-0.5 bg-emerald-600 rounded-full absolute -top-1.5"></div>
+          <i class="fa-solid fa-table-cells-large text-lg mb-1"></i>
+          <span class="text-[10px] font-semibold">Tiện ích</span>
+        </button>
+      </div>
+    </nav>
 
   <!-- FIREBASE & APP SCRIPT -->
   <script type="module">
@@ -1029,8 +1045,8 @@
         id: 'food',
         name: 'Ăn uống',
         icon: 'fa-utensils',
-        color: '#f0328f',
-        bg: '#fff0f7',
+        color: '#10b981',
+        bg: '#ecfdf5',
         subs: [
           { id: 'food_market', name: 'Đi chợ / Siêu thị', icon: 'fa-basket-shopping' },
           { id: 'food_restaurant', name: 'Nhà hàng / Quán ăn', icon: 'fa-utensils' },
@@ -1043,8 +1059,8 @@
         id: 'spa_beauty',
         name: 'Spa & Làm đẹp',
         icon: 'fa-spa',
-        color: '#db2777',
-        bg: '#fdf2f8',
+        color: '#0d9488',
+        bg: '#f0fdfa',
         subs: [
           { id: 'spa_shampoo', name: 'Gội đầu dưỡng sinh', icon: 'fa-soap' },
           { id: 'spa_nail', name: 'Làm móng (Nail)', icon: 'fa-hand-sparkles' },
@@ -1071,8 +1087,8 @@
         id: 'family',
         name: 'Nội Ngoại & GĐ',
         icon: 'fa-people-roof',
-        color: '#e11d48',
-        bg: '#fff1f2',
+        color: '#059669',
+        bg: '#ecfdf5',
         subs: [
           { id: 'fam_cash_paternal', name: 'Gửi tiền Ba Mẹ Nội', icon: 'fa-hand-holding-heart' },
           { id: 'fam_cash_maternal', name: 'Gửi tiền Ba Mẹ Ngoại', icon: 'fa-hand-holding-dollar' },
@@ -1086,8 +1102,8 @@
         id: 'shopping',
         name: 'Mua sắm',
         icon: 'fa-bag-shopping',
-        color: '#8b5cf6',
-        bg: '#f5f3ff',
+        color: '#14b8a6',
+        bg: '#f0fdfa',
         subs: [
           { id: 'shop_grocery', name: 'Tạp hóa / Đồ sinh hoạt', icon: 'fa-cart-shopping' },
           { id: 'shop_clothes', name: 'Quần áo / Giày dép', icon: 'fa-shirt' },
@@ -1142,8 +1158,8 @@
         id: 'ram_le',
         name: 'Lễ Rằm/Hiếu hỉ',
         icon: 'fa-yin-yang',
-        color: '#ef4444',
-        bg: '#fef2f2',
+        color: '#d97706',
+        bg: '#fffbeb',
         subs: [
           { id: 'le_ram', name: 'Đồ cúng Rằm / Mùng 1', icon: 'fa-apple-whole' },
           { id: 'le_pagoda', name: 'Đi chùa / Công đức', icon: 'fa-place-of-worship' },
@@ -1168,8 +1184,8 @@
         id: 'other_exp',
         name: 'Vé số & Khác',
         icon: 'fa-ticket',
-        color: '#6366f1',
-        bg: '#eef2ff',
+        color: '#10b981',
+        bg: '#ecfdf5',
         subs: [
           { id: 'oth_lottery', name: 'Mua vé số / Vietlott', icon: 'fa-clover' },
           { id: 'oth_charity', name: 'Từ thiện / Quyên góp', icon: 'fa-hand-holding-heart' },
@@ -1255,8 +1271,8 @@
         id: 'other_inc',
         name: 'Thu khác',
         icon: 'fa-coins',
-        color: '#8b5cf6',
-        bg: '#f5f3ff',
+        color: '#14b8a6',
+        bg: '#f0fdfa',
         subs: [
           { id: 'inc_gift', name: 'Được biếu / Tiền lì xì', icon: 'fa-hand-holding-dollar' },
           { id: 'inc_refund', name: 'Hoàn tiền / Cashback', icon: 'fa-rotate-left' },
@@ -1675,7 +1691,7 @@
         dot.className = 'w-2 h-2 rounded-full bg-emerald-500 animate-pulse';
         dot.title = 'Đã kết nối đồng bộ Firebase';
       } else if (status === 'error') {
-        dot.className = 'w-2 h-2 rounded-full bg-red-500';
+        dot.className = 'w-2 h-2 rounded-full bg-amber-600';
         dot.title = 'Lỗi kết nối Firebase (Kiểm tra lại cấu hình hoặc Firestore Rules)';
       } else {
         dot.className = 'w-2 h-2 rounded-full bg-amber-400 animate-pulse';
@@ -1916,13 +1932,13 @@
         const navInd = document.getElementById(`nav-ind-${t}`);
         if (t === tabName) {
           sec.classList.remove('hidden');
-          navBtn.classList.remove('text-slate-500');
-          navBtn.classList.add('text-momo-600');
+          navBtn.classList.remove('text-slate-400', 'text-slate-500');
+          navBtn.classList.add('text-emerald-600');
           navInd.classList.remove('hidden');
         } else {
           sec.classList.add('hidden');
-          navBtn.classList.remove('text-momo-600');
-          navBtn.classList.add('text-slate-500');
+          navBtn.classList.remove('text-emerald-600');
+          navBtn.classList.add('text-slate-400');
           navInd.classList.add('hidden');
         }
       });
@@ -2010,8 +2026,13 @@
       const lunarToday = getLunarInfoFromISO(todayISO);
       const pillEl = document.getElementById('top-lunar-pill');
       if (pillEl) {
-        const tag = lunarToday.isRam ? '🌕 Rằm ' : lunarToday.isMung1 ? '🌑 M1 ' : 'ÂL ';
-        pillEl.textContent = `${tag}${lunarToday.day}/${lunarToday.month}`;
+        const tag = lunarToday.isRam ? '🌕 Rằm ' : lunarToday.isMung1 ? '🌑 M1 ' : '';
+        pillEl.textContent = `${tag}${lunarToday.day}/${lunarToday.month} ÂL`;
+      }
+      const greetEl = document.getElementById('greeting-text');
+      if (greetEl) {
+        const hr = new Date().getHours();
+        greetEl.textContent = hr < 11 ? 'Chào buổi sáng' : hr < 14 ? 'Chào buổi trưa' : hr < 18 ? 'Chào buổi chiều' : 'Chào buổi tối';
       }
     }
 
@@ -2074,18 +2095,43 @@
       const net = totalInc - totalExp - totalSav;
       const netSummaryEl = document.getElementById('overview-net-summary');
       if (netSummaryEl) {
-        const netColor = net >= 0 ? 'text-emerald-600' : 'text-rose-600';
+        const netColor = net >= 0 ? 'text-emerald-600' : 'text-teal-600';
         const netSign = net > 0 ? '+' : '';
         netSummaryEl.innerHTML = `Còn lại sau chi &amp; tiết kiệm: <strong class="${netColor}">${ state.hideAmounts ? '******' : netSign + formatMoney(net) }</strong>`;
+      }
+
+      const heroBar = document.getElementById('hero-budget-bar');
+      const heroCap = document.getElementById('hero-budget-caption');
+      const budgetLimit = Number(state.monthlyBudget) || 12000000;
+      const pctUsed = Math.min(100, Math.round((totalExp / budgetLimit) * 100));
+      const remainBudget = budgetLimit - totalExp;
+      const endD = new Date(state.filterEndDate + 'T23:59:59');
+      const daysLeft = Math.max(1, Math.ceil((endD - new Date()) / (1000 * 60 * 60 * 24)));
+      if (heroBar) heroBar.style.width = `${pctUsed}%`;
+      if (heroCap) {
+        heroCap.textContent = remainBudget >= 0
+          ? `Còn ${formatMoney(remainBudget)} cho ${daysLeft} ngày`
+          : `Vượt hạn mức ${formatMoney(Math.abs(remainBudget))}`;
       }
 
       const boxExp = document.getElementById('box-type-expense');
       const boxInc = document.getElementById('box-type-income');
       const boxSav = document.getElementById('box-type-saving');
-      const baseBox = 'text-left p-2.5 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 transition relative overflow-hidden';
-      if (boxExp) boxExp.className = state.overviewType === 'expense' ? 'text-left p-2.5 rounded-2xl border-2 border-momo-400 bg-momo-50/30 transition relative overflow-hidden' : baseBox;
-      if (boxInc) boxInc.className = state.overviewType === 'income' ? 'text-left p-2.5 rounded-2xl border-2 border-emerald-500 bg-emerald-50/30 transition relative overflow-hidden' : baseBox;
-      if (boxSav) boxSav.className = state.overviewType === 'saving' ? 'text-left p-2.5 rounded-2xl border-2 border-sky-500 bg-sky-50/40 transition relative overflow-hidden' : baseBox;
+      if (boxExp) {
+        boxExp.className = state.overviewType === 'expense'
+          ? 'tile-3d w-full text-left rounded-3xl p-4 bg-gradient-to-br from-[#fffbeb] via-[#fefce8] to-[#ecfdf5]/80 border-2 border-amber-400 transition relative overflow-hidden'
+          : 'tile-3d w-full text-left rounded-3xl p-4 bg-gradient-to-br from-[#fffbeb] via-[#fefce8] to-[#ecfdf5]/80 border border-amber-200/70 transition relative overflow-hidden opacity-90 hover:opacity-100';
+      }
+      if (boxInc) {
+        boxInc.className = state.overviewType === 'income'
+          ? 'tile-3d text-left rounded-3xl p-3.5 bg-gradient-to-br from-[#ecfdf5] to-[#f0fdfa] border-2 border-emerald-500 transition relative overflow-hidden'
+          : 'tile-3d text-left rounded-3xl p-3.5 bg-gradient-to-br from-[#ecfdf5] to-[#f0fdfa] border border-emerald-200/70 transition relative overflow-hidden opacity-90 hover:opacity-100';
+      }
+      if (boxSav) {
+        boxSav.className = state.overviewType === 'saving'
+          ? 'tile-3d text-left rounded-3xl p-3.5 bg-gradient-to-br from-[#ecfdf5] to-[#e0f2fe] border-2 border-sky-500 transition relative overflow-hidden'
+          : 'tile-3d text-left rounded-3xl p-3.5 bg-gradient-to-br from-[#ecfdf5] to-[#e0f2fe] border border-sky-200/70 transition relative overflow-hidden opacity-90 hover:opacity-100';
+      }
 
       if (state.selectedChartDate && (state.selectedChartDate < state.filterStartDate || state.selectedChartDate > state.filterEndDate)) {
         state.selectedChartDate = null;
@@ -2151,7 +2197,7 @@
         const subBadgesHTML = subItems.map(s => {
           const isSelected = state.selectedSubCatFilter === s.id;
           const activeClass = isSelected
-            ? 'ring-2 ring-momo-500 bg-pink-50 border-pink-300 shadow-xs'
+            ? 'ring-2 ring-momo-500 bg-emerald-50 border-emerald-300 shadow-xs'
             : 'bg-white border-slate-200/80 hover:bg-slate-50';
 
           return `
@@ -2169,8 +2215,8 @@
         if (activeSubInThisCat) {
           const subTxs = activeSubInThisCat.txs.sort((a, b) => b.date.localeCompare(a.date) || (b.createdAt || 0) - (a.createdAt || 0));
           expandedDetailHTML = `
-            <div class="mt-2.5 p-2.5 rounded-xl bg-pink-50/60 border border-pink-200/70 space-y-2 animate-slide-up">
-              <div class="flex items-center justify-between border-b border-pink-200/60 pb-1.5">
+            <div class="mt-2.5 p-2.5 rounded-xl bg-emerald-50/60 border border-emerald-200/70 space-y-2 animate-slide-up">
+              <div class="flex items-center justify-between border-b border-emerald-200/60 pb-1.5">
                 <span class="text-[11px] font-extrabold text-momo-700 flex items-center gap-1.5">
                   <i class="fa-solid ${activeSubInThisCat.icon} text-xs"></i>
                   Chi tiết: ${activeSubInThisCat.name} (${subTxs.length} GD)
@@ -2184,7 +2230,7 @@
                 ${subTxs.map(t => {
                   const l = getLunarInfoFromISO(t.date);
                   return `
-                    <div class="flex items-center justify-between p-2 rounded-lg bg-white border border-pink-100 shadow-2xs gap-2">
+                    <div class="flex items-center justify-between p-2 rounded-lg bg-white border border-emerald-100 shadow-2xs gap-2">
                       <div class="min-w-0">
                         <div class="text-[11px] font-extrabold text-slate-800 truncate">${t.note || activeSubInThisCat.name}</div>
                         <div class="text-[9px] text-slate-500">
@@ -2198,7 +2244,7 @@
                         <button onclick="editTransaction('${t.id}')" class="w-5 h-5 rounded hover:bg-slate-100 text-slate-400 hover:text-blue-600 flex items-center justify-center text-[10px]" title="Sửa">
                           <i class="fa-solid fa-pen"></i>
                         </button>
-                        <button onclick="deleteTransaction('${t.id}')" class="w-5 h-5 rounded hover:bg-slate-100 text-slate-400 hover:text-rose-600 flex items-center justify-center text-[10px]" title="Xóa">
+                        <button onclick="deleteTransaction('${t.id}')" class="w-5 h-5 rounded hover:bg-slate-100 text-slate-400 hover:text-teal-600 flex items-center justify-center text-[10px]" title="Xóa">
                           <i class="fa-solid fa-trash"></i>
                         </button>
                       </div>
@@ -2373,7 +2419,7 @@
               <button onclick="editTransaction('${tx.id}')" class="w-6 h-6 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-white flex items-center justify-center text-[11px]" title="Sửa">
                 <i class="fa-solid fa-pen"></i>
               </button>
-              <button onclick="deleteTransaction('${tx.id}')" class="w-6 h-6 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-white flex items-center justify-center text-[11px]" title="Xóa">
+              <button onclick="deleteTransaction('${tx.id}')" class="w-6 h-6 rounded-lg text-slate-400 hover:text-teal-600 hover:bg-white flex items-center justify-center text-[11px]" title="Xóa">
                 <i class="fa-solid fa-trash"></i>
               </button>
             </div>
@@ -2479,7 +2525,7 @@
         const dayTx = txByDate[iso];
         const dayTasks = taskByDate[iso] || [];
 
-        let cellClass = 'bg-white border border-slate-100 text-slate-800 hover:border-pink-200';
+        let cellClass = 'bg-white border border-slate-100 text-slate-800 hover:border-emerald-200';
         if (lunar.isRam) {
           cellClass = isSelected ? 'ram-cell-selected' : 'ram-cell';
         } else if (isSelected) {
@@ -2496,7 +2542,7 @@
 
         let lunarTextClass = 'text-slate-400';
         if (isSelected) lunarTextClass = 'text-white/90';
-        else if (lunar.isRam) lunarTextClass = 'text-red-600 font-extrabold';
+        else if (lunar.isRam) lunarTextClass = 'text-amber-600 font-extrabold';
         else if (lunar.isMung1) lunarTextClass = 'text-amber-700 font-extrabold';
 
         let txBadgeHTML = '';
@@ -2509,7 +2555,7 @@
         }
 
         cellsHTML += `
-          <button type="button" onclick="selectCalendarDate('${iso}')" class="min-h-[70px] py-1.5 px-0.5 rounded-xl flex flex-col justify-between items-center relative transition active:scale-95 overflow-hidden ${cellClass}">
+          <button type="button" onclick="selectCalendarDate('${iso}')" class="tile-3d min-h-[70px] py-1.5 px-0.5 rounded-xl flex flex-col justify-between items-center relative transition active:scale-95 overflow-hidden ${cellClass}">
             ${isToday && !isSelected ? '<span class="absolute top-1 left-1 w-1.5 h-1.5 rounded-full bg-momo-600"></span>' : ''}
             ${dayTasks.length > 0 ? `<span class="absolute top-1 right-1 w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-white' : 'bg-blue-500'}"></span>` : ''}
             <div class="text-[13px] font-extrabold leading-tight">${d}</div>
@@ -2538,7 +2584,7 @@
       if (solarEl) solarEl.textContent = `Dương lịch: ${formatDisplayDate(iso)}`;
       if (badgeEl) {
         if (lunar.isRam) {
-          badgeEl.className = 'px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-red-600 text-white shadow-xs';
+          badgeEl.className = 'px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-500 text-white shadow-xs';
           badgeEl.textContent = `🌕 NGÀY RẰM (15/${lunar.month} ÂL)`;
         } else if (lunar.isMung1) {
           badgeEl.className = 'px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-500 text-white shadow-xs';
@@ -2592,7 +2638,7 @@
               </div>
               <div class="flex items-center gap-1 shrink-0">
                 <button onclick="editTask('${tk.id}')" class="w-6 h-6 rounded-lg text-slate-400 hover:text-blue-600 flex items-center justify-center text-xs"><i class="fa-solid fa-pen"></i></button>
-                <button onclick="deleteTask('${tk.id}')" class="w-6 h-6 rounded-lg text-slate-400 hover:text-rose-600 flex items-center justify-center text-xs"><i class="fa-solid fa-trash"></i></button>
+                <button onclick="deleteTask('${tk.id}')" class="w-6 h-6 rounded-lg text-slate-400 hover:text-teal-600 flex items-center justify-center text-xs"><i class="fa-solid fa-trash"></i></button>
               </div>
             </div>
           `).join('');
@@ -2623,7 +2669,7 @@
                 <div class="flex items-center gap-1.5 shrink-0">
                   <span class="text-xs font-extrabold ${isExp ? 'text-momo-600' : isSav ? 'text-sky-600' : 'text-emerald-600'}">${isExp ? '-' : isSav ? '' : '+'}${formatMoney(tx.amount)}</span>
                   <button onclick="editTransaction('${tx.id}')" class="w-6 h-6 rounded-lg text-slate-400 hover:text-blue-600 flex items-center justify-center text-xs"><i class="fa-solid fa-pen"></i></button>
-                  <button onclick="deleteTransaction('${tx.id}')" class="w-6 h-6 rounded-lg text-slate-400 hover:text-rose-600 flex items-center justify-center text-xs"><i class="fa-solid fa-trash"></i></button>
+                  <button onclick="deleteTransaction('${tx.id}')" class="w-6 h-6 rounded-lg text-slate-400 hover:text-teal-600 flex items-center justify-center text-xs"><i class="fa-solid fa-trash"></i></button>
                 </div>
               </div>
             `;
@@ -2696,13 +2742,13 @@
       container.innerHTML = list.map(tk => {
         const l = getLunarInfoFromISO(tk.date);
         const prioBadge = tk.priority === 'high'
-          ? '<span class="px-1.5 py-0.5 rounded-md bg-rose-50 text-rose-600 text-[10px] font-bold">🔴 Cao</span>'
+          ? '<span class="px-1.5 py-0.5 rounded-md bg-emerald-50 text-teal-600 text-[10px] font-bold">⚡ Cao</span>'
           : tk.priority === 'low'
           ? '<span class="px-1.5 py-0.5 rounded-md bg-emerald-50 text-emerald-600 text-[10px] font-bold">🟢 Thấp</span>'
           : '<span class="px-1.5 py-0.5 rounded-md bg-amber-50 text-amber-600 text-[10px] font-bold">🟡 Vừa</span>';
 
         return `
-          <div class="bg-white rounded-2xl p-3.5 card-shadow flex items-start justify-between gap-2.5 border ${l.isRam ? 'border-red-300' : 'border-slate-100'}">
+          <div class="bg-white/80 backdrop-blur-md rounded-3xl p-3.5 card-shadow border border-white/80 flex items-start justify-between gap-2.5 border ${l.isRam ? 'border-amber-300' : 'border-slate-100'}">
             <div class="flex items-start gap-2.5 min-w-0">
               <button onclick="toggleTaskDone('${tk.id}')" class="mt-0.5 w-5 h-5 rounded-md border-2 ${tk.completed ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-blue-400 bg-white'} flex items-center justify-center text-xs shrink-0">
                 ${tk.completed ? '<i class="fa-solid fa-check text-[10px]"></i>' : ''}
@@ -2714,20 +2760,20 @@
                   <span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-[10px] font-bold">
                     <i class="fa-regular fa-calendar mr-1"></i>${formatDisplayDate(tk.date)} (${l.day}/${l.month} ÂL)
                   </span>
-                  ${l.isRam ? '<span class="px-1.5 py-0.5 rounded-md bg-red-600 text-white text-[10px] font-extrabold">🌕 Rằm 15 ÂL</span>' : ''}
+                  ${l.isRam ? '<span class="px-1.5 py-0.5 rounded-md bg-amber-500 text-white text-[10px] font-extrabold">🌕 Rằm 15 ÂL</span>' : ''}
                   ${tk.time ? `<span class="px-1.5 py-0.5 rounded-md bg-blue-50 text-blue-600 text-[10px] font-bold">⏰ ${tk.time}</span>` : ''}
                   ${prioBadge}
                 </div>
               </div>
             </div>
             <div class="flex items-center gap-1 shrink-0">
-              <button onclick="jumpToCalendarDate('${tk.date}')" class="w-7 h-7 rounded-lg bg-slate-50 hover:bg-pink-50 text-slate-500 hover:text-momo-600 flex items-center justify-center text-xs" title="Xem trên lịch">
+              <button onclick="jumpToCalendarDate('${tk.date}')" class="w-7 h-7 rounded-lg bg-slate-50 hover:bg-emerald-50 text-slate-500 hover:text-momo-600 flex items-center justify-center text-xs" title="Xem trên lịch">
                 <i class="fa-regular fa-calendar-days"></i>
               </button>
               <button onclick="editTask('${tk.id}')" class="w-7 h-7 rounded-lg bg-slate-50 hover:bg-blue-50 text-slate-500 hover:text-blue-600 flex items-center justify-center text-xs" title="Sửa">
                 <i class="fa-solid fa-pen"></i>
               </button>
-              <button onclick="deleteTask('${tk.id}')" class="w-7 h-7 rounded-lg bg-slate-50 hover:bg-rose-50 text-slate-500 hover:text-rose-600 flex items-center justify-center text-xs" title="Xóa">
+              <button onclick="deleteTask('${tk.id}')" class="w-7 h-7 rounded-lg bg-slate-50 hover:bg-emerald-50 text-slate-500 hover:text-teal-600 flex items-center justify-center text-xs" title="Xóa">
                 <i class="fa-solid fa-trash"></i>
               </button>
             </div>
@@ -2834,7 +2880,7 @@
                 <button onclick="downloadBackupItem('${bk.id}')" class="w-6 h-6 rounded-lg bg-white border border-slate-200 text-blue-600 flex items-center justify-center text-[10px]" title="Tải về">
                   <i class="fa-solid fa-download"></i>
                 </button>
-                <button onclick="deleteBackupItem('${bk.id}')" class="w-6 h-6 rounded-lg bg-white border border-slate-200 text-rose-500 flex items-center justify-center text-[10px]" title="Xóa">
+                <button onclick="deleteBackupItem('${bk.id}')" class="w-6 h-6 rounded-lg bg-white border border-slate-200 text-emerald-500 flex items-center justify-center text-[10px]" title="Xóa">
                   <i class="fa-solid fa-trash"></i>
                 </button>
               </div>
@@ -2873,7 +2919,7 @@
           <div class="p-6 text-center bg-slate-50/70 rounded-2xl border border-slate-200/80 space-y-2">
             <i class="fa-solid fa-bowl-food text-3xl text-slate-300"></i>
             <p class="text-xs font-semibold text-slate-500">Chưa có quán ăn nào trong danh sách</p>
-            <button onclick="openRestaurantModal()" class="px-3.5 py-1.5 rounded-xl bg-pink-50 text-momo-600 text-xs font-extrabold hover:bg-pink-100 transition">
+            <button onclick="openRestaurantModal()" class="px-3.5 py-1.5 rounded-xl bg-emerald-50 text-momo-600 text-xs font-extrabold hover:bg-emerald-100 transition">
               + Thêm quán ăn đầu tiên
             </button>
           </div>
@@ -2888,8 +2934,8 @@
         let mapButtonHTML = '';
         if (p.mapUrl && p.mapUrl.trim()) {
           mapButtonHTML = `
-            <a href="${p.mapUrl}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-rose-50 text-rose-600 hover:bg-rose-100 text-[10px] font-extrabold border border-rose-200 transition active:scale-95">
-              <i class="fa-solid fa-location-dot text-rose-500"></i>
+            <a href="${p.mapUrl}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-50 text-teal-600 hover:bg-emerald-100 text-[10px] font-extrabold border border-emerald-200 transition active:scale-95">
+              <i class="fa-solid fa-location-dot text-emerald-500"></i>
               <span>Xem trên Google Maps</span>
               <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
             </a>
@@ -2901,12 +2947,12 @@
           dishesHTML = `
             <div class="pt-1.5 space-y-1 border-t border-slate-100">
               <div class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider flex items-center gap-1">
-                <i class="fa-solid fa-heart text-rose-500 text-[9px]"></i>
+                <i class="fa-solid fa-heart text-emerald-500 text-[9px]"></i>
                 <span>Món yêu thích (${p.dishes.length}):</span>
               </div>
               <div class="flex flex-wrap gap-1.5">
                 ${p.dishes.map(d => `
-                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-pink-50 text-momo-700 border border-pink-200 text-[11px] font-bold">
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-emerald-50 text-momo-700 border border-emerald-200 text-[11px] font-bold">
                     <span>${d.name}</span>
                     ${d.price ? `<span class="text-[10px] font-extrabold text-slate-500">(${Number(d.price).toLocaleString('vi-VN')}đ)</span>` : ''}
                   </span>
@@ -2917,7 +2963,7 @@
         }
 
         return `
-          <div class="p-3 rounded-2xl bg-slate-50/80 border border-slate-200/90 hover:border-pink-200 space-y-2 transition">
+          <div class="p-3 rounded-2xl bg-slate-50/80 border border-slate-200/90 hover:border-emerald-200 space-y-2 transition">
             <div class="flex items-start justify-between gap-2">
               <div class="min-w-0 space-y-0.5">
                 <div class="flex items-center gap-1.5 flex-wrap">
@@ -2933,7 +2979,7 @@
                 <button onclick="editFoodPlace('${p.id}')" class="w-6 h-6 rounded-lg bg-white border border-slate-200 text-slate-500 hover:text-blue-600 flex items-center justify-center text-[10px]" title="Sửa">
                   <i class="fa-solid fa-pen"></i>
                 </button>
-                <button onclick="deleteFoodPlace('${p.id}')" class="w-6 h-6 rounded-lg bg-white border border-slate-200 text-slate-500 hover:text-rose-600 flex items-center justify-center text-[10px]" title="Xóa">
+                <button onclick="deleteFoodPlace('${p.id}')" class="w-6 h-6 rounded-lg bg-white border border-slate-200 text-slate-500 hover:text-teal-600 flex items-center justify-center text-[10px]" title="Xóa">
                   <i class="fa-solid fa-trash"></i>
                 </button>
               </div>
@@ -3012,7 +3058,7 @@
       row.innerHTML = `
         <input type="text" placeholder="Tên món (vd: Phở tái gầu, Bò sốt tiêu...)" value="${name}" class="dish-name-field flex-1 bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 font-semibold focus:outline-none focus:border-momo-500" />
         <input type="text" inputmode="numeric" placeholder="Giá tiền (đ)" value="${price ? Number(price).toLocaleString('vi-VN') : ''}" oninput="handleAmountInput(event)" class="dish-price-field w-24 bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs text-slate-800 font-bold focus:outline-none focus:border-momo-500" />
-        <button type="button" onclick="document.getElementById('${rowId}').remove()" class="w-6 h-6 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-white flex items-center justify-center text-xs" title="Xóa món này">
+        <button type="button" onclick="document.getElementById('${rowId}').remove()" class="w-6 h-6 rounded-lg text-slate-400 hover:text-emerald-500 hover:bg-white flex items-center justify-center text-xs" title="Xóa món này">
           <i class="fa-solid fa-trash-can"></i>
         </button>
       `;
@@ -3276,7 +3322,7 @@
       gridEl.innerHTML = list.map(cat => {
         const isSel = cat.id === state.selectedTxCategory;
         return `
-          <button type="button" onclick="selectTxCategory('${cat.id}')" class="p-1.5 rounded-xl border text-center flex flex-col items-center gap-0.5 transition ${isSel ? 'border-momo-500 bg-momo-50/70 shadow-xs' : 'border-slate-200 bg-white hover:bg-slate-50'}">
+          <button type="button" onclick="selectTxCategory('${cat.id}')" class="tile-3d p-1.5 rounded-xl border text-center flex flex-col items-center gap-0.5 transition ${isSel ? 'border-momo-500 bg-momo-50/70 shadow-xs' : 'border-slate-200 bg-white hover:bg-slate-50'}">
             <span class="w-6 h-6 rounded-lg flex items-center justify-center text-[11px]" style="background:${cat.bg}; color:${cat.color}">
               <i class="fa-solid ${cat.icon}"></i>
             </span>
@@ -3288,7 +3334,7 @@
       subGridEl.innerHTML = activeParent.subs.map(sub => {
         const isSubSel = sub.id === state.selectedTxSubCategory;
         return `
-          <button type="button" onclick="selectTxSubCategory('${sub.id}')" class="py-1.5 px-2 rounded-lg border text-left flex items-center gap-1.5 transition ${isSubSel ? 'border-momo-500 bg-white text-momo-600 shadow-xs font-extrabold' : 'border-slate-200/80 bg-white/60 text-slate-600 font-semibold'}">
+          <button type="button" onclick="selectTxSubCategory('${sub.id}')" class="tile-3d py-1.5 px-2 rounded-lg border text-left flex items-center gap-1.5 transition ${isSubSel ? 'border-momo-500 bg-white text-momo-600 shadow-xs font-extrabold' : 'border-slate-200/80 bg-white/60 text-slate-600 font-semibold'}">
             <i class="fa-solid ${sub.icon} text-[10px] shrink-0" style="color:${activeParent.color}"></i>
             <span class="text-[10.5px] truncate">${sub.name}</span>
           </button>
