@@ -41,7 +41,7 @@
     }
     body {
       font-family: 'Be Vietnam Pro', sans-serif;
-      background: radial-gradient(circle at 15% 15%, #d1fae5 0%, #ecfdf5 42%, #e0f2fe 85%, #f0fdfa 100%);
+      background: radial-gradient(circle at 18% 12%, #bfead9 0%, #d5f0e7 42%, #cbe5e8 82%, #bfd9da 100%);
       background-attachment: fixed;
       color: #1e293b;
       overflow-x: hidden;
@@ -58,22 +58,41 @@
       background: rgba(16, 185, 129, 0.28);
       border-radius: 9999px;
     }
+    /* Nền chìm xuống, bóng mờ hiện đại để các khối 3D nổi bật phía trên */
     .momo-bg-gradient {
-      background: linear-gradient(180deg, rgba(240, 253, 250, 0.65) 0%, rgba(248, 250, 252, 0.72) 240px, rgba(241, 245, 249, 0.76) 100%);
+      background: linear-gradient(180deg, rgba(209, 235, 226, 0.45) 0%, rgba(226, 238, 236, 0.55) 260px, rgba(218, 231, 232, 0.62) 100%);
+      box-shadow: inset 0 0 48px rgba(6, 78, 59, 0.06);
     }
     .nav-shadow {
-      box-shadow: 0 -8px 28px rgba(16, 185, 129, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+      box-shadow: 0 -10px 30px rgba(15, 23, 42, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.95);
     }
     .card-shadow {
-      box-shadow: 0 4px 0 0 rgba(16, 185, 129, 0.08), 0 12px 26px -6px rgba(15, 23, 42, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+      box-shadow: 0 5px 0 0 rgba(16, 185, 129, 0.10), 0 16px 32px -8px rgba(15, 23, 42, 0.12), inset 0 1.5px 0 rgba(255, 255, 255, 0.98);
     }
     .tile-3d {
-      box-shadow: 0 3px 0 0 rgba(16, 185, 129, 0.14), 0 6px 14px -3px rgba(15, 23, 42, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.92);
+      box-shadow: 0 4px 0 0 rgba(16, 185, 129, 0.16), 0 10px 20px -5px rgba(15, 23, 42, 0.10), inset 0 1.5px 0 rgba(255, 255, 255, 0.96);
       transition: transform 0.14s ease, box-shadow 0.14s ease;
     }
     .tile-3d:active {
       transform: translateY(2px);
-      box-shadow: 0 1px 0 0 rgba(16, 185, 129, 0.14), 0 3px 6px -2px rgba(15, 23, 42, 0.05);
+      box-shadow: 0 1px 0 0 rgba(16, 185, 129, 0.16), 0 4px 8px -2px rgba(15, 23, 42, 0.08);
+    }
+    /* Khối 3D nổi bật dành riêng cho khung Chi Tiêu & Thu Nhập */
+    .hero-3d {
+      box-shadow:
+        0 7px 0 0 rgba(16, 185, 129, 0.22),
+        0 20px 38px -10px rgba(6, 78, 59, 0.20),
+        0 6px 14px -4px rgba(15, 23, 42, 0.10),
+        inset 0 2px 1px rgba(255, 255, 255, 0.98),
+        inset 0 -2px 5px rgba(16, 185, 129, 0.08);
+      transition: transform 0.15s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.15s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .hero-3d:active {
+      transform: translateY(4px);
+      box-shadow:
+        0 2px 0 0 rgba(16, 185, 129, 0.22),
+        0 8px 16px -6px rgba(6, 78, 59, 0.18),
+        inset 0 2px 1px rgba(255, 255, 255, 0.95);
     }
     /* Highlight Ngày Rằm (15 Âm lịch) bằng tông Vàng Hổ Phách nổi khối 3D */
     .ram-cell {
@@ -105,12 +124,12 @@
 </head>
 <body class="min-h-screen flex justify-center items-start relative">
 
-  <!-- Modern Blurred Ambient Background Orbs (Soft Mint & Aqua) -->
+  <!-- Modern Recessed Blurred Ambient Background Orbs -->
   <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
-    <div class="absolute -top-24 -left-20 w-80 h-80 rounded-full bg-emerald-300/35 blur-3xl"></div>
-    <div class="absolute top-1/3 -right-20 w-80 h-80 rounded-full bg-teal-300/30 blur-3xl"></div>
-    <div class="absolute -bottom-24 left-1/4 w-96 h-96 rounded-full bg-sky-200/40 blur-3xl"></div>
-    <div class="absolute bottom-1/4 right-1/3 w-64 h-64 rounded-full bg-emerald-200/35 blur-3xl"></div>
+    <div class="absolute -top-24 -left-20 w-96 h-96 rounded-full bg-emerald-400/25 blur-3xl"></div>
+    <div class="absolute top-1/3 -right-24 w-96 h-96 rounded-full bg-teal-400/25 blur-3xl"></div>
+    <div class="absolute -bottom-24 left-1/4 w-[26rem] h-[26rem] rounded-full bg-sky-300/30 blur-3xl"></div>
+    <div class="absolute bottom-1/4 right-1/3 w-72 h-72 rounded-full bg-emerald-300/25 blur-3xl"></div>
   </div>
 
   <!-- Mobile App Container -->
@@ -144,7 +163,7 @@
       <section id="tab-overview" class="space-y-3">
 
         <!-- Bento Hero Card: Chi tiêu & Ngân sách -->
-        <button id="box-type-expense" onclick="setOverviewType('expense')" class="tile-3d w-full text-left rounded-3xl p-4 bg-gradient-to-br from-[#fffbeb] via-[#fefce8] to-[#ecfdf5]/80 border-2 border-amber-300/90 card-shadow transition relative overflow-hidden active:scale-[0.99]">
+        <button id="box-type-expense" onclick="setOverviewType('expense')" class="hero-3d w-full text-left rounded-3xl p-4 bg-gradient-to-br from-[#fffbeb] via-[#fefce8] to-[#ecfdf5]/80 border-2 border-amber-300/90 card-shadow transition relative overflow-hidden active:scale-[0.99]">
           <!-- Decorative floral/sparkle accent -->
           <div class="pointer-events-none absolute -right-2 top-2 opacity-25 text-amber-400 text-5xl">
             <i class="fa-solid fa-sun"></i>
@@ -167,32 +186,22 @@
           <div id="hero-budget-caption" class="text-[11px] font-semibold text-slate-500 mt-1.5 relative z-10">Còn 0đ trong kỳ</div>
         </button>
 
-        <!-- Bento Row 2: Thu nhập & Tiết kiệm -->
-        <div class="grid grid-cols-2 gap-2.5">
-          <!-- Thu nhập Bento Card -->
-          <button id="box-type-income" onclick="setOverviewType('income')" class="tile-3d text-left rounded-3xl p-3.5 bg-gradient-to-br from-[#ecfdf5] to-[#f0fdfa] border border-emerald-200/80 card-shadow transition relative overflow-hidden active:scale-[0.98]">
-            <div class="flex items-center justify-between gap-1 mb-2.5">
-              <span class="w-8 h-8 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 text-white flex items-center justify-center text-sm shadow-xs">
-                <i class="fa-solid fa-sack-dollar"></i>
-              </span>
-              <span id="income-diff-badge" class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">0 GD</span>
+        <!-- Bento Row 2: Thu nhập -->
+        <button id="box-type-income" onclick="setOverviewType('income')" class="hero-3d w-full text-left rounded-3xl p-3.5 bg-gradient-to-br from-[#ecfdf5] to-[#f0fdfa] border border-emerald-200/80 card-shadow transition relative overflow-hidden flex items-center justify-between gap-3">
+          <div class="flex items-center gap-3 min-w-0">
+            <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 text-white flex items-center justify-center text-sm shadow-xs shrink-0">
+              <i class="fa-solid fa-sack-dollar"></i>
+            </span>
+            <div class="min-w-0">
+              <div class="flex items-center gap-1.5">
+                <span class="text-xs font-extrabold text-slate-700">Thu nhập</span>
+                <span id="income-diff-badge" class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">0 GD</span>
+              </div>
+              <div id="overview-income-amount" class="text-[18px] font-black text-slate-900 truncate mt-0.5">0đ</div>
             </div>
-            <div class="text-[11px] font-bold text-slate-500">Thu nhập</div>
-            <div id="overview-income-amount" class="text-[16px] font-black text-slate-900 truncate mt-0.5">0đ</div>
-          </button>
-
-          <!-- Tiết kiệm Bento Card -->
-          <button id="box-type-saving" onclick="setOverviewType('saving')" class="tile-3d text-left rounded-3xl p-3.5 bg-gradient-to-br from-[#ecfdf5] to-[#e0f2fe] border border-sky-200/80 card-shadow transition relative overflow-hidden active:scale-[0.98]">
-            <div class="flex items-center justify-between gap-1 mb-2.5">
-              <span class="w-8 h-8 rounded-xl bg-gradient-to-br from-sky-500 to-teal-500 text-white flex items-center justify-center text-sm shadow-xs">
-                <i class="fa-solid fa-piggy-bank"></i>
-              </span>
-              <span id="saving-diff-badge" class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-sky-100 text-sky-700">0 GD</span>
-            </div>
-            <div class="text-[11px] font-bold text-slate-500">Tiết kiệm</div>
-            <div id="overview-saving-amount" class="text-[16px] font-black text-slate-900 truncate mt-0.5">0đ</div>
-          </button>
-        </div>
+          </div>
+          <span class="text-[10px] font-bold text-slate-400 shrink-0">Xem biểu đồ</span>
+        </button>
 
         <!-- Bento Row 3: Net Summary Strip -->
         <div class="bg-white/80 backdrop-blur-md rounded-2xl px-3.5 py-2.5 card-shadow border border-white/80 border border-slate-100 flex items-center justify-between">
@@ -582,11 +591,10 @@
           </button>
         </div>
 
-        <div id="modal-mode-tabs" class="grid grid-cols-4 gap-1 bg-slate-100 p-1 rounded-xl shrink-0">
-          <button type="button" onclick="switchModalMode('expense')" id="mmode-expense" class="py-1.5 rounded-lg text-[11px] font-extrabold transition bg-white text-momo-600 shadow-xs">Chi tiêu</button>
-          <button type="button" onclick="switchModalMode('income')" id="mmode-income" class="py-1.5 rounded-lg text-[11px] font-extrabold transition text-slate-600">Thu nhập</button>
-          <button type="button" onclick="switchModalMode('saving')" id="mmode-saving" class="py-1.5 rounded-lg text-[11px] font-extrabold transition text-slate-600">Tiết kiệm</button>
-          <button type="button" onclick="switchModalMode('task')" id="mmode-task" class="py-1.5 rounded-lg text-[11px] font-extrabold transition text-slate-600">Công việc</button>
+        <div id="modal-mode-tabs" class="grid grid-cols-3 gap-1.5 bg-slate-100 p-1 rounded-xl shrink-0">
+          <button type="button" onclick="switchModalMode('expense')" id="mmode-expense" class="py-1.5 rounded-lg text-xs font-extrabold transition bg-white text-momo-600 shadow-xs">Chi tiêu</button>
+          <button type="button" onclick="switchModalMode('income')" id="mmode-income" class="py-1.5 rounded-lg text-xs font-extrabold transition text-slate-600">Thu nhập</button>
+          <button type="button" onclick="switchModalMode('task')" id="mmode-task" class="py-1.5 rounded-lg text-xs font-extrabold transition text-slate-600">Công việc</button>
         </div>
 
         <div class="flex-1 min-h-0 overflow-y-auto space-y-2 pr-0.5">
@@ -1196,38 +1204,9 @@
       }
     ];
 
-    const SAVING_CATEGORIES = [
-      {
-        id: 'saving',
-        name: 'Tiết kiệm',
-        icon: 'fa-piggy-bank',
-        color: '#0284c7',
-        bg: '#e0f2fe',
-        subs: [
-          { id: 'sav_transfer', name: 'Chuyển tiền vào tiết kiệm', icon: 'fa-money-bill-transfer' },
-          { id: 'sav_bank', name: 'Gửi tiết kiệm ngân hàng', icon: 'fa-building-columns' },
-          { id: 'sav_emergency', name: 'Quỹ dự phòng khẩn cấp', icon: 'fa-shield-halved' },
-          { id: 'sav_goal', name: 'Tích lũy mục tiêu / Mua vàng', icon: 'fa-coins' }
-        ]
-      },
-      {
-        id: 'sav_invest',
-        name: 'Tích lũy dài hạn',
-        icon: 'fa-vault',
-        color: '#0369a1',
-        bg: '#e0f2fe',
-        subs: [
-          { id: 'sav_online', name: 'Tiết kiệm online / Tự động', icon: 'fa-mobile-screen-button' },
-          { id: 'sav_family', name: 'Quỹ gia đình / Con cái', icon: 'fa-people-roof' },
-          { id: 'sav_asset', name: 'Mua vàng / Tài sản tích trữ', icon: 'fa-gem' }
-        ]
-      }
-    ];
-
     function getTxType(tx) {
       if (!tx) return 'expense';
-      if (tx.type === 'saving' || tx.category === 'saving' || tx.category === 'sav_invest') return 'saving';
-      return tx.type || 'expense';
+      return tx.type === 'income' ? 'income' : 'expense';
     }
 
     const INCOME_CATEGORIES = [
@@ -1888,13 +1867,13 @@
     }
 
     function getCategoryMeta(catId, type = 'expense', subCatId = null) {
-      const list = [...EXPENSE_CATEGORIES, ...INCOME_CATEGORIES, ...SAVING_CATEGORIES];
+      const list = [...EXPENSE_CATEGORIES, ...INCOME_CATEGORIES];
       let parent = list.find(c => c.id === catId);
       if (!parent) {
         if (catId === 'other_exp') {
           parent = EXPENSE_CATEGORIES.find(c => c.id === 'health') || EXPENSE_CATEGORIES[0];
         } else {
-          parent = list.find(c => (c.subs || []).some(s => s.id === catId)) || (type === 'income' ? INCOME_CATEGORIES[0] : type === 'saving' ? SAVING_CATEGORIES[0] : EXPENSE_CATEGORIES[0]);
+          parent = list.find(c => (c.subs || []).some(s => s.id === catId)) || (type === 'income' ? INCOME_CATEGORIES[0] : EXPENSE_CATEGORIES[0]);
         }
       }
       const subs = parent.subs || [];
@@ -2071,33 +2050,24 @@
       const totalInc = periodTxs
         .filter(t => getTxType(t) === 'income')
         .reduce((sum, t) => sum + Number(t.amount || 0), 0);
-      const totalSav = periodTxs
-        .filter(t => getTxType(t) === 'saving')
-        .reduce((sum, t) => sum + Number(t.amount || 0), 0);
-
       const expAmountEl = document.getElementById('overview-expense-amount');
       const incAmountEl = document.getElementById('overview-income-amount');
-      const savAmountEl = document.getElementById('overview-saving-amount');
       if (expAmountEl) expAmountEl.textContent = formatMoney(totalExp);
       if (incAmountEl) incAmountEl.textContent = formatMoney(totalInc);
-      if (savAmountEl) savAmountEl.textContent = formatMoney(totalSav);
 
       const expCount = periodTxs.filter(t => getTxType(t) === 'expense').length;
       const incCount = periodTxs.filter(t => getTxType(t) === 'income').length;
-      const savCount = periodTxs.filter(t => getTxType(t) === 'saving').length;
       const expBadge = document.getElementById('expense-diff-badge');
       const incBadge = document.getElementById('income-diff-badge');
-      const savBadge = document.getElementById('saving-diff-badge');
       if (expBadge) expBadge.textContent = `${expCount} GD`;
       if (incBadge) incBadge.textContent = `${incCount} GD`;
-      if (savBadge) savBadge.textContent = `${savCount} GD`;
 
-      const net = totalInc - totalExp - totalSav;
+      const net = totalInc - totalExp;
       const netSummaryEl = document.getElementById('overview-net-summary');
       if (netSummaryEl) {
-        const netColor = net >= 0 ? 'text-emerald-600' : 'text-teal-600';
+        const netColor = net >= 0 ? 'text-emerald-600' : 'text-amber-600';
         const netSign = net > 0 ? '+' : '';
-        netSummaryEl.innerHTML = `Còn lại sau chi &amp; tiết kiệm: <strong class="${netColor}">${ state.hideAmounts ? '******' : netSign + formatMoney(net) }</strong>`;
+        netSummaryEl.innerHTML = `Số dư trong kỳ: <strong class="${netColor}">${ state.hideAmounts ? '******' : netSign + formatMoney(net) }</strong>`;
       }
 
       const heroBar = document.getElementById('hero-budget-bar');
@@ -2116,21 +2086,15 @@
 
       const boxExp = document.getElementById('box-type-expense');
       const boxInc = document.getElementById('box-type-income');
-      const boxSav = document.getElementById('box-type-saving');
       if (boxExp) {
         boxExp.className = state.overviewType === 'expense'
-          ? 'tile-3d w-full text-left rounded-3xl p-4 bg-gradient-to-br from-[#fffbeb] via-[#fefce8] to-[#ecfdf5]/80 border-2 border-amber-400 transition relative overflow-hidden'
-          : 'tile-3d w-full text-left rounded-3xl p-4 bg-gradient-to-br from-[#fffbeb] via-[#fefce8] to-[#ecfdf5]/80 border border-amber-200/70 transition relative overflow-hidden opacity-90 hover:opacity-100';
+          ? 'hero-3d w-full text-left rounded-3xl p-4 bg-gradient-to-br from-[#fffbeb] via-[#fefce8] to-[#ecfdf5]/90 border-2 border-emerald-400 transition relative overflow-hidden'
+          : 'hero-3d w-full text-left rounded-3xl p-4 bg-gradient-to-br from-[#fffbeb] via-[#fefce8] to-[#ecfdf5]/90 border border-white/90 transition relative overflow-hidden opacity-90 hover:opacity-100';
       }
       if (boxInc) {
         boxInc.className = state.overviewType === 'income'
-          ? 'tile-3d text-left rounded-3xl p-3.5 bg-gradient-to-br from-[#ecfdf5] to-[#f0fdfa] border-2 border-emerald-500 transition relative overflow-hidden'
-          : 'tile-3d text-left rounded-3xl p-3.5 bg-gradient-to-br from-[#ecfdf5] to-[#f0fdfa] border border-emerald-200/70 transition relative overflow-hidden opacity-90 hover:opacity-100';
-      }
-      if (boxSav) {
-        boxSav.className = state.overviewType === 'saving'
-          ? 'tile-3d text-left rounded-3xl p-3.5 bg-gradient-to-br from-[#ecfdf5] to-[#e0f2fe] border-2 border-sky-500 transition relative overflow-hidden'
-          : 'tile-3d text-left rounded-3xl p-3.5 bg-gradient-to-br from-[#ecfdf5] to-[#e0f2fe] border border-sky-200/70 transition relative overflow-hidden opacity-90 hover:opacity-100';
+          ? 'hero-3d w-full text-left rounded-3xl p-3.5 bg-gradient-to-br from-[#ecfdf5] to-[#f0fdfa] border-2 border-emerald-500 transition relative overflow-hidden flex items-center justify-between gap-3'
+          : 'hero-3d w-full text-left rounded-3xl p-3.5 bg-gradient-to-br from-[#ecfdf5] to-[#f0fdfa] border border-white/90 transition relative overflow-hidden flex items-center justify-between gap-3 opacity-90 hover:opacity-100';
       }
 
       if (state.selectedChartDate && (state.selectedChartDate < state.filterStartDate || state.selectedChartDate > state.filterEndDate)) {
@@ -2496,11 +2460,11 @@
 
       const txByDate = {};
       state.transactions.forEach(t => {
-        if (!txByDate[t.date]) txByDate[t.date] = { exp: 0, inc: 0, sav: 0 };
+        if (!txByDate[t.date]) txByDate[t.date] = { exp: 0, inc: 0 };
         const eff = getTxType(t);
-        if (eff === 'expense') txByDate[t.date].exp += Number(t.amount || 0);
-        else if (eff === 'saving') txByDate[t.date].sav += Number(t.amount || 0);
-        else txByDate[t.date].inc += Number(t.amount || 0);
+        const amt = Number(t.amount || 0);
+        if (eff === 'expense') txByDate[t.date].exp += amt;
+        else txByDate[t.date].inc += amt;
       });
 
       const taskByDate = {};
@@ -3253,14 +3217,14 @@
 
     function switchModalMode(mode) {
       state.modalMode = mode;
-      ['expense', 'income', 'saving', 'task'].forEach(m => {
+      ['expense', 'income', 'task'].forEach(m => {
         const btn = document.getElementById(`mmode-${m}`);
         if (!btn) return;
         if (m === mode) {
-          const activeColor = m === 'income' ? 'text-emerald-600' : m === 'saving' ? 'text-sky-600' : m === 'task' ? 'text-blue-600' : 'text-momo-600';
-          btn.className = `py-1.5 rounded-lg text-[11px] font-extrabold transition bg-white ${activeColor} shadow-xs`;
+          const activeColor = m === 'income' ? 'text-emerald-600' : m === 'task' ? 'text-teal-600' : 'text-momo-600';
+          btn.className = `py-1.5 rounded-lg text-xs font-extrabold transition bg-white ${activeColor} shadow-xs`;
         } else {
-          btn.className = 'py-1.5 rounded-lg text-[11px] font-extrabold transition text-slate-600';
+          btn.className = 'py-1.5 rounded-lg text-xs font-extrabold transition text-slate-600';
         }
       });
 
@@ -3273,7 +3237,7 @@
       } else {
         txFields.classList.remove('hidden');
         taskFields.classList.add('hidden');
-        const defaultCat = mode === 'income' ? INCOME_CATEGORIES[0] : mode === 'saving' ? SAVING_CATEGORIES[0] : EXPENSE_CATEGORIES[0];
+        const defaultCat = mode === 'income' ? INCOME_CATEGORIES[0] : EXPENSE_CATEGORIES[0];
         state.selectedTxCategory = defaultCat.id;
         state.selectedTxSubCategory = defaultCat.subs[0].id;
         renderTxCategoryGrid();
@@ -3305,7 +3269,7 @@
     }
 
     function renderTxCategoryGrid() {
-      const list = state.modalMode === 'income' ? INCOME_CATEGORIES : state.modalMode === 'saving' ? SAVING_CATEGORIES : EXPENSE_CATEGORIES;
+      const list = state.modalMode === 'income' ? INCOME_CATEGORIES : EXPENSE_CATEGORIES;
       const gridEl = document.getElementById('tx-category-grid');
       const subGridEl = document.getElementById('tx-subcategory-grid');
       const parentLabelEl = document.getElementById('selected-parent-cat-label');
@@ -3344,7 +3308,7 @@
 
     function selectTxCategory(catId) {
       state.selectedTxCategory = catId;
-      const list = state.modalMode === 'income' ? INCOME_CATEGORIES : state.modalMode === 'saving' ? SAVING_CATEGORIES : EXPENSE_CATEGORIES;
+      const list = state.modalMode === 'income' ? INCOME_CATEGORIES : EXPENSE_CATEGORIES;
       const parent = list.find(c => c.id === catId);
       if (parent && parent.subs.length > 0) {
         state.selectedTxSubCategory = parent.subs[0].id;
