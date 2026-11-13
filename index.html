@@ -91,45 +91,6 @@
     .animate-slide-up {
       animation: slideUp 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
-
-    /* Hiệu ứng Pop-up mở & thoát mượt mà chuẩn cử chỉ iPhone */
-    @keyframes iosPopIn {
-      0% {
-        opacity: 0;
-        transform: scale(0.82) translateY(24px);
-        filter: blur(4px);
-      }
-      65% {
-        opacity: 1;
-        transform: scale(1.02) translateY(-2px);
-        filter: blur(0);
-      }
-      100% {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-        filter: blur(0);
-      }
-    }
-    @keyframes iosPopOut {
-      0% {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-        filter: blur(0);
-      }
-      100% {
-        opacity: 0;
-        transform: scale(0.80) translateY(36px);
-        filter: blur(5px);
-      }
-    }
-    .ios-popup-enter {
-      animation: iosPopIn 0.34s cubic-bezier(0.32, 1.25, 0.32, 1) forwards;
-      will-change: transform, opacity, filter;
-    }
-    .ios-popup-exit {
-      animation: iosPopOut 0.26s cubic-bezier(0.36, 0, 0.66, -0.2) forwards;
-      will-change: transform, opacity, filter;
-    }
   </style>
 </head>
 <body class="min-h-screen flex justify-center items-start">
@@ -220,34 +181,48 @@
             </div>
           </div>
 
-          <!-- 2 Selectable Cards: Chi tiêu & Thu nhập -->
-          <div class="grid grid-cols-2 gap-2.5">
+          <!-- 3 Selectable Cards: Chi tiêu, Thu nhập & Tiết kiệm -->
+          <div class="grid grid-cols-3 gap-2">
             <!-- Chi tiêu Box -->
-            <button id="box-type-expense" onclick="setOverviewType('expense')" class="text-left p-3 rounded-2xl border-2 border-momo-400 bg-momo-50/30 transition relative overflow-hidden">
-              <div class="flex items-center justify-between mb-1.5">
-                <div class="flex items-center gap-1.5">
-                  <span class="w-5 h-5 rounded-full bg-momo-100 text-momo-600 flex items-center justify-center text-[10px]">
+            <button id="box-type-expense" onclick="setOverviewType('expense')" class="text-left p-2.5 rounded-2xl border-2 border-momo-400 bg-momo-50/30 transition relative overflow-hidden">
+              <div class="flex items-center justify-between gap-1 mb-1">
+                <div class="flex items-center gap-1 min-w-0">
+                  <span class="w-4 h-4 rounded-full bg-momo-100 text-momo-600 flex items-center justify-center text-[9px] shrink-0">
                     <i class="fa-solid fa-coins"></i>
                   </span>
-                  <span class="text-xs font-semibold text-slate-600">Chi tiêu</span>
+                  <span class="text-[11px] font-semibold text-slate-600 truncate">Chi tiêu</span>
                 </div>
-                <span id="expense-diff-badge" class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-500">--</span>
+                <span id="expense-diff-badge" class="text-[9px] font-bold px-1 py-0.5 rounded-full bg-slate-100 text-slate-500 shrink-0">--</span>
               </div>
-              <div id="overview-expense-amount" class="text-[16px] font-extrabold text-slate-900 truncate">0đ</div>
+              <div id="overview-expense-amount" class="text-[13px] font-extrabold text-slate-900 truncate">0đ</div>
             </button>
 
             <!-- Thu nhập Box -->
-            <button id="box-type-income" onclick="setOverviewType('income')" class="text-left p-3 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 transition relative overflow-hidden">
-              <div class="flex items-center justify-between mb-1.5">
-                <div class="flex items-center gap-1.5">
-                  <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-[10px]">
+            <button id="box-type-income" onclick="setOverviewType('income')" class="text-left p-2.5 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 transition relative overflow-hidden">
+              <div class="flex items-center justify-between gap-1 mb-1">
+                <div class="flex items-center gap-1 min-w-0">
+                  <span class="w-4 h-4 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-[9px] shrink-0">
                     <i class="fa-solid fa-sack-dollar"></i>
                   </span>
-                  <span class="text-xs font-semibold text-slate-600">Thu nhập</span>
+                  <span class="text-[11px] font-semibold text-slate-600 truncate">Thu nhập</span>
                 </div>
-                <span id="income-diff-badge" class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-500">--</span>
+                <span id="income-diff-badge" class="text-[9px] font-bold px-1 py-0.5 rounded-full bg-slate-100 text-slate-500 shrink-0">--</span>
               </div>
-              <div id="overview-income-amount" class="text-[16px] font-extrabold text-slate-900 truncate">0đ</div>
+              <div id="overview-income-amount" class="text-[13px] font-extrabold text-slate-900 truncate">0đ</div>
+            </button>
+
+            <!-- Tiết kiệm Box -->
+            <button id="box-type-saving" onclick="setOverviewType('saving')" class="text-left p-2.5 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 transition relative overflow-hidden">
+              <div class="flex items-center justify-between gap-1 mb-1">
+                <div class="flex items-center gap-1 min-w-0">
+                  <span class="w-4 h-4 rounded-full bg-sky-100 text-sky-600 flex items-center justify-center text-[9px] shrink-0">
+                    <i class="fa-solid fa-piggy-bank"></i>
+                  </span>
+                  <span class="text-[11px] font-semibold text-slate-600 truncate">Tiết kiệm</span>
+                </div>
+                <span id="saving-diff-badge" class="text-[9px] font-bold px-1 py-0.5 rounded-full bg-slate-100 text-slate-500 shrink-0">--</span>
+              </div>
+              <div id="overview-saving-amount" class="text-[13px] font-extrabold text-slate-900 truncate">0đ</div>
             </button>
           </div>
 
@@ -269,11 +244,6 @@
                   Biến động theo ngày trong kỳ
                 </span>
                 <span id="bar-chart-subtitle" class="font-extrabold text-momo-600">Chi tiêu</span>
-              </div>
-              <!-- Thanh thông tin ngày đang chọn trên biểu đồ cột -->
-              <div id="selected-chart-day-indicator" class="hidden bg-pink-50/70 border border-pink-200/80 rounded-xl px-3 py-1.5 flex items-center justify-between text-xs">
-                <span id="selected-chart-day-text" class="font-bold text-momo-700"></span>
-                <button onclick="clearSelectedChartDate()" class="text-[11px] font-extrabold text-slate-500 hover:text-slate-700">Xem cả kỳ</button>
               </div>
               <div id="bar-chart-container" class="h-48 flex items-end gap-3 pt-8 pb-2 px-3 bg-slate-50 rounded-xl border border-slate-100 overflow-x-auto"></div>
             </div>
@@ -297,54 +267,6 @@
         </div>
 
       </section>
-
-      <!-- ==================== POP-UP CHI TIẾT NGÀY KHI CLICK CỘT BIỂU ĐỒ (IPHONE STYLE) ==================== -->
-      <div id="day-tx-popup-modal" class="hidden fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity duration-200" onclick="handlePopupBackdropClick(event)">
-        <div id="day-tx-popup-card" class="bg-white/95 backdrop-blur-xl w-full max-w-[370px] rounded-3xl p-4.5 shadow-2xl border border-pink-100 space-y-3.5 max-h-[84vh] flex flex-col" onclick="event.stopPropagation()">
-          <!-- iOS Bar Indicator & Header -->
-          <div class="flex flex-col items-center">
-            <div class="w-10 h-1 bg-slate-300 rounded-full mb-2.5"></div>
-            <div class="w-full flex items-start justify-between gap-2 border-b border-slate-100 pb-2.5">
-              <div class="min-w-0">
-                <div class="flex items-center gap-2">
-                  <span id="day-popup-solar-title" class="text-sm font-extrabold text-slate-800">15/10/2026</span>
-                  <span id="day-popup-ram-badge" class="hidden px-2 py-0.5 rounded-full text-[9px] font-black bg-red-600 text-white shadow-2xs">🌕 Rằm 15 ÂL</span>
-                </div>
-                <p id="day-popup-lunar-sub" class="text-[11px] font-bold text-momo-600 mt-0.5"></p>
-              </div>
-              <button onclick="closeDayTxPopup()" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition active:scale-90" title="Đóng">
-                <i class="fa-solid fa-xmark text-xs"></i>
-              </button>
-            </div>
-          </div>
-
-          <!-- Total Summary Pill -->
-          <div class="grid grid-cols-2 gap-2 bg-slate-50/90 p-2.5 rounded-2xl border border-slate-200/70 text-xs">
-            <div>
-              <span class="text-[10px] text-slate-400 font-semibold block">Đã chi ngày này</span>
-              <strong id="day-popup-exp-sum" class="text-momo-600 font-black text-sm">0đ</strong>
-            </div>
-            <div class="text-right">
-              <span class="text-[10px] text-slate-400 font-semibold block">Đã thu ngày này</span>
-              <strong id="day-popup-inc-sum" class="text-emerald-600 font-black text-sm">0đ</strong>
-            </div>
-          </div>
-
-          <!-- Scrollable Transaction List -->
-          <div class="space-y-1.5 flex-1 overflow-y-auto max-h-[46vh] pr-0.5" id="day-popup-tx-list"></div>
-
-          <!-- Quick Action Buttons -->
-          <div class="pt-1 flex items-center gap-2 border-t border-slate-100">
-            <button id="day-popup-add-btn" class="flex-1 py-2.5 px-3 rounded-xl bg-gradient-to-r from-momo-600 to-pink-500 hover:from-momo-700 hover:to-pink-600 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-md shadow-momo-500/25 active:scale-95 transition">
-              <i class="fa-solid fa-plus-circle text-xs"></i>
-              <span>Thêm vào ngày này</span>
-            </button>
-            <button onclick="closeDayTxPopup()" class="py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold active:scale-95 transition">
-              Đóng
-            </button>
-          </div>
-        </div>
-      </div>
 
       <!-- ==================== TAB 2: LỊCH ÂM DƯƠNG VIỆT NAM ==================== -->
       <section id="tab-calendar" class="hidden space-y-3.5">
@@ -679,100 +601,101 @@
     </nav>
 
     <!-- MODAL 1: GHI CHÉP GD / CÔNG VIỆC -->
-    <div id="record-modal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-end justify-center">
-      <div class="bg-white w-full max-w-[440px] rounded-t-3xl p-4 pb-6 space-y-3.5 animate-slide-up max-h-[92vh] overflow-y-auto">
-        <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
-          <h3 id="modal-title" class="text-base font-extrabold text-slate-800">Ghi chép mới</h3>
-          <button onclick="closeRecordModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-slate-200">
+    <div id="record-modal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-end sm:items-center justify-center">
+      <div class="bg-white w-full max-w-[440px] rounded-t-3xl sm:rounded-3xl p-3 pb-3.5 flex flex-col gap-2 animate-slide-up max-h-[96vh]">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-1.5 shrink-0">
+          <h3 id="modal-title" class="text-sm font-extrabold text-slate-800">Ghi chép mới</h3>
+          <button onclick="closeRecordModal()" class="w-7 h-7 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-slate-200 text-xs">
             <i class="fa-solid fa-xmark"></i>
           </button>
         </div>
 
-        <div id="modal-mode-tabs" class="grid grid-cols-3 gap-1.5 bg-slate-100 p-1 rounded-2xl">
-          <button type="button" onclick="switchModalMode('expense')" id="mmode-expense" class="py-2 rounded-xl text-xs font-extrabold transition bg-white text-momo-600 shadow-xs">Chi tiêu</button>
-          <button type="button" onclick="switchModalMode('income')" id="mmode-income" class="py-2 rounded-xl text-xs font-extrabold transition text-slate-600">Thu nhập</button>
-          <button type="button" onclick="switchModalMode('task')" id="mmode-task" class="py-2 rounded-xl text-xs font-extrabold transition text-slate-600">Công việc</button>
+        <div id="modal-mode-tabs" class="grid grid-cols-4 gap-1 bg-slate-100 p-1 rounded-xl shrink-0">
+          <button type="button" onclick="switchModalMode('expense')" id="mmode-expense" class="py-1.5 rounded-lg text-[11px] font-extrabold transition bg-white text-momo-600 shadow-xs">Chi tiêu</button>
+          <button type="button" onclick="switchModalMode('income')" id="mmode-income" class="py-1.5 rounded-lg text-[11px] font-extrabold transition text-slate-600">Thu nhập</button>
+          <button type="button" onclick="switchModalMode('saving')" id="mmode-saving" class="py-1.5 rounded-lg text-[11px] font-extrabold transition text-slate-600">Tiết kiệm</button>
+          <button type="button" onclick="switchModalMode('task')" id="mmode-task" class="py-1.5 rounded-lg text-[11px] font-extrabold transition text-slate-600">Công việc</button>
         </div>
 
-        <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200/70 space-y-1.5">
-          <div class="flex items-center justify-between">
-            <label class="text-xs font-bold text-slate-600">Ngày thực hiện</label>
-            <span id="modal-lunar-preview" class="text-[11px] font-bold text-momo-600"></span>
+        <div class="flex-1 min-h-0 overflow-y-auto space-y-2 pr-0.5">
+          <div class="bg-slate-50 px-2.5 py-1.5 rounded-xl border border-slate-200/70 flex items-center justify-between gap-2">
+            <div class="min-w-0">
+              <label class="text-[11px] font-bold text-slate-600 block leading-tight">Ngày thực hiện</label>
+              <span id="modal-lunar-preview" class="text-[10px] font-bold text-momo-600 block truncate"></span>
+            </div>
+            <input type="date" id="modal-date-input" onchange="updateModalLunarPreview()" class="bg-white border border-slate-200 rounded-lg px-2 py-1 text-xs font-bold text-slate-800 focus:outline-none focus:border-momo-500 shrink-0" />
           </div>
-          <input type="date" id="modal-date-input" onchange="updateModalLunarPreview()" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-800 focus:outline-none focus:border-momo-500" />
-        </div>
 
-        <div id="modal-tx-fields" class="space-y-3.5">
-          <div>
-            <label class="text-xs font-bold text-slate-600 block mb-1">Số tiền (VNĐ)</label>
-            <div class="relative">
-              <input type="text" inputmode="numeric" pattern="[0-9.]*" id="tx-amount-input" placeholder="Nhập số tiền, vd: 50.000" oninput="handleAmountInput(event)" class="w-full bg-slate-50 border-2 border-momo-200 focus:border-momo-500 rounded-2xl px-3.5 py-2.5 text-lg font-extrabold text-slate-800 focus:outline-none" />
-              <span class="absolute right-3.5 top-3 text-xs font-bold text-slate-400">VNĐ</span>
-            </div>
-            <div id="quick-amount-chips" class="flex items-center gap-1.5 overflow-x-auto pt-2 pb-0.5">
-              <button type="button" onclick="setTxAmount(35000)" class="px-2.5 py-1 rounded-lg bg-pink-50 text-momo-600 text-[11px] font-bold whitespace-nowrap">35.000đ</button>
-              <button type="button" onclick="setTxAmount(50000)" class="px-2.5 py-1 rounded-lg bg-pink-50 text-momo-600 text-[11px] font-bold whitespace-nowrap">50.000đ</button>
-              <button type="button" onclick="setTxAmount(100000)" class="px-2.5 py-1 rounded-lg bg-pink-50 text-momo-600 text-[11px] font-bold whitespace-nowrap">100.000đ</button>
-              <button type="button" onclick="setTxAmount(200000)" class="px-2.5 py-1 rounded-lg bg-pink-50 text-momo-600 text-[11px] font-bold whitespace-nowrap">200.000đ</button>
-              <button type="button" onclick="setTxAmount(500000)" class="px-2.5 py-1 rounded-lg bg-pink-50 text-momo-600 text-[11px] font-bold whitespace-nowrap">500.000đ</button>
-            </div>
-          </div>
-          <div class="space-y-2.5">
+          <div id="modal-tx-fields" class="space-y-2">
             <div>
-              <label class="text-xs font-bold text-slate-600 block mb-1.5">1. Chọn danh mục lớn</label>
-              <div id="tx-category-grid" class="grid grid-cols-4 gap-2"></div>
-            </div>
-            <div class="bg-slate-50 p-2.5 rounded-2xl border border-slate-200/80">
-              <div class="flex items-center justify-between mb-1.5">
-                <label class="text-[11px] font-extrabold text-slate-600">2. Danh mục nhỏ chi tiết</label>
-                <span id="selected-parent-cat-label" class="text-[11px] font-bold text-momo-600"></span>
+              <div class="relative">
+                <input type="text" inputmode="numeric" pattern="[0-9.]*" id="tx-amount-input" placeholder="Nhập số tiền (VNĐ), vd: 50.000" oninput="handleAmountInput(event)" class="w-full bg-slate-50 border-2 border-momo-200 focus:border-momo-500 rounded-xl px-3 py-1.5 text-base font-extrabold text-slate-800 focus:outline-none pr-12" />
+                <span class="absolute right-3 top-2 text-[11px] font-bold text-slate-400">VNĐ</span>
               </div>
-              <div id="tx-subcategory-grid" class="grid grid-cols-2 gap-1.5"></div>
+              <div id="quick-amount-chips" class="flex items-center gap-1 overflow-x-auto pt-1.5">
+                <button type="button" onclick="setTxAmount(35000)" class="px-2 py-0.5 rounded-md bg-pink-50 text-momo-600 text-[10px] font-bold whitespace-nowrap">35.000đ</button>
+                <button type="button" onclick="setTxAmount(50000)" class="px-2 py-0.5 rounded-md bg-pink-50 text-momo-600 text-[10px] font-bold whitespace-nowrap">50.000đ</button>
+                <button type="button" onclick="setTxAmount(100000)" class="px-2 py-0.5 rounded-md bg-pink-50 text-momo-600 text-[10px] font-bold whitespace-nowrap">100.000đ</button>
+                <button type="button" onclick="setTxAmount(200000)" class="px-2 py-0.5 rounded-md bg-pink-50 text-momo-600 text-[10px] font-bold whitespace-nowrap">200.000đ</button>
+                <button type="button" onclick="setTxAmount(500000)" class="px-2 py-0.5 rounded-md bg-pink-50 text-momo-600 text-[10px] font-bold whitespace-nowrap">500.000đ</button>
+              </div>
+            </div>
+            <div class="space-y-1.5">
+              <div>
+                <label class="text-[11px] font-bold text-slate-600 block mb-1">1. Chọn danh mục lớn</label>
+                <div id="tx-category-grid" class="grid grid-cols-4 gap-1.5"></div>
+              </div>
+              <div class="bg-slate-50 p-2 rounded-xl border border-slate-200/80">
+                <div class="flex items-center justify-between mb-1">
+                  <label class="text-[10px] font-extrabold text-slate-600">2. Danh mục nhỏ chi tiết</label>
+                  <span id="selected-parent-cat-label" class="text-[10px] font-bold text-momo-600"></span>
+                </div>
+                <div id="tx-subcategory-grid" class="grid grid-cols-2 gap-1"></div>
+              </div>
+            </div>
+            <div>
+              <input type="text" id="tx-note-input" placeholder="Ghi chú giao dịch (Tùy chọn): Đi chợ, gửi tiết kiệm..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-800 focus:outline-none focus:border-momo-500" />
             </div>
           </div>
-          <div>
-            <label class="text-xs font-bold text-slate-600 block mb-1">Ghi chú giao dịch (Tùy chọn)</label>
-            <input type="text" id="tx-note-input" placeholder="VD: Đi chợ sáng, biếu bố mẹ, đóng tiền điện..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-800 focus:outline-none focus:border-momo-500" />
+
+          <div id="modal-task-fields" class="hidden space-y-2">
+            <div>
+              <label class="text-[11px] font-bold text-slate-600 block mb-1">Tên công việc / Lịch trình</label>
+              <input type="text" id="task-title-input" placeholder="VD: Mua hoa quả cúng Rằm..." class="w-full bg-slate-50 border-2 border-blue-200 focus:border-blue-500 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none" />
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-[11px] font-bold text-slate-600 block mb-1">Giờ nhắc</label>
+                <input type="time" id="task-time-input" value="08:00" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs font-bold text-slate-800 focus:outline-none" />
+              </div>
+              <div>
+                <label class="text-[11px] font-bold text-slate-600 block mb-1">Mức độ ưu tiên</label>
+                <select id="task-priority-input" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs font-bold text-slate-800 focus:outline-none">
+                  <option value="high">🔴 Cao</option>
+                  <option value="medium" selected>🟡 Trung bình</option>
+                  <option value="low">🟢 Thấp</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label class="text-[11px] font-bold text-slate-600 block mb-1">Nhóm công việc</label>
+              <div class="grid grid-cols-3 gap-1.5">
+                <button type="button" onclick="selectTaskCat('Lễ / Rằm')" data-tcat="Lễ / Rằm" class="tcat-btn py-1.5 px-2 rounded-xl border text-[11px] font-bold border-momo-500 bg-momo-50 text-momo-600">🌕 Lễ / Rằm</button>
+                <button type="button" onclick="selectTaskCat('Công việc')" data-tcat="Công việc" class="tcat-btn py-1.5 px-2 rounded-xl border text-[11px] font-bold border-slate-200 bg-slate-50 text-slate-600">💼 Công việc</button>
+                <button type="button" onclick="selectTaskCat('Gia đình')" data-tcat="Gia đình" class="tcat-btn py-1.5 px-2 rounded-xl border text-[11px] font-bold border-slate-200 bg-slate-50 text-slate-600">🏠 Gia đình</button>
+                <button type="button" onclick="selectTaskCat('Tài chính')" data-tcat="Tài chính" class="tcat-btn py-1.5 px-2 rounded-xl border text-[11px] font-bold border-slate-200 bg-slate-50 text-slate-600">💳 Tài chính</button>
+                <button type="button" onclick="selectTaskCat('Cá nhân')" data-tcat="Cá nhân" class="tcat-btn py-1.5 px-2 rounded-xl border text-[11px] font-bold border-slate-200 bg-slate-50 text-slate-600">✨ Cá nhân</button>
+                <button type="button" onclick="selectTaskCat('Sức khỏe')" data-tcat="Sức khỏe" class="tcat-btn py-1.5 px-2 rounded-xl border text-[11px] font-bold border-slate-200 bg-slate-50 text-slate-600">❤️ Sức khỏe</button>
+              </div>
+            </div>
+            <div>
+              <label class="text-[11px] font-bold text-slate-600 block mb-1">Ghi chú chi tiết</label>
+              <input type="text" id="task-note-input" placeholder="Ghi chú thêm..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-800 focus:outline-none" />
+            </div>
           </div>
         </div>
 
-        <div id="modal-task-fields" class="hidden space-y-3.5">
-          <div>
-            <label class="text-xs font-bold text-slate-600 block mb-1">Tên công việc / Lịch trình</label>
-            <input type="text" id="task-title-input" placeholder="VD: Mua hoa quả cúng Rằm..." class="w-full bg-slate-50 border-2 border-blue-200 focus:border-blue-500 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-800 focus:outline-none" />
-          </div>
-          <div class="grid grid-cols-2 gap-2.5">
-            <div>
-              <label class="text-xs font-bold text-slate-600 block mb-1">Giờ nhắc</label>
-              <input type="time" id="task-time-input" value="08:00" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-800 focus:outline-none" />
-            </div>
-            <div>
-              <label class="text-xs font-bold text-slate-600 block mb-1">Mức độ ưu tiên</label>
-              <select id="task-priority-input" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-800 focus:outline-none">
-                <option value="high">🔴 Cao</option>
-                <option value="medium" selected>🟡 Trung bình</option>
-                <option value="low">🟢 Thấp</option>
-              </select>
-            </div>
-          </div>
-          <div>
-            <label class="text-xs font-bold text-slate-600 block mb-1">Nhóm công việc</label>
-            <div class="grid grid-cols-3 gap-2">
-              <button type="button" onclick="selectTaskCat('Lễ / Rằm')" data-tcat="Lễ / Rằm" class="tcat-btn py-2 px-2 rounded-xl border text-xs font-bold border-momo-500 bg-momo-50 text-momo-600">🌕 Lễ / Rằm</button>
-              <button type="button" onclick="selectTaskCat('Công việc')" data-tcat="Công việc" class="tcat-btn py-2 px-2 rounded-xl border text-xs font-bold border-slate-200 bg-slate-50 text-slate-600">💼 Công việc</button>
-              <button type="button" onclick="selectTaskCat('Gia đình')" data-tcat="Gia đình" class="tcat-btn py-2 px-2 rounded-xl border text-xs font-bold border-slate-200 bg-slate-50 text-slate-600">🏠 Gia đình</button>
-              <button type="button" onclick="selectTaskCat('Tài chính')" data-tcat="Tài chính" class="tcat-btn py-2 px-2 rounded-xl border text-xs font-bold border-slate-200 bg-slate-50 text-slate-600">💳 Tài chính</button>
-              <button type="button" onclick="selectTaskCat('Cá nhân')" data-tcat="Cá nhân" class="tcat-btn py-2 px-2 rounded-xl border text-xs font-bold border-slate-200 bg-slate-50 text-slate-600">✨ Cá nhân</button>
-              <button type="button" onclick="selectTaskCat('Sức khỏe')" data-tcat="Sức khỏe" class="tcat-btn py-2 px-2 rounded-xl border text-xs font-bold border-slate-200 bg-slate-50 text-slate-600">❤️ Sức khỏe</button>
-            </div>
-          </div>
-          <div>
-            <label class="text-xs font-bold text-slate-600 block mb-1">Ghi chú chi tiết</label>
-            <input type="text" id="task-note-input" placeholder="Ghi chú thêm..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-800 focus:outline-none" />
-          </div>
-        </div>
-
-        <button type="button" onclick="submitRecordModal()" class="w-full py-3 rounded-2xl bg-gradient-to-r from-momo-600 to-momo-500 hover:from-momo-700 hover:to-momo-600 text-white font-extrabold text-sm shadow-lg shadow-momo-500/30 active:scale-[0.99] transition">
+        <button type="button" onclick="submitRecordModal()" class="w-full py-2.5 rounded-2xl bg-gradient-to-r from-momo-600 to-momo-500 hover:from-momo-700 hover:to-momo-600 text-white font-extrabold text-sm shadow-lg shadow-momo-500/30 active:scale-[0.99] transition shrink-0">
           Lưu thông tin
         </button>
       </div>
@@ -932,13 +855,13 @@
      ********************************************************************/
     const FIREBASE_CUSTOM_CONFIG = {
       apiKey: "AIzaSyDdEaJvVRRzfcM_IkTjdP0Livz52IQqrMs",
-		authDomain: "life-money-f6a11.firebaseapp.com",
-		databaseURL: "https://life-money-f6a11-default-rtdb.asia-southeast1.firebasedatabase.app",
-		projectId: "life-money-f6a11",
-		storageBucket: "life-money-f6a11.firebasestorage.app",
-		messagingSenderId: "284442463922",
-		appId: "1:284442463922:web:e6933c424828c9a12d83ab",
-		measurementId: "G-KDLG43KJ0G"
+      authDomain: "life-money-f6a11.firebaseapp.com",
+      databaseURL: "https://life-money-f6a11-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "life-money-f6a11",
+      storageBucket: "life-money-f6a11.firebasestorage.app",
+      messagingSenderId: "284442463922",
+      appId: "1:284442463922:web:e6933c424828c9a12d83ab",
+      measurementId: "G-KDLG43KJ0G"
     };
 
     // Mã kênh cố định giúp mọi thiết bị cùng đọc/ghi vào đúng 1 nguồn dữ liệu trên Firestore
@@ -1257,6 +1180,40 @@
       }
     ];
 
+    const SAVING_CATEGORIES = [
+      {
+        id: 'saving',
+        name: 'Tiết kiệm',
+        icon: 'fa-piggy-bank',
+        color: '#0284c7',
+        bg: '#e0f2fe',
+        subs: [
+          { id: 'sav_transfer', name: 'Chuyển tiền vào tiết kiệm', icon: 'fa-money-bill-transfer' },
+          { id: 'sav_bank', name: 'Gửi tiết kiệm ngân hàng', icon: 'fa-building-columns' },
+          { id: 'sav_emergency', name: 'Quỹ dự phòng khẩn cấp', icon: 'fa-shield-halved' },
+          { id: 'sav_goal', name: 'Tích lũy mục tiêu / Mua vàng', icon: 'fa-coins' }
+        ]
+      },
+      {
+        id: 'sav_invest',
+        name: 'Tích lũy dài hạn',
+        icon: 'fa-vault',
+        color: '#0369a1',
+        bg: '#e0f2fe',
+        subs: [
+          { id: 'sav_online', name: 'Tiết kiệm online / Tự động', icon: 'fa-mobile-screen-button' },
+          { id: 'sav_family', name: 'Quỹ gia đình / Con cái', icon: 'fa-people-roof' },
+          { id: 'sav_asset', name: 'Mua vàng / Tài sản tích trữ', icon: 'fa-gem' }
+        ]
+      }
+    ];
+
+    function getTxType(tx) {
+      if (!tx) return 'expense';
+      if (tx.type === 'saving' || tx.category === 'saving' || tx.category === 'sav_invest') return 'saving';
+      return tx.type || 'expense';
+    }
+
     const INCOME_CATEGORIES = [
       {
         id: 'salary',
@@ -1471,7 +1428,7 @@
       const dateKey = formatISO(now);
       const timeStr = now.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
       const totalExp = state.transactions
-        .filter(t => t.type === 'expense')
+        .filter(t => getTxType(t) === 'expense')
         .reduce((s, t) => s + Number(t.amount || 0), 0);
 
       const snapshot = {
@@ -1538,7 +1495,7 @@
             ${txs.length === 0 ? '<div class="text-slate-400 text-[11px] py-2 text-center">Không có giao dịch</div>' : txs.slice(0, 8).map(t => `
               <div class="flex justify-between items-center text-[11px] bg-white px-2 py-1.5 rounded-lg border border-slate-100">
                 <span class="truncate pr-2 font-semibold text-slate-700">${t.note || t.category} (${formatDisplayDate(t.date).slice(0,5)})</span>
-                <strong class="${t.type === 'expense' ? 'text-momo-600' : 'text-emerald-600'} shrink-0">${t.type === 'expense' ? '-' : '+'}${Number(t.amount).toLocaleString('vi-VN')}đ</strong>
+                <strong class="${getTxType(t) === 'expense' ? 'text-momo-600' : getTxType(t) === 'saving' ? 'text-sky-600' : 'text-emerald-600'} shrink-0">${getTxType(t) === 'expense' ? '-' : getTxType(t) === 'saving' ? '' : '+'}${Number(t.amount).toLocaleString('vi-VN')}đ</strong>
               </div>
             `).join('')}
           </div>
@@ -1701,7 +1658,6 @@
     }
 
     const envAppId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-    // Nếu bạn đã điền FIREBASE_CUSTOM_CONFIG, mọi thiết bị sẽ dùng chung 1 đường dẫn cố định theo projectId
     const appId = isCustomFirebaseConfigured()
       ? FIREBASE_CUSTOM_CONFIG.projectId.trim()
       : envAppId;
@@ -1728,11 +1684,9 @@
     }
 
     function resolveActiveFirebaseConfig() {
-      // Ưu tiên số 1: Cấu hình FIREBASE_CUSTOM_CONFIG bạn điền trực tiếp trong code
       if (isCustomFirebaseConfigured()) {
         return FIREBASE_CUSTOM_CONFIG;
       }
-      // Dự phòng: Cấu hình môi trường nếu bạn chưa điền FIREBASE_CUSTOM_CONFIG
       if (typeof __firebase_config !== 'undefined' && __firebase_config) {
         try { return JSON.parse(__firebase_config); } catch (e) {}
       }
@@ -1761,7 +1715,6 @@
             currentUser = cred.user;
           }
         } catch (authErr) {
-          // Trường hợp Firebase Project riêng của bạn dùng Firestore Test Mode nhưng chưa bật Anonymous Auth
           console.warn('Lưu ý Firebase Auth (vẫn tiếp tục kết nối Firestore):', authErr.message);
           currentUser = auth.currentUser || { uid: 'firebase_client_sync' };
         }
@@ -1842,22 +1795,18 @@
 
             if (isFirstSnapshot) {
               isFirstSnapshot = false;
-              // Nếu thiết bị hiện tại đang là dữ liệu mẫu (lastUpdated === 0) hoặc dữ liệu trên mây mới hơn -> tải về ngay
               if (state.lastUpdated === 0 || remoteTime >= state.lastUpdated) {
                 applyCloudDataToState(data, remoteTime);
               } else {
-                // Nếu thiết bị vừa có thay đổi offline mới hơn trên mây -> đẩy lên mây
                 pushToCloud();
               }
               return;
             }
 
-            // Các lần cập nhật real-time tiếp theo từ thiết bị khác
             if (remoteTime > state.lastUpdated) {
               applyCloudDataToState(data, remoteTime);
             }
           } else {
-            // Chưa có dữ liệu trên Firebase -> Khởi tạo bản ghi đầu tiên lên Firebase
             isFirstSnapshot = false;
             if (!state.lastUpdated) state.lastUpdated = Date.now();
             pushToCloud();
@@ -1901,7 +1850,6 @@
       pushToCloud();
     }
 
-    // Tự động đồng bộ lại khi thiết bị có mạng trở lại
     window.addEventListener('online', () => {
       if (db && currentUser && state.lastUpdated > 0) {
         pushToCloud();
@@ -1917,7 +1865,6 @@
       return num.toLocaleString('vi-VN') + 'đ';
     }
 
-    // Hiển thị chi tiết đến từng đơn vị (không làm tròn k, tr)
     function formatShortMoney(amount) {
       if (state.hideAmounts) return '***';
       const num = Number(amount) || 0;
@@ -1925,14 +1872,13 @@
     }
 
     function getCategoryMeta(catId, type = 'expense', subCatId = null) {
-      const list = [...EXPENSE_CATEGORIES, ...INCOME_CATEGORIES];
+      const list = [...EXPENSE_CATEGORIES, ...INCOME_CATEGORIES, ...SAVING_CATEGORIES];
       let parent = list.find(c => c.id === catId);
       if (!parent) {
-        // Hỗ trợ tương thích ngược nếu catId là other_exp hoặc một subCatId
         if (catId === 'other_exp') {
           parent = EXPENSE_CATEGORIES.find(c => c.id === 'health') || EXPENSE_CATEGORIES[0];
         } else {
-          parent = list.find(c => (c.subs || []).some(s => s.id === catId)) || (type === 'income' ? INCOME_CATEGORIES[0] : EXPENSE_CATEGORIES[0]);
+          parent = list.find(c => (c.subs || []).some(s => s.id === catId)) || (type === 'income' ? INCOME_CATEGORIES[0] : type === 'saving' ? SAVING_CATEGORIES[0] : EXPENSE_CATEGORIES[0]);
         }
       }
       const subs = parent.subs || [];
@@ -2099,43 +2045,48 @@
       );
 
       const totalExp = periodTxs
-        .filter(t => t.type === 'expense')
+        .filter(t => getTxType(t) === 'expense')
         .reduce((sum, t) => sum + Number(t.amount || 0), 0);
       const totalInc = periodTxs
-        .filter(t => t.type === 'income')
+        .filter(t => getTxType(t) === 'income')
+        .reduce((sum, t) => sum + Number(t.amount || 0), 0);
+      const totalSav = periodTxs
+        .filter(t => getTxType(t) === 'saving')
         .reduce((sum, t) => sum + Number(t.amount || 0), 0);
 
       const expAmountEl = document.getElementById('overview-expense-amount');
       const incAmountEl = document.getElementById('overview-income-amount');
+      const savAmountEl = document.getElementById('overview-saving-amount');
       if (expAmountEl) expAmountEl.textContent = formatMoney(totalExp);
       if (incAmountEl) incAmountEl.textContent = formatMoney(totalInc);
+      if (savAmountEl) savAmountEl.textContent = formatMoney(totalSav);
 
-      const expCount = periodTxs.filter(t => t.type === 'expense').length;
-      const incCount = periodTxs.filter(t => t.type === 'income').length;
+      const expCount = periodTxs.filter(t => getTxType(t) === 'expense').length;
+      const incCount = periodTxs.filter(t => getTxType(t) === 'income').length;
+      const savCount = periodTxs.filter(t => getTxType(t) === 'saving').length;
       const expBadge = document.getElementById('expense-diff-badge');
       const incBadge = document.getElementById('income-diff-badge');
+      const savBadge = document.getElementById('saving-diff-badge');
       if (expBadge) expBadge.textContent = `${expCount} GD`;
       if (incBadge) incBadge.textContent = `${incCount} GD`;
+      if (savBadge) savBadge.textContent = `${savCount} GD`;
 
-      const net = totalInc - totalExp;
+      const net = totalInc - totalExp - totalSav;
       const netSummaryEl = document.getElementById('overview-net-summary');
       if (netSummaryEl) {
         const netColor = net >= 0 ? 'text-emerald-600' : 'text-rose-600';
         const netSign = net > 0 ? '+' : '';
-        netSummaryEl.innerHTML = `Số dư trong kỳ: <strong class="${netColor}">${ state.hideAmounts ? '******' : netSign + formatMoney(net) }</strong>`;
+        netSummaryEl.innerHTML = `Còn lại sau chi &amp; tiết kiệm: <strong class="${netColor}">${ state.hideAmounts ? '******' : netSign + formatMoney(net) }</strong>`;
       }
 
       const boxExp = document.getElementById('box-type-expense');
       const boxInc = document.getElementById('box-type-income');
-      if (state.overviewType === 'expense') {
-        boxExp.className = 'text-left p-3 rounded-2xl border-2 border-momo-400 bg-momo-50/30 transition relative overflow-hidden';
-        boxInc.className = 'text-left p-3 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 transition relative overflow-hidden';
-      } else {
-        boxInc.className = 'text-left p-3 rounded-2xl border-2 border-emerald-500 bg-emerald-50/30 transition relative overflow-hidden';
-        boxExp.className = 'text-left p-3 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 transition relative overflow-hidden';
-      }
+      const boxSav = document.getElementById('box-type-saving');
+      const baseBox = 'text-left p-2.5 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 transition relative overflow-hidden';
+      if (boxExp) boxExp.className = state.overviewType === 'expense' ? 'text-left p-2.5 rounded-2xl border-2 border-momo-400 bg-momo-50/30 transition relative overflow-hidden' : baseBox;
+      if (boxInc) boxInc.className = state.overviewType === 'income' ? 'text-left p-2.5 rounded-2xl border-2 border-emerald-500 bg-emerald-50/30 transition relative overflow-hidden' : baseBox;
+      if (boxSav) boxSav.className = state.overviewType === 'saving' ? 'text-left p-2.5 rounded-2xl border-2 border-sky-500 bg-sky-50/40 transition relative overflow-hidden' : baseBox;
 
-      // Kiểm tra xem ngày đang chọn trên biểu đồ có còn trong khoảng thời gian không
       if (state.selectedChartDate && (state.selectedChartDate < state.filterStartDate || state.selectedChartDate > state.filterEndDate)) {
         state.selectedChartDate = null;
       }
@@ -2147,7 +2098,7 @@
 
     function renderCategoryBreakdown(periodTxs) {
       const targetType = state.overviewType;
-      const filtered = periodTxs.filter(t => t.type === targetType);
+      const filtered = periodTxs.filter(t => getTxType(t) === targetType);
       const total = filtered.reduce((s, t) => s + Number(t.amount || 0), 0);
 
       const catMap = {};
@@ -2213,7 +2164,6 @@
           `;
         }).join('');
 
-        // Kiểm tra xem danh mục lớn này có chứa danh mục nhỏ đang được chọn để hiển thị danh sách con không
         let expandedDetailHTML = '';
         const activeSubInThisCat = subItems.find(s => s.id === state.selectedSubCatFilter);
         if (activeSubInThisCat) {
@@ -2242,8 +2192,8 @@
                         </div>
                       </div>
                       <div class="flex items-center gap-1.5 shrink-0">
-                        <strong class="text-xs font-black ${t.type === 'expense' ? 'text-momo-600' : 'text-emerald-600'}">
-                          ${t.type === 'expense' ? '-' : '+'}${Number(t.amount).toLocaleString('vi-VN')}đ
+                        <strong class="text-xs font-black ${getTxType(t) === 'expense' ? 'text-momo-600' : getTxType(t) === 'saving' ? 'text-sky-600' : 'text-emerald-600'}">
+                          ${getTxType(t) === 'expense' ? '-' : getTxType(t) === 'saving' ? '' : '+'}${Number(t.amount).toLocaleString('vi-VN')}đ
                         </strong>
                         <button onclick="editTransaction('${t.id}')" class="w-5 h-5 rounded hover:bg-slate-100 text-slate-400 hover:text-blue-600 flex items-center justify-center text-[10px]" title="Sửa">
                           <i class="fa-solid fa-pen"></i>
@@ -2305,122 +2255,6 @@
       );
       renderBarChart(periodTxs);
       renderOverviewRecentTransactions(periodTxs);
-
-      // Hiển thị Pop-up chi tiết ngày phong cách iOS
-      if (state.selectedChartDate) {
-        openDayTxPopup(state.selectedChartDate);
-      }
-    }
-
-    function openDayTxPopup(isoDate) {
-      const modal = document.getElementById('day-tx-popup-modal');
-      const card = document.getElementById('day-tx-popup-card');
-      if (!modal || !card) return;
-
-      const lunar = getLunarInfoFromISO(isoDate);
-      const dayTxs = state.transactions.filter(t => t.date === isoDate);
-
-      // Cập nhật tiêu đề & ngày Âm
-      const titleEl = document.getElementById('day-popup-solar-title');
-      const ramBadge = document.getElementById('day-popup-ram-badge');
-      const lunarSub = document.getElementById('day-popup-lunar-sub');
-      if (titleEl) titleEl.textContent = `Ngày ${formatDisplayDate(isoDate)}`;
-      if (ramBadge) {
-        if (lunar.isRam) {
-          ramBadge.classList.remove('hidden');
-        } else {
-          ramBadge.classList.add('hidden');
-        }
-      }
-      if (lunarSub) {
-        lunarSub.textContent = `Âm lịch: ${lunar.day}/${lunar.month}${lunar.leap ? ' (Nhuận)' : ''} năm ${lunar.canChi.year} (${lunar.canChi.day})`;
-      }
-
-      // Tổng thu & chi trong ngày
-      const expSum = dayTxs.filter(t => t.type === 'expense').reduce((s, t) => s + Number(t.amount || 0), 0);
-      const incSum = dayTxs.filter(t => t.type === 'income').reduce((s, t) => s + Number(t.amount || 0), 0);
-
-      const expSumEl = document.getElementById('day-popup-exp-sum');
-      const incSumEl = document.getElementById('day-popup-inc-sum');
-      if (expSumEl) expSumEl.textContent = formatMoney(expSum);
-      if (incSumEl) incSumEl.textContent = formatMoney(incSum);
-
-      // Danh sách giao dịch
-      const listContainer = document.getElementById('day-popup-tx-list');
-      if (listContainer) {
-        if (dayTxs.length === 0) {
-          listContainer.innerHTML = `
-            <div class="py-6 text-center text-xs text-slate-400 space-y-1">
-              <i class="fa-regular fa-clipboard text-2xl text-slate-300"></i>
-              <p>Chưa có khoản thu chi nào trong ngày này</p>
-            </div>
-          `;
-        } else {
-          listContainer.innerHTML = dayTxs.map(t => {
-            const meta = getCategoryMeta(t.category, t.type, t.subCategory);
-            const isExp = t.type === 'expense';
-            return `
-              <div class="flex items-center justify-between p-2.5 rounded-2xl bg-white border border-slate-100 shadow-2xs hover:bg-slate-50 transition gap-2">
-                <div class="flex items-center gap-2.5 min-w-0">
-                  <div class="w-8 h-8 rounded-xl flex items-center justify-center text-xs shrink-0" style="background:${meta.bg}; color:${meta.color}">
-                    <i class="fa-solid ${meta.subIcon}"></i>
-                  </div>
-                  <div class="min-w-0">
-                    <div class="text-xs font-extrabold text-slate-800 truncate">${t.note || meta.subName}</div>
-                    <div class="text-[10px] text-slate-500 font-medium">${meta.name} • ${meta.subName}</div>
-                  </div>
-                </div>
-                <div class="flex items-center gap-1.5 shrink-0">
-                  <strong class="text-xs font-black ${isExp ? 'text-momo-600' : 'text-emerald-600'}">
-                    ${isExp ? '-' : '+'}${Number(t.amount).toLocaleString('vi-VN')}đ
-                  </strong>
-                  <button onclick="closeDayTxPopup(); editTransaction('${t.id}')" class="w-6 h-6 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-slate-100 flex items-center justify-center text-[10px]" title="Sửa">
-                    <i class="fa-solid fa-pen"></i>
-                  </button>
-                  <button onclick="closeDayTxPopup(); deleteTransaction('${t.id}')" class="w-6 h-6 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-slate-100 flex items-center justify-center text-[10px]" title="Xóa">
-                    <i class="fa-solid fa-trash"></i>
-                  </button>
-                </div>
-              </div>
-            `;
-          }).join('');
-        }
-      }
-
-      // Nút thêm giao dịch cho chính ngày này
-      const addBtn = document.getElementById('day-popup-add-btn');
-      if (addBtn) {
-        addBtn.onclick = () => {
-          closeDayTxPopup();
-          openAddModal('expense', isoDate);
-        };
-      }
-
-      // Kích hoạt class animation mở nảy mượt mà phong cách iOS
-      modal.classList.remove('hidden');
-      card.classList.remove('ios-popup-exit');
-      card.classList.add('ios-popup-enter');
-    }
-
-    function closeDayTxPopup() {
-      const modal = document.getElementById('day-tx-popup-modal');
-      const card = document.getElementById('day-tx-popup-card');
-      if (!modal || modal.classList.contains('hidden') || !card) return;
-
-      // Kích hoạt animation thu nhỏ & mờ dần như thoát app iPhone
-      card.classList.remove('ios-popup-enter');
-      card.classList.add('ios-popup-exit');
-
-      setTimeout(() => {
-        modal.classList.add('hidden');
-        card.classList.remove('ios-popup-exit');
-      }, 240);
-    }
-
-    function handlePopupBackdropClick(event) {
-      if (event.target.id === 'day-tx-popup-modal') {
-        closeDayTxPopup();
-      }
     }
 
     function clearSelectedChartDate() {
@@ -2435,25 +2269,13 @@
     function renderBarChart(periodTxs) {
       const targetType = state.overviewType;
       const subtitleEl = document.getElementById('bar-chart-subtitle');
-      if (subtitleEl) subtitleEl.textContent = targetType === 'expense' ? 'Chi tiêu' : 'Thu nhập';
-
-      const indicator = document.getElementById('selected-chart-day-indicator');
-      const indicatorText = document.getElementById('selected-chart-day-text');
-      if (indicator && indicatorText) {
-        if (state.selectedChartDate) {
-          const l = getLunarInfoFromISO(state.selectedChartDate);
-          indicator.classList.remove('hidden');
-          indicatorText.innerHTML = `<i class="fa-regular fa-calendar-check mr-1 text-momo-600"></i> Đang lọc ngày: <strong>${formatDisplayDate(state.selectedChartDate)} (${l.day}/${l.month} ÂL)</strong>`;
-        } else {
-          indicator.classList.add('hidden');
-        }
-      }
+      if (subtitleEl) subtitleEl.textContent = targetType === 'expense' ? 'Chi tiêu' : targetType === 'saving' ? 'Tiết kiệm' : 'Thu nhập';
 
       const container = document.getElementById('bar-chart-container');
       if (!container) return;
 
       const byDate = {};
-      periodTxs.filter(t => t.type === targetType).forEach(t => {
+      periodTxs.filter(t => getTxType(t) === targetType).forEach(t => {
         byDate[t.date] = (byDate[t.date] || 0) + Number(t.amount || 0);
       });
 
@@ -2465,6 +2287,7 @@
 
       const maxVal = Math.max(...Object.values(byDate), 1);
       const isExpense = targetType === 'expense';
+      const isSaving = targetType === 'saving';
 
       container.innerHTML = dates.map(iso => {
         const val = byDate[iso];
@@ -2472,10 +2295,10 @@
         const [, m, d] = iso.split('-');
         const isSelected = state.selectedChartDate === iso;
 
-        let barColor = isExpense ? 'bg-momo-500 hover:bg-momo-600' : 'bg-emerald-500 hover:bg-emerald-600';
-        let ringClass = isSelected ? 'ring-2 ring-offset-2 ' + (isExpense ? 'ring-momo-600 scale-105' : 'ring-emerald-600 scale-105') : '';
-        let amountTextClass = isSelected ? (isExpense ? 'text-momo-700 font-black scale-105' : 'text-emerald-700 font-black scale-105') : 'text-slate-600';
-        let dateTextClass = isSelected ? (isExpense ? 'bg-momo-600 text-white px-1.5 py-0.5 rounded-md' : 'bg-emerald-600 text-white px-1.5 py-0.5 rounded-md') : 'text-slate-600';
+        let barColor = isExpense ? 'bg-momo-500 hover:bg-momo-600' : isSaving ? 'bg-sky-500 hover:bg-sky-600' : 'bg-emerald-500 hover:bg-emerald-600';
+        let ringClass = isSelected ? 'ring-2 ring-offset-2 ' + (isExpense ? 'ring-momo-600 scale-105' : isSaving ? 'ring-sky-600 scale-105' : 'ring-emerald-600 scale-105') : '';
+        let amountTextClass = isSelected ? (isExpense ? 'text-momo-700 font-black scale-105' : isSaving ? 'text-sky-700 font-black scale-105' : 'text-emerald-700 font-black scale-105') : 'text-slate-600';
+        let dateTextClass = isSelected ? (isExpense ? 'bg-momo-600 text-white px-1.5 py-0.5 rounded-md' : isSaving ? 'bg-sky-600 text-white px-1.5 py-0.5 rounded-md' : 'bg-emerald-600 text-white px-1.5 py-0.5 rounded-md') : 'text-slate-600';
 
         return `
           <button type="button" onclick="selectChartDate('${iso}')" class="flex flex-col items-center justify-end h-full min-w-[76px] px-1 py-1 rounded-xl transition cursor-pointer shrink-0 hover:bg-white/80 active:scale-95 group">
@@ -2522,9 +2345,11 @@
       }
 
       container.innerHTML = sorted.slice(0, 30).map(tx => {
-        const meta = getCategoryMeta(tx.category, tx.type, tx.subCategory);
+        const effType = getTxType(tx);
+        const meta = getCategoryMeta(tx.category, effType, tx.subCategory);
         const l = getLunarInfoFromISO(tx.date);
-        const isExp = tx.type === 'expense';
+        const isExp = effType === 'expense';
+        const isSav = effType === 'saving';
         return `
           <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50/80 hover:bg-slate-100/70 border border-slate-100 transition gap-2">
             <div class="flex items-center gap-2.5 min-w-0">
@@ -2541,8 +2366,8 @@
             </div>
             <div class="text-right shrink-0 flex items-center gap-1.5">
               <div>
-                <div class="text-xs font-extrabold ${isExp ? 'text-momo-600' : 'text-emerald-600'}">
-                  ${isExp ? '-' : '+'}${Number(tx.amount || 0).toLocaleString('vi-VN')}đ
+                <div class="text-xs font-extrabold ${isExp ? 'text-momo-600' : isSav ? 'text-sky-600' : 'text-emerald-600'}">
+                  ${isExp ? '-' : isSav ? '' : '+'}${Number(tx.amount || 0).toLocaleString('vi-VN')}đ
                 </div>
               </div>
               <button onclick="editTransaction('${tx.id}')" class="w-6 h-6 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-white flex items-center justify-center text-[11px]" title="Sửa">
@@ -2620,13 +2445,15 @@
       }
 
       const firstDayJS = new Date(y, m - 1, 1).getDay();
-      const startOffset = (firstDayJS + 6) % 7; // Thứ 2 là cột đầu tiên
+      const startOffset = (firstDayJS + 6) % 7;
       const daysInMonth = new Date(y, m, 0).getDate();
 
       const txByDate = {};
       state.transactions.forEach(t => {
-        if (!txByDate[t.date]) txByDate[t.date] = { exp: 0, inc: 0 };
-        if (t.type === 'expense') txByDate[t.date].exp += Number(t.amount || 0);
+        if (!txByDate[t.date]) txByDate[t.date] = { exp: 0, inc: 0, sav: 0 };
+        const eff = getTxType(t);
+        if (eff === 'expense') txByDate[t.date].exp += Number(t.amount || 0);
+        else if (eff === 'saving') txByDate[t.date].sav += Number(t.amount || 0);
         else txByDate[t.date].inc += Number(t.amount || 0);
       });
 
@@ -2675,6 +2502,8 @@
         let txBadgeHTML = '';
         if (dayTx && dayTx.exp > 0) {
           txBadgeHTML = `<div class="text-[8px] leading-tight font-extrabold tracking-tighter truncate w-full px-0.5 text-center ${isSelected ? 'text-white' : 'text-momo-600'}">-${Number(dayTx.exp).toLocaleString('vi-VN')}đ</div>`;
+        } else if (dayTx && dayTx.sav > 0) {
+          txBadgeHTML = `<div class="text-[8px] leading-tight font-extrabold tracking-tighter truncate w-full px-0.5 text-center ${isSelected ? 'text-white' : 'text-sky-600'}">TK ${Number(dayTx.sav).toLocaleString('vi-VN')}đ</div>`;
         } else if (dayTx && dayTx.inc > 0) {
           txBadgeHTML = `<div class="text-[8px] leading-tight font-extrabold tracking-tighter truncate w-full px-0.5 text-center ${isSelected ? 'text-white' : 'text-emerald-600'}">+${Number(dayTx.inc).toLocaleString('vi-VN')}đ</div>`;
         }
@@ -2729,16 +2558,18 @@
       const dayTxs = state.transactions.filter(t => t.date === iso);
       const dayTasks = state.tasks.filter(t => t.date === iso);
 
-      const expSum = dayTxs.filter(t => t.type === 'expense').reduce((s, t) => s + Number(t.amount || 0), 0);
-      const incSum = dayTxs.filter(t => t.type === 'income').reduce((s, t) => s + Number(t.amount || 0), 0);
+      const expSum = dayTxs.filter(t => getTxType(t) === 'expense').reduce((s, t) => s + Number(t.amount || 0), 0);
+      const incSum = dayTxs.filter(t => getTxType(t) === 'income').reduce((s, t) => s + Number(t.amount || 0), 0);
+      const savSum = dayTxs.filter(t => getTxType(t) === 'saving').reduce((s, t) => s + Number(t.amount || 0), 0);
 
       if (netEl) {
-        if (expSum === 0 && incSum === 0) {
+        if (expSum === 0 && incSum === 0 && savSum === 0) {
           netEl.innerHTML = `<span class="text-slate-400">0đ</span>`;
         } else {
           netEl.innerHTML = `
             ${incSum > 0 ? `<span class="text-emerald-600">+${Number(incSum).toLocaleString('vi-VN')}đ</span> ` : ''}
-            ${expSum > 0 ? `<span class="text-momo-600">-${Number(expSum).toLocaleString('vi-VN')}đ</span>` : ''}
+            ${expSum > 0 ? `<span class="text-momo-600">-${Number(expSum).toLocaleString('vi-VN')}đ</span> ` : ''}
+            ${savSum > 0 ? `<span class="text-sky-600">TK ${Number(savSum).toLocaleString('vi-VN')}đ</span>` : ''}
           `;
         }
       }
@@ -2774,8 +2605,10 @@
           txListEl.innerHTML = `<div class="text-xs text-slate-400 py-2 text-center bg-slate-50 rounded-xl">Chưa có giao dịch thu/chi trong ngày này</div>`;
         } else {
           txListEl.innerHTML = dayTxs.map(tx => {
-            const meta = getCategoryMeta(tx.category, tx.type, tx.subCategory);
-            const isExp = tx.type === 'expense';
+            const effType = getTxType(tx);
+            const meta = getCategoryMeta(tx.category, effType, tx.subCategory);
+            const isExp = effType === 'expense';
+            const isSav = effType === 'saving';
             return `
               <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100 gap-2">
                 <div class="flex items-center gap-2.5 min-w-0">
@@ -2788,7 +2621,7 @@
                   </div>
                 </div>
                 <div class="flex items-center gap-1.5 shrink-0">
-                  <span class="text-xs font-extrabold ${isExp ? 'text-momo-600' : 'text-emerald-600'}">${isExp ? '-' : '+'}${formatMoney(tx.amount)}</span>
+                  <span class="text-xs font-extrabold ${isExp ? 'text-momo-600' : isSav ? 'text-sky-600' : 'text-emerald-600'}">${isExp ? '-' : isSav ? '' : '+'}${formatMoney(tx.amount)}</span>
                   <button onclick="editTransaction('${tx.id}')" class="w-6 h-6 rounded-lg text-slate-400 hover:text-blue-600 flex items-center justify-center text-xs"><i class="fa-solid fa-pen"></i></button>
                   <button onclick="deleteTransaction('${tx.id}')" class="w-6 h-6 rounded-lg text-slate-400 hover:text-rose-600 flex items-center justify-center text-xs"><i class="fa-solid fa-trash"></i></button>
                 </div>
@@ -2950,9 +2783,9 @@
       // 1. Render Quán Ăn & Món Ngon Yêu Thích
       renderFoodPlacesSection();
 
-      // 2. Render Ngân sách tháng
+      // 2. Render Ngân sách tháng (không tính tiết kiệm vào chi tiêu)
       const periodTxs = state.transactions.filter(
-        t => t.type === 'expense' && t.date >= state.filterStartDate && t.date <= state.filterEndDate
+        t => getTxType(t) === 'expense' && t.date >= state.filterStartDate && t.date <= state.filterEndDate
       );
       const spent = periodTxs.reduce((s, t) => s + Number(t.amount || 0), 0);
       const limit = Number(state.monthlyBudget) || 12000000;
@@ -3020,12 +2853,10 @@
 
       let list = [...(state.foodPlaces || [])];
 
-      // Lọc theo Category
       if (state.foodFilterCategory && state.foodFilterCategory !== 'all') {
         list = list.filter(p => p.category === state.foodFilterCategory);
       }
 
-      // Lọc theo Search Query
       if (state.foodSearchQuery && state.foodSearchQuery.trim()) {
         const q = state.foodSearchQuery.toLowerCase().trim();
         list = list.filter(p => {
@@ -3054,7 +2885,6 @@
         const starCount = Number(p.rating) || 4;
         const starsHTML = '⭐'.repeat(starCount);
 
-        // Nút Google Maps
         let mapButtonHTML = '';
         if (p.mapUrl && p.mapUrl.trim()) {
           mapButtonHTML = `
@@ -3066,7 +2896,6 @@
           `;
         }
 
-        // Danh sách món ăn yêu thích của quán
         let dishesHTML = '';
         if (Array.isArray(p.dishes) && p.dishes.length > 0) {
           dishesHTML = `
@@ -3127,7 +2956,6 @@
 
     function filterFoodPlacesByCategory(cat) {
       state.foodFilterCategory = cat;
-      const cats = ['all', 'Bún / Phở / Mì', 'Cơm / Đồ mặn', 'Hải sản / Lẩu nướng', 'Cà phê / Trà sữa', 'Ăn vặt / Tráng miệng', 'Nhậu / Tiếp khách'];
       const catMap = {
         'all': 'fcat-all',
         'Bún / Phở / Mì': 'fcat-bunpho',
@@ -3164,7 +2992,7 @@
         
         const container = document.getElementById('favorite-dishes-inputs-container');
         container.innerHTML = '';
-        addNewFavoriteDishRow(); // Dòng món đầu tiên
+        addNewFavoriteDishRow();
       }
       document.getElementById('restaurant-modal').classList.remove('hidden');
     }
@@ -3203,14 +3031,12 @@
       const address = (document.getElementById('res-address-input').value || '').trim();
       let mapUrl = (document.getElementById('res-map-input').value || '').trim();
 
-      // Nếu người dùng chỉ nhập địa chỉ hoặc link maps thì giữ nguyên
       if (mapUrl && !mapUrl.startsWith('http://') && !mapUrl.startsWith('https://')) {
         mapUrl = 'https://' + mapUrl;
       }
 
       const note = (document.getElementById('res-note-input').value || '').trim();
 
-      // Gom danh sách món ăn yêu thích
       const dishes = [];
       const dishRows = document.querySelectorAll('#favorite-dishes-inputs-container > div');
       dishRows.forEach(row => {
@@ -3381,13 +3207,14 @@
 
     function switchModalMode(mode) {
       state.modalMode = mode;
-      ['expense', 'income', 'task'].forEach(m => {
+      ['expense', 'income', 'saving', 'task'].forEach(m => {
         const btn = document.getElementById(`mmode-${m}`);
         if (!btn) return;
         if (m === mode) {
-          btn.className = 'py-2 rounded-xl text-xs font-extrabold transition bg-white text-momo-600 shadow-xs';
+          const activeColor = m === 'income' ? 'text-emerald-600' : m === 'saving' ? 'text-sky-600' : m === 'task' ? 'text-blue-600' : 'text-momo-600';
+          btn.className = `py-1.5 rounded-lg text-[11px] font-extrabold transition bg-white ${activeColor} shadow-xs`;
         } else {
-          btn.className = 'py-2 rounded-xl text-xs font-extrabold transition text-slate-600';
+          btn.className = 'py-1.5 rounded-lg text-[11px] font-extrabold transition text-slate-600';
         }
       });
 
@@ -3400,7 +3227,7 @@
       } else {
         txFields.classList.remove('hidden');
         taskFields.classList.add('hidden');
-        const defaultCat = mode === 'income' ? INCOME_CATEGORIES[0] : EXPENSE_CATEGORIES[0];
+        const defaultCat = mode === 'income' ? INCOME_CATEGORIES[0] : mode === 'saving' ? SAVING_CATEGORIES[0] : EXPENSE_CATEGORIES[0];
         state.selectedTxCategory = defaultCat.id;
         state.selectedTxSubCategory = defaultCat.subs[0].id;
         renderTxCategoryGrid();
@@ -3432,7 +3259,7 @@
     }
 
     function renderTxCategoryGrid() {
-      const list = state.modalMode === 'income' ? INCOME_CATEGORIES : EXPENSE_CATEGORIES;
+      const list = state.modalMode === 'income' ? INCOME_CATEGORIES : state.modalMode === 'saving' ? SAVING_CATEGORIES : EXPENSE_CATEGORIES;
       const gridEl = document.getElementById('tx-category-grid');
       const subGridEl = document.getElementById('tx-subcategory-grid');
       const parentLabelEl = document.getElementById('selected-parent-cat-label');
@@ -3449,11 +3276,11 @@
       gridEl.innerHTML = list.map(cat => {
         const isSel = cat.id === state.selectedTxCategory;
         return `
-          <button type="button" onclick="selectTxCategory('${cat.id}')" class="p-2 rounded-xl border text-center flex flex-col items-center gap-1 transition ${isSel ? 'border-momo-500 bg-momo-50/70 shadow-xs' : 'border-slate-200 bg-white hover:bg-slate-50'}">
-            <span class="w-7 h-7 rounded-lg flex items-center justify-center text-xs" style="background:${cat.bg}; color:${cat.color}">
+          <button type="button" onclick="selectTxCategory('${cat.id}')" class="p-1.5 rounded-xl border text-center flex flex-col items-center gap-0.5 transition ${isSel ? 'border-momo-500 bg-momo-50/70 shadow-xs' : 'border-slate-200 bg-white hover:bg-slate-50'}">
+            <span class="w-6 h-6 rounded-lg flex items-center justify-center text-[11px]" style="background:${cat.bg}; color:${cat.color}">
               <i class="fa-solid ${cat.icon}"></i>
             </span>
-            <span class="text-[10px] font-bold text-slate-700 leading-tight line-clamp-1">${cat.name}</span>
+            <span class="text-[9.5px] font-bold text-slate-700 leading-tight line-clamp-1">${cat.name}</span>
           </button>
         `;
       }).join('');
@@ -3461,9 +3288,9 @@
       subGridEl.innerHTML = activeParent.subs.map(sub => {
         const isSubSel = sub.id === state.selectedTxSubCategory;
         return `
-          <button type="button" onclick="selectTxSubCategory('${sub.id}')" class="py-2 px-2.5 rounded-xl border text-left flex items-center gap-2 transition ${isSubSel ? 'border-momo-500 bg-white text-momo-600 shadow-xs font-extrabold' : 'border-slate-200/80 bg-white/60 text-slate-600 font-semibold'}">
-            <i class="fa-solid ${sub.icon} text-xs shrink-0" style="color:${activeParent.color}"></i>
-            <span class="text-[11px] truncate">${sub.name}</span>
+          <button type="button" onclick="selectTxSubCategory('${sub.id}')" class="py-1.5 px-2 rounded-lg border text-left flex items-center gap-1.5 transition ${isSubSel ? 'border-momo-500 bg-white text-momo-600 shadow-xs font-extrabold' : 'border-slate-200/80 bg-white/60 text-slate-600 font-semibold'}">
+            <i class="fa-solid ${sub.icon} text-[10px] shrink-0" style="color:${activeParent.color}"></i>
+            <span class="text-[10.5px] truncate">${sub.name}</span>
           </button>
         `;
       }).join('');
@@ -3471,7 +3298,7 @@
 
     function selectTxCategory(catId) {
       state.selectedTxCategory = catId;
-      const list = state.modalMode === 'income' ? INCOME_CATEGORIES : EXPENSE_CATEGORIES;
+      const list = state.modalMode === 'income' ? INCOME_CATEGORIES : state.modalMode === 'saving' ? SAVING_CATEGORIES : EXPENSE_CATEGORIES;
       const parent = list.find(c => c.id === catId);
       if (parent && parent.subs.length > 0) {
         state.selectedTxSubCategory = parent.subs[0].id;
@@ -3588,7 +3415,7 @@
       const tx = state.transactions.find(t => t.id === txId);
       if (!tx) return;
       state.editingRecordId = tx.id;
-      openAddModal(tx.type, tx.date, true);
+      openAddModal(getTxType(tx), tx.date, true);
       state.selectedTxCategory = tx.category;
       state.selectedTxSubCategory = tx.subCategory;
       renderTxCategoryGrid();
@@ -3599,9 +3426,11 @@
     function deleteTransaction(txId) {
       const tx = state.transactions.find(t => t.id === txId);
       if (!tx) return;
-      const meta = getCategoryMeta(tx.category, tx.type, tx.subCategory);
+      const effType = getTxType(tx);
+      const meta = getCategoryMeta(tx.category, effType, tx.subCategory);
       const l = getLunarInfoFromISO(tx.date);
-      const isExp = tx.type === 'expense';
+      const isExp = effType === 'expense';
+      const isSav = effType === 'saving';
 
       openConfirmModal({
         type: 'transaction',
@@ -3619,7 +3448,7 @@
           </div>
           <div class="flex items-center justify-between">
             <span class="text-slate-500 font-medium">Số tiền:</span>
-            <strong class="${isExp ? 'text-momo-600' : 'text-emerald-600'} font-extrabold">${isExp ? '-' : '+'}${Number(tx.amount).toLocaleString('vi-VN')}đ</strong>
+            <strong class="${isExp ? 'text-momo-600' : isSav ? 'text-sky-600' : 'text-emerald-600'} font-extrabold">${isExp ? '-' : isSav ? '' : '+'}${Number(tx.amount).toLocaleString('vi-VN')}đ</strong>
           </div>
           <div class="flex items-center justify-between">
             <span class="text-slate-500 font-medium">Ngày:</span>
@@ -3727,9 +3556,6 @@
       setOverviewType,
       selectChartDate,
       clearSelectedChartDate,
-      openDayTxPopup,
-      closeDayTxPopup,
-      handlePopupBackdropClick,
       toggleSubCatFilter,
       openAddModal,
       closeRecordModal,
